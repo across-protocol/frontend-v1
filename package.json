@@ -34,8 +34,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "cypress:open": "cypress open",
-    "hardhat:opt": "npx hardhat compile --network optimistic"
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": [
