@@ -1,28 +1,16 @@
-/* eslint-disable */
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 import { Eip1193Bridge } from "@ethersproject/experimental";
 import { ethers } from "@ethersproject/experimental/node_modules/ethers";
 
-const PRIVATE_KEY_TEST_NEVER_USE =
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+class CustomizedBridgeMultiChain extends Eip1193Bridge {
+  constructor(signerOne, providerOne, signerTwo, providerTwo) {
+    super(signerOne, providerOne);
 
-// address of the above key
-export const TEST_ADDRESS_NEVER_USE = new Wallet(PRIVATE_KEY_TEST_NEVER_USE)
-  .address;
-
-export const TEST_ADDRESS_NEVER_USE_SHORTENED = `${TEST_ADDRESS_NEVER_USE.substr(
-  0,
-  6
-)}...${TEST_ADDRESS_NEVER_USE.substr(-4, 4)}`;
-
-export class CustomizedBridge extends Eip1193Bridge {
-  // chainId = 4;
-
-  async sendAsync(...args) {
-    console.debug("sendAsync called", ...args);
-    return this.send(...args);
+    ethers.utils.defineReadOnly(this, "signerTwo", signerTwo);
+    ethers.utils.defineReadOnly(this, "providerTwo", providerTwo || null);
   }
+
   async send(...args) {
     console.debug("send called", ...args);
     console.log("args -------", args);
@@ -38,6 +26,16 @@ export class CustomizedBridge extends Eip1193Bridge {
     } else {
       method = args[0];
       params = args[1];
+    }
+
+    if (method === "wallet_switchEthereumChain") {
+      console.debug(
+        "send called with method wallet_switchEthereumChain",
+        ...args
+      );
+      console.log("args -------", args);
+      console.log("signers", this.signer, this.signerTwo);
+      console.log("providers", this.provider, this.providerTwo);
     }
 
     // Implemented by UMA
@@ -93,10 +91,18 @@ export class CustomizedBridge extends Eip1193Bridge {
   }
 }
 
-export default function createCustomizedBridge() {
-  const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
+export default function createCustomizedBridgeMultiChain() {
+  const ethProvider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
 
-  const signer = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, provider);
+  const ethSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, provider);
 
-  return new CustomizedBridge(signer, provider);
+  const optProvider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
+  const optSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, ethProvider);
+
+  return new CustomizedBridgeMultiChain(
+    ethSigner,
+    ethProvider,
+    optSigner,
+    optProvider
+  );
 }
