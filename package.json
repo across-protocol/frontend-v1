@@ -33,7 +33,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -54,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "@ethersproject/experimental": "^5.4.0",
     "cypress": "^8.5.0"
   }
 }
