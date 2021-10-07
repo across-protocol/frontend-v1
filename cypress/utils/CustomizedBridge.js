@@ -2,7 +2,8 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 import { Eip1193Bridge } from "@ethersproject/experimental";
-import { ethers } from "@ethersproject/experimental/node_modules/ethers";
+// import { ethers } from "@ethersproject/experimental/node_modules/ethers";
+import { ethers } from "ethers";
 
 const PRIVATE_KEY_TEST_NEVER_USE =
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
@@ -94,7 +95,8 @@ export class CustomizedBridge extends Eip1193Bridge {
 }
 
 export default function createCustomizedBridge() {
-  const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
+  // const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
+  const provider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
 
   const signer = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, provider);
 
