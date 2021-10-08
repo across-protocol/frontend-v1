@@ -48,6 +48,9 @@ const getNetworkName = (chainId: number) => {
     case 4: {
       return "rinkeby";
     }
+    case 10: {
+      return "optimism-mainnet";
+    }
   }
 };
 export function onboardBaseConfig(_chainId?: number): Initialization {
@@ -67,7 +70,6 @@ export function onboardBaseConfig(_chainId?: number): Initialization {
           walletName: "walletConnect",
           rpc: { [chainId || 1]: infuraRpc },
         },
-        { walletName: "gnosis" },
       ],
     },
     walletCheck: [

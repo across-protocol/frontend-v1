@@ -30,9 +30,10 @@ import createCustomizedBridge from "../utils/CustomizedBridge";
 // sets up the injected provider to be a mock ethereum provider with the given mnemonic/index
 Cypress.Commands.overwrite("visit", (original, url, options) => {
   return original(
-    url.startsWith("/") && url.length > 2 && !url.startsWith("/#")
-      ? `/#${url}`
-      : url,
+    // url.startsWith("/") && url.length > 2 && !url.startsWith("/#")
+    //   ? `/#${url}`
+    //   : url,
+    url,
     {
       ...options,
       onBeforeLoad(win) {

@@ -95,10 +95,11 @@ export class CustomizedBridge extends Eip1193Bridge {
 }
 
 export default function createCustomizedBridge() {
-  // const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
-  const provider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
+  const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
+  // const provider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
 
   const signer = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, provider);
+  console.log("provider", provider, "signer", signer);
 
   return new CustomizedBridge(signer, provider);
 }

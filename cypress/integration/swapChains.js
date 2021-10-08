@@ -1,10 +1,16 @@
 /* eslint-disable */
+import createCustomizedBridge from "../utils/CustomizedBridge";
 
 describe("Connects to the wallet and swaps chains", () => {
-  it("Visits the page", () => {
-    // cy.visit("localhost:3000");
-    cy.visit("https://across-bdi6pji1b-uma.vercel.app/");
+  it("Visits the page", async () => {
+    // cy.wait(10000);
+    cy.visit("localhost:3000/#");
     cy.contains("Connect Wallet");
+    await cy.window().then((win) => {
+      console.log("window", win);
+      // console.log("win object", JSON.stringify(win.ethereum));
+      // win.ethereum = createCustomizedBridge();
+    });
   });
 
   it("Connects to Optimism", () => {
@@ -14,6 +20,6 @@ describe("Connects to the wallet and swaps chains", () => {
     )
       .first()
       .click();
-    cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
+    // cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
   });
 });
