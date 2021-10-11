@@ -96,7 +96,7 @@ export function onboardBaseConfig(_chainId?: number): Initialization {
   return {
     dappId: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY || "",
     hideBranding: true,
-    networkId: 1, // Default to main net. If on a different network will change with the subscription.
+    networkId: 10, // Default to main net. If on a different network will change with the subscription.
     walletSelect: {
       wallets: !cypressTesting ? wallets : [customInjectedWallet, ...wallets],
     },

@@ -12,7 +12,7 @@ export function useOnboard() {
   const instance = React.useMemo(
     () =>
       Onboard({
-        ...onboardBaseConfig(),
+        ...onboardBaseConfig(10),
         subscriptions: {
           address: (address: string) => {
             update({ account: address });
