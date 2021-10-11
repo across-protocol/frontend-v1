@@ -24,7 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import createCustomizedBridgeMultiChain from "../utils/CustomizedBridgeMultiChain";
+// import createCustomizedBridgeMultiChain from "../utils/CustomizedBridgeMultiChain";
 import createCustomizedBridge from "../utils/CustomizedBridge";
 
 // sets up the injected provider to be a mock ethereum provider with the given mnemonic/index
