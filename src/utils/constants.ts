@@ -57,10 +57,12 @@ const getNetworkName = (chainId: number) => {
     }
   }
 };
+const customExtensionWalletLogo = `	<svg 		height="40" 		viewBox="0 0 40 40" 		width="40" 		xmlns="http://www.w3.org/2000/svg"	>		<path 			d="m2744.99995 1155h9.99997" 			fill="#617bff" 		/>	</svg>`;
 // create custom wallet
-const custonInjectedWallet: WalletModule | WalletInitOptions = {
+const customInjectedWallet: WalletModule | WalletInitOptions = {
   name: "Test Wallet",
   type: "injected",
+  svg: customExtensionWalletLogo,
   wallet: async (helpers: any) => {
     const { createModernProviderInterface } = helpers;
     const provider = (window as any).ethereum;
@@ -90,16 +92,13 @@ export function onboardBaseConfig(_chainId?: number): Initialization {
   // This is only for testing. Cypress injects this testing variable at the start of tests with cy.visit()
   // If this var exists, inject our test wallet into the first element of the array.
   const cypressTesting = localStorage.getItem("cypress-testing");
-  if (cypressTesting) {
-    wallets.unshift(custonInjectedWallet);
-  }
 
   return {
     dappId: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY || "",
     hideBranding: true,
-    networkId: 10, // Default to main net. If on a different network will change with the subscription.
+    networkId: 1, // Default to main net. If on a different network will change with the subscription.
     walletSelect: {
-      wallets,
+      wallets: !cypressTesting ? wallets : [customInjectedWallet, ...wallets],
     },
     walletCheck: [
       { checkName: "connect" },

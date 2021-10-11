@@ -2,7 +2,6 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 import { Eip1193Bridge } from "@ethersproject/experimental";
-// import { ethers } from "@ethersproject/experimental/node_modules/ethers";
 import { ethers } from "ethers";
 
 const PRIVATE_KEY_TEST_NEVER_USE =
@@ -17,7 +16,7 @@ export const TEST_ADDRESS_NEVER_USE_SHORTENED = `${TEST_ADDRESS_NEVER_USE.substr
   6
 )}...${TEST_ADDRESS_NEVER_USE.substr(-4, 4)}`;
 
-export class CustomizedBridge extends Eip1193Bridge {
+class CustomizedBridge extends Eip1193Bridge {
   // chainId = 4;
 
   async sendAsync(...args) {
@@ -96,10 +95,7 @@ export class CustomizedBridge extends Eip1193Bridge {
 
 export default function createCustomizedBridge() {
   const provider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
-  // const provider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
-
   const signer = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, provider);
-  console.log("provider", provider, "signer", signer);
 
   return new CustomizedBridge(signer, provider);
 }
