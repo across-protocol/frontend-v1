@@ -1,7 +1,6 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 import { Eip1193Bridge } from "@ethersproject/experimental";
-// import { ethers } from "@ethersproject/experimental/node_modules/ethers";
 import { ethers } from "ethers";
 
 const PRIVATE_KEY_TEST_NEVER_USE =
@@ -11,12 +10,17 @@ const PRIVATE_KEY_TEST_NEVER_USE =
 export const TEST_ADDRESS_NEVER_USE = new Wallet(PRIVATE_KEY_TEST_NEVER_USE)
   .address;
 
+const SIXTY_NINE_IN_HEX = "0x45";
+const ONE_IN_HEX = "0xa";
+
 class CustomizedBridgeMultiChain extends Eip1193Bridge {
   constructor(signerOne, providerOne, signerTwo, providerTwo) {
     super(signerOne, providerOne);
 
     ethers.utils.defineReadOnly(this, "signerTwo", signerTwo);
     ethers.utils.defineReadOnly(this, "providerTwo", providerTwo || null);
+    this.currentSigner = signerOne;
+    this.currentProvider = providerOne;
   }
 
   async send(...args) {
@@ -42,8 +46,20 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
         ...args
       );
       console.log("args -------", args);
-      console.log("signers", this.signer, this.signerTwo);
-      console.log("providers", this.provider, this.providerTwo);
+      // console.log("signers", this.signer, this.signerTwo);
+      // console.log("providers", this.provider, this.providerTwo);
+      console.log("DERPPPP", args[1][0].chainId);
+      //
+      if (args[1][0].chainId === SIXTY_NINE_IN_HEX) {
+        this.currentSigner = signerTwo;
+        this.currentProvider = providerOne;
+        return signerTwo;
+      }
+      if (args[1][0].chainId === ONE_IN_HEX) {
+        this.currentSigner = signerOne;
+        this.currentProvider = providerOne;
+        return signerOne;
+      }
     }
 
     // Implemented by UMA
