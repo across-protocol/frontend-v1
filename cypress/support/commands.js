@@ -24,8 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-// import createCustomizedBridgeMultiChain from "../utils/CustomizedBridgeMultiChain";
-import createCustomizedBridge from "../utils/CustomizedBridge";
+import createCustomizedBridgeMultiChain from "../utils/CustomizedBridgeMultiChain";
+// import createCustomizedBridge from "../utils/CustomizedBridge";
 
 // sets up the injected provider to be a mock ethereum provider with the given mnemonic/index
 Cypress.Commands.overwrite("visit", (original, url, options) => {
@@ -41,8 +41,8 @@ Cypress.Commands.overwrite("visit", (original, url, options) => {
         win.localStorage.clear();
         win.localStorage.setItem("cypress-testing", true);
 
-        // win.ethereum = createCustomizedBridgeMultiChain();
-        win.ethereum = createCustomizedBridge();
+        win.ethereum = createCustomizedBridgeMultiChain();
+        // win.ethereum = createCustomizedBridge();
       },
     }
   );

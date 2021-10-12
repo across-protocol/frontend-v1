@@ -64,12 +64,13 @@ const customInjectedWallet: WalletModule | WalletInitOptions = {
   type: "injected",
   svg: customExtensionWalletLogo,
   wallet: async (helpers: any) => {
-    const { createModernProviderInterface } = helpers;
+    const { createLegacyProviderInterface } = helpers;
     const provider = (window as any).ethereum;
 
+    console.log("provider", provider);
     return {
       provider,
-      interface: createModernProviderInterface(provider),
+      interface: createLegacyProviderInterface(provider),
     };
   },
   desktop: true,
@@ -99,6 +100,7 @@ export function onboardBaseConfig(_chainId?: number): Initialization {
     networkId: 10, // Default to main net. If on a different network will change with the subscription.
     walletSelect: {
       wallets: !cypressTesting ? wallets : [customInjectedWallet, ...wallets],
+      // wallets: [customInjectedWallet, ...wallets],
     },
     walletCheck: [
       { checkName: "connect" },
@@ -284,6 +286,13 @@ export const PROVIDERS: Record<number, ethers.providers.BaseProvider> = {
   ),
   421611: new ethers.providers.JsonRpcProvider(
     `https://arbitrum-rinkeby.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
+  ),
+  // Hardhat chains.
+  31337: new ethers.providers.JsonRpcProvider(
+    `https://mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
+  ),
+  31338: new ethers.providers.JsonRpcProvider(
+    `https://optimism-kovan.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
   ),
 };
 
