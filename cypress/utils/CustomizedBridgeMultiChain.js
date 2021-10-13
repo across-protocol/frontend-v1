@@ -1,6 +1,7 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
-import { Eip1193Bridge } from "@ethersproject/experimental";
+// import { Eip1193Bridge } from "@ethersproject/experimental";
+import { Eip1193Bridge } from "./eip1193-bridge";
 import { ethers } from "ethers";
 
 const PRIVATE_KEY_TEST_NEVER_USE =
@@ -14,7 +15,14 @@ const SIXTY_NINE_IN_HEX = "0x45";
 const ONE_IN_HEX = "0xa";
 
 class CustomizedBridgeMultiChain extends Eip1193Bridge {
-  constructor(signerOne, providerOne, signerTwo, providerTwo) {
+  constructor(
+    signerOne,
+    providerOne,
+    signerTwo,
+    providerTwo,
+    signerThree,
+    providerThree
+  ) {
     super(signerOne, providerOne);
 
     ethers.utils.defineReadOnly(this, "signerOne", signerOne);
@@ -22,6 +30,9 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
 
     ethers.utils.defineReadOnly(this, "signerTwo", signerTwo);
     ethers.utils.defineReadOnly(this, "providerTwo", providerTwo || null);
+
+    ethers.utils.defineReadOnly(this, "signerThree", signerThree);
+    ethers.utils.defineReadOnly(this, "providerThree", providerThree || null);
   }
 
   send = async (...args) => {
@@ -50,9 +61,11 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
 
       const chainId = args[1][0].chainId;
 
+      console.log("this", this);
       if (chainId === SIXTY_NINE_IN_HEX) {
-        this.signer = this.signerTwo;
-        this.provider = this.providerTwo;
+        console.log("in the 69 chainId cond?");
+        this.signer = this.signerThree;
+        this.provider = this.providerThree;
 
         return null;
       }
@@ -83,8 +96,6 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
 
     if (method === "eth_chainId") {
       const result = await this.provider.getNetwork();
-
-      console.log("result.chainId", result.chainId);
 
       return result.chainId;
     }
@@ -130,17 +141,28 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
 }
 
 export default function createCustomizedBridgeMultiChain() {
-  const ethProvider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
+  const ethProvider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
 
   const ethSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, ethProvider);
 
-  const optProvider = new ethers.getDefaultProvider("http://127.0.0.1:9546");
+  const optProvider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
   const optSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, optProvider);
+
+  const optKovanProvider = new ethers.getDefaultProvider(
+    "http://127.0.0.1:9546"
+  );
+
+  const optKovanSigner = new Wallet(
+    PRIVATE_KEY_TEST_NEVER_USE,
+    optKovanProvider
+  );
 
   return new CustomizedBridgeMultiChain(
     ethSigner,
     ethProvider,
     optSigner,
-    optProvider
+    optProvider,
+    optKovanSigner,
+    optKovanProvider
   );
 }

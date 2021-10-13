@@ -292,6 +292,9 @@ export const PROVIDERS: Record<number, ethers.providers.BaseProvider> = {
     `https://mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
   ),
   31338: new ethers.providers.JsonRpcProvider(
+    `https://optimism-mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
+  ),
+  31339: new ethers.providers.JsonRpcProvider(
     `https://optimism-kovan.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
   ),
 };

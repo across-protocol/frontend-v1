@@ -35,6 +35,7 @@ const connectionSlice = createSlice({
       return state;
     },
     update: (state, action: PayloadAction<Omit<State, "isConnected">>) => {
+      console.log("action in connection", action);
       state.provider = action.payload.provider ?? state.provider;
       state.account = action.payload.account ?? state.account;
       state.signer = action.payload.signer ?? state.signer;

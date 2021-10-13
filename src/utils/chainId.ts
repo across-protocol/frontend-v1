@@ -1,5 +1,5 @@
-export type ValidChainId = 1 | 42 | 1337 | 10;
-export type ChainId = 1 | 42 | 1337 | 3 | 4 | 10;
+export type ValidChainId = 1 | 42 | 1337 | 10 | 31337 | 31338 | 31339;
+export type ChainId = 1 | 42 | 1337 | 3 | 4 | 10 | 31337 | 31338 | 31339;
 
 export function isValidChainId(chainId: number): chainId is ValidChainId {
   return SUPPORTED_CHAIN_IDS.includes(chainId);

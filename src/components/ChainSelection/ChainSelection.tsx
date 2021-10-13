@@ -26,6 +26,8 @@ const ChainSelection: React.FC = () => {
     }
   };
 
+  console.log("provider", provider);
+
   return (
     <>
       <Heading>From</Heading>
