@@ -6,7 +6,6 @@ export async function switchToChain(
   chainId: number
 ) {
   try {
-    console.log("ChainId", chainId, "hexValue", ethers.utils.hexValue(chainId));
     const res = await provider.send("wallet_switchEthereumChain", [
       {
         chainId: ethers.utils.hexValue(chainId),

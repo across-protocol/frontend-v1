@@ -17,13 +17,14 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
   constructor(signerOne, providerOne, signerTwo, providerTwo) {
     super(signerOne, providerOne);
 
+    ethers.utils.defineReadOnly(this, "signerOne", signerOne);
+    ethers.utils.defineReadOnly(this, "providerOne", providerOne || null);
+
     ethers.utils.defineReadOnly(this, "signerTwo", signerTwo);
     ethers.utils.defineReadOnly(this, "providerTwo", providerTwo || null);
-    this.currentSigner = signerOne;
-    this.currentProvider = providerOne;
   }
 
-  async send(...args) {
+  send = async (...args) => {
     console.debug("send called", ...args);
     console.log("args -------", args);
     const isCallbackForm =
@@ -46,23 +47,26 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
         ...args
       );
       console.log("args -------", args);
-      // console.log("DERPPPP", args[1][0].chainId);
+
       const chainId = args[1][0].chainId;
+
       if (chainId === SIXTY_NINE_IN_HEX) {
-        this.currentSigner = this.signerTwo;
-        this.currentProvider = this.providerOne;
+        this.signer = this.signerTwo;
+        this.provider = this.providerTwo;
+
         return null;
       }
 
       if (chainId === ONE_IN_HEX) {
-        this.currentSigner = this.signerOne;
-        this.currentProvider = this.providerOne;
+        this.signer = this.signerOne;
+        this.provider = this.providerOne;
+
         return null;
       }
 
       // default to signer one if hex is wrong
-      this.currentProvider = providerOne;
-      this.currentSigner = signerOne;
+      this.provider = this.providerOne;
+      this.signer = this.signerOne;
 
       return null;
     }
@@ -74,17 +78,19 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
         args[1][0]
       );
 
-      return await this.currentProvider.call(req, params[1]);
+      return await this.provider.call(req, params[1]);
     }
 
     if (method === "eth_chainId") {
-      const result = await this.currentProvider.getNetwork();
+      const result = await this.provider.getNetwork();
+
+      console.log("result.chainId", result.chainId);
 
       return result.chainId;
     }
 
     if (method === "eth_sendTransaction") {
-      if (!this.currentSigner) {
+      if (!this.signer) {
         return throwUnsupported("eth_sendTransaction requires an account");
       }
 
@@ -92,7 +98,7 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
         params[0],
         args[1][0]
       );
-      const tx = await this.currentSigner.sendTransaction(req);
+      const tx = await this.signer.sendTransaction(req);
       return tx.hash;
     }
 
@@ -120,15 +126,15 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
         throw error;
       }
     }
-  }
+  };
 }
 
 export default function createCustomizedBridgeMultiChain() {
-  const ethProvider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
+  const ethProvider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
 
   const ethSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, ethProvider);
 
-  const optProvider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
+  const optProvider = new ethers.getDefaultProvider("http://127.0.0.1:9546");
   const optSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, optProvider);
 
   return new CustomizedBridgeMultiChain(

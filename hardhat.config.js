@@ -16,7 +16,7 @@ module.exports = {
       hardfork: "london",
       gasPrice: "auto",
       initialBaseFeePerGas: 1_000_000_000,
-      // chainId: 1337,
+      chainId: 31337,
     },
     optimistic: {
       url: "http://127.0.0.1:9545", // this is the default port
@@ -27,5 +27,14 @@ module.exports = {
       ovm: true, // required,
       chainId: 10,
     },
+    // optimisticKovan: {
+    //   url: "http://127.0.0.1:9546", // this is the default port
+    //   accounts: {
+    //     mnemonic: "test test test test test test test test test test test junk",
+    //   },
+    //   gasPrice: 15_000_000, // required
+    //   ovm: true, // required,
+    //   chainId: 69,
+    // },
   },
 };
