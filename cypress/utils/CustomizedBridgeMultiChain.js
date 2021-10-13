@@ -46,20 +46,25 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
         ...args
       );
       console.log("args -------", args);
-      // console.log("signers", this.signer, this.signerTwo);
-      // console.log("providers", this.provider, this.providerTwo);
-      console.log("DERPPPP", args[1][0].chainId);
-      //
-      if (args[1][0].chainId === SIXTY_NINE_IN_HEX) {
-        this.currentSigner = signerTwo;
-        this.currentProvider = providerOne;
-        return signerTwo;
+      // console.log("DERPPPP", args[1][0].chainId);
+      const chainId = args[1][0].chainId;
+      if (chainId === SIXTY_NINE_IN_HEX) {
+        this.currentSigner = this.signerTwo;
+        this.currentProvider = this.providerOne;
+        return null;
       }
-      if (args[1][0].chainId === ONE_IN_HEX) {
-        this.currentSigner = signerOne;
-        this.currentProvider = providerOne;
-        return signerOne;
+
+      if (chainId === ONE_IN_HEX) {
+        this.currentSigner = this.signerOne;
+        this.currentProvider = this.providerOne;
+        return null;
       }
+
+      // default to signer one if hex is wrong
+      this.currentProvider = providerOne;
+      this.currentSigner = signerOne;
+
+      return null;
     }
 
     // Implemented by UMA
@@ -68,15 +73,18 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
         params[0],
         args[1][0]
       );
-      return await this.provider.call(req, params[1]);
+
+      return await this.currentProvider.call(req, params[1]);
     }
 
     if (method === "eth_chainId") {
-      const result = await this.provider.getNetwork();
+      const result = await this.currentProvider.getNetwork();
+
       return result.chainId;
     }
+
     if (method === "eth_sendTransaction") {
-      if (!this.signer) {
+      if (!this.currentSigner) {
         return throwUnsupported("eth_sendTransaction requires an account");
       }
 
@@ -84,7 +92,7 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
         params[0],
         args[1][0]
       );
-      const tx = await this.signer.sendTransaction(req);
+      const tx = await this.currentSigner.sendTransaction(req);
       return tx.hash;
     }
 

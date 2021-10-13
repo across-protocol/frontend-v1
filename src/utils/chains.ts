@@ -14,6 +14,7 @@ export async function switchToChain(
     ]);
     console.log("what is the proper response?", res);
   } catch (switchError: any) {
+    console.log("switchError", switchError);
     if (switchError.code === 4902) {
       try {
         await provider.send("wallet_addEthereumChain", [
