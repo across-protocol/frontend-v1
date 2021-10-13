@@ -16,7 +16,8 @@ module.exports = {
       hardfork: "london",
       gasPrice: "auto",
       initialBaseFeePerGas: 1_000_000_000,
-      chainId: 31337,
+      // chainId: 31337,
+      chainId: 1,
     },
     optimistic: {
       url: "http://127.0.0.1:9545", // this is the default port

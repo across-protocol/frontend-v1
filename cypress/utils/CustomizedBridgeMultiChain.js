@@ -61,7 +61,6 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
 
       const chainId = args[1][0].chainId;
 
-      console.log("this", this);
       if (chainId === SIXTY_NINE_IN_HEX) {
         console.log("in the 69 chainId cond?");
         this.signer = this.signerThree;

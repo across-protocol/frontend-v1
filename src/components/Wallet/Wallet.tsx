@@ -23,11 +23,13 @@ const Wallet: React.FC<Props> = ({
       </SecondaryButton>
     );
   }
+
+  console.log(networkFromChainId(chainId));
   return (
     <Wrapper onClick={onWalletConnect}>
       <Info>
         <div>{balance} ETH</div>
-        <div>{networkFromChainId(chainId)}</div>
+        <div id="cyNetworkName">{networkFromChainId(chainId)}</div>
       </Info>
       <Account>{shortenAddress(account)}</Account>
     </Wrapper>

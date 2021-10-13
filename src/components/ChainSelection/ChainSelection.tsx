@@ -38,7 +38,11 @@ const ChainSelection: React.FC = () => {
         />
         <span>{networkFromChainId(fromChain)}</span>
       </Option>
-      {!isOnCorrectChain && <Button onClick={handleClick}>{actionText}</Button>}
+      {!isOnCorrectChain && (
+        <Button id="cySwapChain" onClick={handleClick}>
+          {actionText}
+        </Button>
+      )}
     </>
   );
 };

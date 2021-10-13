@@ -20,6 +20,15 @@ describe("Connects to the wallet and swaps chains", () => {
     )
       .first()
       .click();
-    // cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
+    cy.get(".bn-onboard-custom.bn-onboard-icon-button").eq(1).click();
+    cy.get(
+      ".bn-onboard-custom.bn-onboard-modal-content-close.svelte-rntogh"
+    ).click();
+  });
+
+  it("Clicks swap to Kovan-Optimism and changes chain", () => {
+    cy.get("#cySwapChain").click();
+    // Note: we capitalize with CSS.
+    cy.get("#cyNetworkName").contains("kovan optimism");
   });
 });
