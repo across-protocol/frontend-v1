@@ -8,7 +8,6 @@ type State = {
   chainId?: number;
   error?: Error;
   connector?: any;
-  isConnected: boolean;
 };
 const initialState: State = {
   account: undefined,
@@ -17,7 +16,6 @@ const initialState: State = {
   chainId: undefined,
   error: undefined,
   connector: undefined,
-  isConnected: false,
 };
 
 const connectionSlice = createSlice({
@@ -26,12 +24,10 @@ const connectionSlice = createSlice({
   reducers: {
     connect: (state, action) => {
       state = action.payload;
-      state.isConnected = true;
       return state;
     },
     disconnect: (state) => {
       state = initialState;
-      state.isConnected = false;
       return state;
     },
     error: (state, action) => {

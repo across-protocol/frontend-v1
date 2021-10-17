@@ -9,6 +9,7 @@ import {
   update,
   error as errorAction,
 } from "./connection";
+import { transactions } from "./global";
 
 import { transfer, toggle } from "./transfers";
 
@@ -36,7 +37,7 @@ export function useSelectedSendArgs() {
 }
 
 export function useConnection() {
-  const { account, provider, signer, error, connector, chainId, isConnected } =
+  const { account, provider, signer, error, connector, chainId } =
     useAppSelector((state) => state.connection);
   const dispatch = useAppDispatch();
   const actions = bindActionCreators(
@@ -54,6 +55,8 @@ export function useConnection() {
     [actions, error]
   );
 
+  const isConnected = !!provider && !!signer && !!chainId && !!account;
+
   return {
     provider,
     account,
@@ -70,7 +73,10 @@ export function useConnection() {
 }
 
 export function useGlobal() {
-  return useAppSelector((state) => state.global);
+  const state = useAppSelector((state) => state.global);
+  const dispatch = useAppDispatch();
+  const actions = bindActionCreators({ transactions }, dispatch);
+  return { ...state, addTransaction: actions.transactions };
 }
 
 export function useAccounts() {

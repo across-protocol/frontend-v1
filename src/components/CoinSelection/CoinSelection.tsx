@@ -3,16 +3,13 @@ import styled from "@emotion/styled";
 import { useSelect } from "downshift";
 import { ChevronDown } from "react-feather";
 import { SecondaryButton } from "../BaseButton";
-import { COIN_LIST, formatUnits } from "../../utils";
-import { useBalances } from "../../state/chain";
-import {
-  useConnection,
-  useGlobal,
-  useSelectedSendArgs,
-} from "../../state/hooks";
+import { COIN_LIST, formatUnits, parseUnits } from "utils";
+import { useBalances } from "state/chain";
+import { useConnection, useGlobal, useSelectedSendArgs } from "state/hooks";
+import { ethers } from "ethers";
 
 const CoinSelection: React.FC = () => {
-  const [coinAmount, setCoinAmount] = useState<number>(0);
+  const [coinAmount, setCoinAmount] = useState<string>("0");
   const { setAmount, setAsset } = useSelectedSendArgs();
   const [error, setError] = useState<string>("");
   const { chainId } = useConnection();
@@ -42,7 +39,7 @@ const CoinSelection: React.FC = () => {
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
         setAsset({ asset: selectedItem.address });
-        setCoinAmount(0);
+        setCoinAmount("0");
       }
     },
   });
@@ -59,9 +56,7 @@ const CoinSelection: React.FC = () => {
 
   const handleMaxClick = () => {
     if (balance && selectedItem) {
-      const parsedBalance = parseFloat(
-        formatUnits(balance, selectedItem.decimals)
-      );
+      const parsedBalance = formatUnits(balance, selectedItem.decimals);
 
       setCoinAmount(parsedBalance);
       setAmount({ amount: balance });
@@ -69,19 +64,31 @@ const CoinSelection: React.FC = () => {
   };
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(evt.target.value, 10);
-    const parsedBalance =
-      balance && selectedItem
-        ? parseFloat(formatUnits(balance, selectedItem.decimals))
-        : Infinity;
-    if (value > parsedBalance && !error) {
+    const rawValue = evt.target.value;
+    let value: ethers.BigNumber = ethers.BigNumber.from(0);
+    let parsingError: any | null = null;
+    try {
+      value = parseUnits(
+        rawValue,
+        selectedItem ? selectedItem.decimals : coinList[0].decimals
+      );
+    } catch (error: any) {
+      console.error(error);
+      parsingError = error;
+      setError("Invalid Number.");
+    }
+
+    const isMoreThanBalance = value.gt(balance ?? ethers.constants.MaxUint256);
+    if (isMoreThanBalance && !error) {
       setError("Insufficient balance.");
     }
-    if (value < parsedBalance && error) {
+    if (!isMoreThanBalance && !parsingError) {
       setError("");
     }
-    setCoinAmount(value);
-    setAmount({ amount: value });
+    setCoinAmount(rawValue);
+    setAmount({
+      amount: value,
+    });
   };
 
   return (
@@ -127,7 +134,6 @@ const CoinSelection: React.FC = () => {
         >
           <MaxButton onClick={handleMaxClick}>max</MaxButton>
           <Input
-            type="number"
             placeholder="0.00"
             id="amount"
             value={coinAmount}

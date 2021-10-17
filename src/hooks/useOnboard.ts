@@ -36,6 +36,7 @@ export function useOnboard() {
 
               update({
                 provider,
+                signer: provider.getSigner(),
               });
             }
           },
@@ -54,6 +55,7 @@ export function useOnboard() {
         chainId: state.network,
         account: state.address,
         provider: new ethers.providers.Web3Provider(state.wallet.provider),
+        signer: state.wallet.provider.getSigner(),
       });
     } catch (err: unknown) {
       setError(err as Error);

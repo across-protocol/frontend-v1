@@ -1,7 +1,8 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ethers } from "ethers";
 import { ERC20Ethers__factory } from "@uma/contracts-frontend";
-import { PROVIDERS } from "../utils";
+import { PROVIDERS, getRelayFees, getLpFeePct } from "utils";
+import type { RelayFees } from "utils/bridge";
 import { balances } from "./global";
 
 type GetBalanceArgs = {
@@ -38,6 +39,7 @@ const api = createApi({
         { dispatch, queryFulfilled }
       ) => {
         const { data } = await queryFulfilled;
+
         dispatch(
           balances({
             address: account,
@@ -66,11 +68,26 @@ const api = createApi({
         }
       },
     }),
+    getBridgeFees: build.query<
+      RelayFees & { lpFee: ethers.BigNumber },
+      { depositAmount: ethers.BigNumber; token: string }
+    >({
+      queryFn: async () => {
+        try {
+          const relayFees = await getRelayFees();
+          const lpFee = await getLpFeePct();
+          return { data: { ...relayFees, lpFee } };
+        } catch (err) {
+          return { error: err };
+        }
+      },
+    }),
   }),
 });
 
 export const {
   useGetBalancesQuery: useBalances,
   useGetETHBalanceQuery: useETHBalance,
+  useGetBridgeFeesQuery: useBridgeFees,
 } = api;
 export default api;

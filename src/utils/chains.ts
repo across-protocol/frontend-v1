@@ -40,10 +40,16 @@ export function networkFromChainId(chainId: number) {
       return "mainnet";
     case 42:
       return "kovan";
+    case 4:
+      return "rinkeby";
     case 10:
       return "optimism";
     case 69:
       return "kovan optimism";
+    case 42161:
+      return "arbitrum one";
+    case 421611:
+      return "arbitrum rinkeby";
     default:
       return "unknown";
   }

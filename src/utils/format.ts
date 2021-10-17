@@ -20,3 +20,11 @@ export function formatUnits(
 export function formatEther(wei: ethers.BigNumberish): string {
   return formatUnits(wei, 18);
 }
+
+export function parseUnits(value: string, decimals: number): ethers.BigNumber {
+  return ethers.utils.parseUnits(value, decimals);
+}
+
+export function parseEther(value: string): ethers.BigNumber {
+  return parseUnits(value, 18);
+}
