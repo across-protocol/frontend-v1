@@ -29,6 +29,6 @@ describe("Connects to the wallet and swaps chains", () => {
   it("Clicks swap to Kovan-Optimism and changes chain", () => {
     cy.get("#cySwapChain").click();
     // Note: we capitalize with CSS.
-    // cy.get("#cyNetworkName").contains("kovan optimism");
+    cy.get("#cyNetworkName").contains("arbitrum rinkeby");
   });
 });

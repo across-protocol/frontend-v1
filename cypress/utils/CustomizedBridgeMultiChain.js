@@ -5,6 +5,7 @@ import { Eip1193Bridge } from "./eip1193-bridge";
 import { ethers } from "ethers";
 import convertNumberstoNamed from "./convertNumbersToNamed";
 import capitalizeString from "./capitalizeString";
+import { providers } from "@ethersproject/experimental/node_modules/ethers";
 const PRIVATE_KEY_TEST_NEVER_USE =
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
@@ -12,10 +13,15 @@ const PRIVATE_KEY_TEST_NEVER_USE =
 export const TEST_ADDRESS_NEVER_USE = new Wallet(PRIVATE_KEY_TEST_NEVER_USE)
   .address;
 
-const SIXTY_NINE_IN_HEX = "0x45";
-const ONE_IN_HEX = "0xa";
+// ChainID: 1
+const MAINNET_CHAINID = "0x1";
+
+// ChainID: 69
+const OPTIMISM_KOVAN_CHAINID = "0x45";
+// ChainID: 10
+const OPTIMISM_MAINNET_CHAINID = "0xa";
 // ChainID: 421611
-const ARB_RINKBEY_IN_HEX = "0x66eeb";
+const ARB_RINKEBY_CHAINID = "0x66eeb";
 
 class CustomizedBridgeMultiChain extends Eip1193Bridge {
   constructor(defaultSigner, defaultProvider, signers, providers) {
@@ -36,6 +42,8 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
         provider || null
       );
     });
+
+    this.numProviders = providers.length;
   }
 
   send = async (...args) => {
@@ -62,23 +70,37 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
       );
       console.log("args -------", args);
 
-      console.log("this", this);
       const chainId = args[1][0].chainId;
+      console.log("chainID", chainId);
 
-      if (chainId === SIXTY_NINE_IN_HEX) {
-        console.log("in the 69 chainId cond?");
-        this.signer = this.signerThree;
-        this.provider = this.providerThree;
-
-        return null;
+      for (let i = 0; i < this.numProviders; i++) {
+        const p =
+          this[`provider${capitalizeString(convertNumberstoNamed(i + 1))}`];
+        const s =
+          this[`signer${capitalizeString(convertNumberstoNamed(i + 1))}`];
+        console.log("p", p, "s", s);
+        if (p.chainId === chainId) {
+          this.provider = p;
+          this.signer = s;
+          console.log("<<<<<this>>>>", this);
+          return null;
+        }
       }
 
-      if (chainId === ONE_IN_HEX) {
-        this.signer = this.signerOne;
-        this.provider = this.providerOne;
+      // if (chainId === OPTIMISM_KOVAN_CHAINID) {
+      //   console.log("in the 69 chainId cond?");
+      //   this.signer = this.signerThree;
+      //   this.provider = this.providerThree;
 
-        return null;
-      }
+      //   return null;
+      // }
+
+      // if (chainId === OPTIMISM_MAINNET) {
+      //   this.signer = this.signerTwo;
+      //   this.provider = this.providerTwo;
+
+      //   return null;
+      // }
 
       // default to signer one if hex is wrong
       this.provider = this.providerOne;
@@ -148,12 +170,17 @@ export default function createCustomizedBridgeMultiChain() {
   const providers = [];
   const ethProvider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
   const ethSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, ethProvider);
+  ethProvider.chainId = MAINNET_CHAINID;
+  ethSigner.chainId = MAINNET_CHAINID;
 
   signers.push(ethSigner);
   providers.push(ethProvider);
 
   const optProvider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
   const optSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, optProvider);
+
+  optProvider.chainId = OPTIMISM_MAINNET_CHAINID;
+  optSigner.chainId = OPTIMISM_MAINNET_CHAINID;
 
   signers.push(optSigner);
   providers.push(optProvider);
@@ -167,13 +194,27 @@ export default function createCustomizedBridgeMultiChain() {
     optKovanProvider
   );
 
+  optKovanProvider.chainId = OPTIMISM_KOVAN_CHAINID;
+  optKovanSigner.chainId = OPTIMISM_KOVAN_CHAINID;
+
   signers.push(optKovanSigner);
   providers.push(optKovanProvider);
 
+  const arbitrumRinkebyProvider = new ethers.getDefaultProvider(
+    "http://127.0.0.1:9548"
+  );
+  const arbitrumRinkebySigner = new Wallet(
+    PRIVATE_KEY_TEST_NEVER_USE,
+    arbitrumRinkebyProvider
+  );
+
+  arbitrumRinkebyProvider.chainId = ARB_RINKEBY_CHAINID;
+  arbitrumRinkebySigner.chainId = ARB_RINKEBY_CHAINID;
+
+  signers.push(arbitrumRinkebySigner);
+  providers.push(arbitrumRinkebyProvider);
+
   console.log("signers", signers, "providers", providers);
-  signers.forEach((el, index) => {
-    console.log("index check", capitalizeString(convertNumberstoNamed(index)));
-  });
   return new CustomizedBridgeMultiChain(
     ethSigner,
     ethProvider,
