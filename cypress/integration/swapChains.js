@@ -3,14 +3,8 @@ import createCustomizedBridge from "../utils/CustomizedBridge";
 
 describe("Connects to the wallet and swaps chains", () => {
   it("Visits the page", async () => {
-    // cy.wait(10000);
     cy.visit("localhost:3000/#");
     cy.contains("Connect Wallet");
-    await cy.window().then((win) => {
-      console.log("window", win);
-      // console.log("win object", JSON.stringify(win.ethereum));
-      // win.ethereum = createCustomizedBridge();
-    });
   });
 
   it("Connects to Optimism", () => {

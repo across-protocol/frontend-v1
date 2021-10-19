@@ -24,6 +24,12 @@ $ npx hardhat node --port 9546 --fork https://optimism-kovan.infura.io/v3/<infur
 
 This is due to the fact that hardhat wants to default to a certain chainId in the hardhat.config.
 
+Current app also uses arbitrum. cd into forking/arbitrum-rinkeby:
+
+```
+$ npx hardhat node --port 9548 --fork https://arbitrum-rinkeby.infura.io/v3/d0d5d84b4f1f40079b76b63220ef8926
+```
+
 TODO: Prevent this mess by making it more configurable.
 
 After this, you may run the cypress tests like normal by running yarn cypress:open and yarn start to start the Cypress runner and the app.
