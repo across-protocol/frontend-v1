@@ -3,7 +3,8 @@ import { Wallet } from "@ethersproject/wallet";
 // import { Eip1193Bridge } from "@ethersproject/experimental";
 import { Eip1193Bridge } from "./eip1193-bridge";
 import { ethers } from "ethers";
-
+import convertNumberstoNamed from "./convertNumbersToNamed";
+import capitalizeString from "./capitalizeString";
 const PRIVATE_KEY_TEST_NEVER_USE =
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
@@ -17,24 +18,24 @@ const ONE_IN_HEX = "0xa";
 const ARB_RINKBEY_IN_HEX = "0x66eeb";
 
 class CustomizedBridgeMultiChain extends Eip1193Bridge {
-  constructor(
-    signerOne,
-    providerOne,
-    signerTwo,
-    providerTwo,
-    signerThree,
-    providerThree
-  ) {
-    super(signerOne, providerOne);
+  constructor(defaultSigner, defaultProvider, signers, providers) {
+    super(defaultSigner, defaultProvider);
 
-    ethers.utils.defineReadOnly(this, "signerOne", signerOne);
-    ethers.utils.defineReadOnly(this, "providerOne", providerOne || null);
+    signers.forEach((signer, index) => {
+      ethers.utils.defineReadOnly(
+        this,
+        `signer${capitalizeString(convertNumberstoNamed(index + 1))}`,
+        signer
+      );
+    });
 
-    ethers.utils.defineReadOnly(this, "signerTwo", signerTwo);
-    ethers.utils.defineReadOnly(this, "providerTwo", providerTwo || null);
-
-    ethers.utils.defineReadOnly(this, "signerThree", signerThree);
-    ethers.utils.defineReadOnly(this, "providerThree", providerThree || null);
+    providers.forEach((provider, index) => {
+      ethers.utils.defineReadOnly(
+        this,
+        `provider${capitalizeString(convertNumberstoNamed(index + 1))}`,
+        provider || null
+      );
+    });
   }
 
   send = async (...args) => {
@@ -61,6 +62,7 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
       );
       console.log("args -------", args);
 
+      console.log("this", this);
       const chainId = args[1][0].chainId;
 
       if (chainId === SIXTY_NINE_IN_HEX) {
@@ -142,12 +144,19 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
 }
 
 export default function createCustomizedBridgeMultiChain() {
+  const signers = [];
+  const providers = [];
   const ethProvider = new ethers.getDefaultProvider("http://127.0.0.1:8545");
-
   const ethSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, ethProvider);
+
+  signers.push(ethSigner);
+  providers.push(ethProvider);
 
   const optProvider = new ethers.getDefaultProvider("http://127.0.0.1:9545");
   const optSigner = new Wallet(PRIVATE_KEY_TEST_NEVER_USE, optProvider);
+
+  signers.push(optSigner);
+  providers.push(optProvider);
 
   const optKovanProvider = new ethers.getDefaultProvider(
     "http://127.0.0.1:9546"
@@ -158,12 +167,17 @@ export default function createCustomizedBridgeMultiChain() {
     optKovanProvider
   );
 
+  signers.push(optKovanSigner);
+  providers.push(optKovanProvider);
+
+  console.log("signers", signers, "providers", providers);
+  signers.forEach((el, index) => {
+    console.log("index check", capitalizeString(convertNumberstoNamed(index)));
+  });
   return new CustomizedBridgeMultiChain(
     ethSigner,
     ethProvider,
-    optSigner,
-    optProvider,
-    optKovanSigner,
-    optKovanProvider
+    signers,
+    providers
   );
 }
