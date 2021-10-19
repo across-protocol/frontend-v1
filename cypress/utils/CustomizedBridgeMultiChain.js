@@ -13,6 +13,8 @@ export const TEST_ADDRESS_NEVER_USE = new Wallet(PRIVATE_KEY_TEST_NEVER_USE)
 
 const SIXTY_NINE_IN_HEX = "0x45";
 const ONE_IN_HEX = "0xa";
+// ChainID: 421611
+const ARB_RINKBEY_IN_HEX = "0x66eeb";
 
 class CustomizedBridgeMultiChain extends Eip1193Bridge {
   constructor(
