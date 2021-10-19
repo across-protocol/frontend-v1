@@ -3,7 +3,7 @@ import { Wallet } from "@ethersproject/wallet";
 // import { Eip1193Bridge } from "@ethersproject/experimental";
 import { Eip1193Bridge } from "./eip1193-bridge";
 import { ethers } from "ethers";
-import convertNumberstoNamed from "./convertNumbersToNamed";
+import convertNumbersToNamed from "./convertNumbersToNamed";
 import capitalizeString from "./capitalizeString";
 import { providers } from "@ethersproject/experimental/node_modules/ethers";
 const PRIVATE_KEY_TEST_NEVER_USE =
@@ -71,36 +71,19 @@ class CustomizedBridgeMultiChain extends Eip1193Bridge {
       console.log("args -------", args);
 
       const chainId = args[1][0].chainId;
-      console.log("chainID", chainId);
 
       for (let i = 0; i < this.numProviders; i++) {
         const p =
-          this[`provider${capitalizeString(convertNumberstoNamed(i + 1))}`];
+          this[`provider${capitalizeString(convertNumbersToNamed(i + 1))}`];
         const s =
-          this[`signer${capitalizeString(convertNumberstoNamed(i + 1))}`];
-        console.log("p", p, "s", s);
+          this[`signer${capitalizeString(convertNumbersToNamed(i + 1))}`];
         if (p.chainId === chainId) {
           this.provider = p;
           this.signer = s;
-          console.log("<<<<<this>>>>", this);
+
           return null;
         }
       }
-
-      // if (chainId === OPTIMISM_KOVAN_CHAINID) {
-      //   console.log("in the 69 chainId cond?");
-      //   this.signer = this.signerThree;
-      //   this.provider = this.providerThree;
-
-      //   return null;
-      // }
-
-      // if (chainId === OPTIMISM_MAINNET) {
-      //   this.signer = this.signerTwo;
-      //   this.provider = this.providerTwo;
-
-      //   return null;
-      // }
 
       // default to signer one if hex is wrong
       this.provider = this.providerOne;
