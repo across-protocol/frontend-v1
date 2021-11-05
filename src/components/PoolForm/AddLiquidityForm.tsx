@@ -1,5 +1,5 @@
 import { FC, ChangeEvent, useState, useCallback, useEffect } from "react";
-import { onboard, getGasPrice, formatEther, max, estimateGas } from "utils";
+import { onboard, formatEther, max, estimateGas } from "utils";
 import { useConnection } from "state/hooks";
 import {
   RoundBox,
@@ -23,11 +23,9 @@ import BouncingDotsLoader from "components/BouncingDotsLoader";
 const MAX_UINT_VAL = ethers.constants.MaxUint256;
 const INFINITE_APPROVAL_AMOUNT = MAX_UINT_VAL;
 
-// TODO: could move these 3 into envs
-const DEFAULT_GAS_PRICE = toWeiSafe("300", 9);
-const GAS_PRICE_BUFFER = toWeiSafe("1", 9);
-// Rounded up from a mainnet transaction sending eth gas limit
-const ADD_LIQUIDITY_ETH_GAS = BigNumber.from(82796);
+const GAS_PRICE_BUFFER = toWeiSafe("25", 9);
+// Rounded up from a mainnet transaction sending eth
+const ADD_LIQUIDITY_ETH_GAS = BigNumber.from(80000);
 
 interface Props {
   error: Error | undefined;
@@ -43,6 +41,7 @@ interface Props {
   setAmount: React.Dispatch<React.SetStateAction<string>>;
   wrongNetwork?: boolean;
   formError: string;
+  gasPrice: ethers.BigNumber;
 }
 
 const AddLiquidityForm: FC<Props> = ({
@@ -59,6 +58,7 @@ const AddLiquidityForm: FC<Props> = ({
   setAmount,
   wrongNetwork,
   formError,
+  gasPrice,
 }) => {
   const { init } = onboard;
   const { isConnected, provider, signer, notify, account } = useConnection();
@@ -66,7 +66,6 @@ const AddLiquidityForm: FC<Props> = ({
 
   const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
   const [txSubmitted, setTxSubmitted] = useState(false);
-  const [gasPrice, setGasPrice] = useState<BigNumber>(DEFAULT_GAS_PRICE);
 
   const checkIfUserHasToApprove = useCallback(async () => {
     if (signer && account) {
@@ -88,14 +87,6 @@ const AddLiquidityForm: FC<Props> = ({
     if (isConnected && symbol !== "ETH" && !wrongNetwork)
       checkIfUserHasToApprove();
   }, [isConnected, symbol, checkIfUserHasToApprove, wrongNetwork]);
-
-  // TODO: move this to redux and update on an interval, every X blocks or something
-  useEffect(() => {
-    if (!provider || !isConnected) return;
-    getGasPrice(provider).then(setGasPrice).catch(err=>{
-      console.error('Error getting gas price',err)
-    })
-  }, [provider, isConnected]);
 
   const handleApprove = async () => {
     const tx = await approve({

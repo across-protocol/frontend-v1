@@ -1,4 +1,4 @@
-import { FC, useState, ChangeEvent, useEffect } from "react";
+import { FC, useState, ChangeEvent, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import Tabs from "../Tabs";
 import AddLiquidityForm from "./AddLiquidityForm";
@@ -18,7 +18,15 @@ import {
   PositionBlockItem,
   PositionBlockItemBold,
 } from "./PoolForm.styles";
-import { formatUnits, numberFormatter } from "utils";
+import { formatUnits, numberFormatter, estimateGas, getGasPrice } from "utils";
+import { toWeiSafe } from "utils/weiMath";
+import { useConnection } from "state/hooks";
+
+// TODO: could move these 3 into envs
+const DEFAULT_GAS_PRICE = toWeiSafe("150", 9);
+const GAS_PRICE_BUFFER = toWeiSafe("25", 9);
+// Rounded up from a mainnet transaction sending eth
+const ADD_LIQUIDITY_ETH_GAS = ethers.BigNumber.from(80000);
 
 interface Props {
   symbol: string;
@@ -61,19 +69,54 @@ const PoolForm: FC<Props> = ({
   const [removeAmount, setRemoveAmount] = useState(0);
   const [error] = useState<Error>();
   const [formError, setFormError] = useState("");
+  const [gasPrice, setGasPrice] = useState<ethers.BigNumber>(DEFAULT_GAS_PRICE);
+
+  const { isConnected, provider } = useConnection();
+
+  // TODO: move this to redux and update on an interval, every X blocks or something
+  useEffect(() => {
+    if (!provider || !isConnected) return;
+    getGasPrice(provider).then(setGasPrice);
+  }, [provider, isConnected]);
 
   const addLiquidityOnChangeHandler = (
     event: ChangeEvent<HTMLInputElement>
   ) => {
     setFormError("");
     setInputAmount(event.target.value);
-    if (Number(event.target.value) < 0) setFormError("Cannot be less than 0");
+    validateInput(event.target.value);
   };
+
+  const validateInput = useCallback(
+    (value: string) => {
+      if (Number(value) < 0) return setFormError("Cannot be less than 0.");
+      if (value && balance) {
+        const valueToWei = toWeiSafe(value, decimals);
+        if (valueToWei.gt(balance))
+          return setFormError("Liquidity amount greater than balance.");
+      }
+
+      if (value && symbol === "ETH") {
+        const valueToWei = toWeiSafe(value, decimals);
+
+        const approxGas = estimateGas(
+          ADD_LIQUIDITY_ETH_GAS,
+          gasPrice,
+          GAS_PRICE_BUFFER
+        );
+
+        if (valueToWei.add(approxGas).gt(balance))
+          return setFormError("Transaction may fail due to insufficient gas.");
+      }
+    },
+    [balance, decimals, symbol, gasPrice]
+  );
 
   // if pool changes, set input value to "".
   useEffect(() => {
     setInputAmount("");
     setFormError("");
+    setRemoveAmount(0);
   }, [bridgeAddress]);
   return (
     <Wrapper>
@@ -127,6 +170,7 @@ const PoolForm: FC<Props> = ({
             setDepositUrl={setDepositUrl}
             balance={balance}
             setAmount={setInputAmount}
+            gasPrice={gasPrice}
           />
         </TabContentWrapper>
         <TabContentWrapper data-label="Remove">
