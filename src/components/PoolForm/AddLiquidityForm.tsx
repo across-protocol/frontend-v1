@@ -42,6 +42,7 @@ interface Props {
   balance: ethers.BigNumber;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
   wrongNetwork?: boolean;
+  formError: string;
 }
 
 const AddLiquidityForm: FC<Props> = ({
@@ -57,6 +58,7 @@ const AddLiquidityForm: FC<Props> = ({
   balance,
   setAmount,
   wrongNetwork,
+  formError,
 }) => {
   const { init } = onboard;
   const { isConnected, provider, signer, notify, account } = useConnection();
@@ -65,7 +67,6 @@ const AddLiquidityForm: FC<Props> = ({
   const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
   const [txSubmitted, setTxSubmitted] = useState(false);
   const [gasPrice, setGasPrice] = useState<BigNumber>(DEFAULT_GAS_PRICE);
-  const [formError, setFormError] = useState("");
 
   const checkIfUserHasToApprove = useCallback(async () => {
     if (signer && account) {
@@ -238,7 +239,7 @@ const AddLiquidityForm: FC<Props> = ({
       )}
       {formError && <LiquidityErrorBox>{formError}</LiquidityErrorBox>}
       <FormButton
-        disabled={wrongNetwork}
+        disabled={wrongNetwork && !!formError}
         onClick={() =>
           approveOrPoolTransactionHandler().catch((err) =>
             console.error("Error on click to approve or pool tx", err)

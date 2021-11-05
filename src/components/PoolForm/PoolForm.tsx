@@ -60,6 +60,15 @@ const PoolForm: FC<Props> = ({
   const [inputAmount, setInputAmount] = useState("");
   const [removeAmount, setRemoveAmount] = useState(0);
   const [error] = useState<Error>();
+  const [formError, setFormError] = useState("");
+
+  const addLiquidityOnChangeHandler = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setFormError("");
+    setInputAmount(event.target.value);
+    if (Number(event.target.value) < 0) setFormError("Cannot be less than 0");
+  };
   return (
     <Wrapper>
       <Info>
@@ -101,10 +110,9 @@ const PoolForm: FC<Props> = ({
           <AddLiquidityForm
             wrongNetwork={wrongNetwork}
             error={error}
+            formError={formError}
             amount={inputAmount}
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              setInputAmount(event.target.value)
-            }
+            onChange={addLiquidityOnChangeHandler}
             bridgeAddress={bridgeAddress}
             decimals={decimals}
             symbol={symbol}
