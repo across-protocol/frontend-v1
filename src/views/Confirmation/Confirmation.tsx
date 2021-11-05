@@ -84,7 +84,7 @@ const Confirmation: React.FC = () => {
                 />
                 <div>
                   <SecondaryLink
-                    href={`${CHAINS[deposit.fromChain].explorerUrl}address/${
+                    href={`${CHAINS[deposit.fromChain].explorerUrl}/address/${
                       deposit.from
                     }`}
                     target="_blank"
@@ -104,7 +104,7 @@ const Confirmation: React.FC = () => {
                 />
                 <div>
                   <SecondaryLink
-                    href={`${CHAINS[deposit.toChain].explorerUrl}address/${
+                    href={`${CHAINS[deposit.toChain].explorerUrl}/address/${
                       deposit.to
                     }`}
                     target="_blank"
