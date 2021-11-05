@@ -9,6 +9,7 @@ import {
   InputGroup,
   FormHeader,
   Balance,
+  LiquidityErrorBox,
 } from "./AddLiquidityForm.styles";
 import { poolClient } from "state/poolsApi";
 import { toWeiSafe } from "utils/weiMath";
@@ -64,6 +65,7 @@ const AddLiquidityForm: FC<Props> = ({
   const [userNeedsToApprove, setUserNeedsToApprove] = useState(false);
   const [txSubmitted, setTxSubmitted] = useState(false);
   const [gasPrice, setGasPrice] = useState<BigNumber>(DEFAULT_GAS_PRICE);
+  const [formError, setFormError] = useState("");
 
   const checkIfUserHasToApprove = useCallback(async () => {
     if (signer && account) {
@@ -234,6 +236,7 @@ const AddLiquidityForm: FC<Props> = ({
           </span>
         </Balance>
       )}
+      {formError && <LiquidityErrorBox>{formError}</LiquidityErrorBox>}
       <FormButton
         disabled={wrongNetwork}
         onClick={() =>
