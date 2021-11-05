@@ -19,6 +19,10 @@ import { clients } from "@uma/sdk";
 import { addEtherscan } from "utils/notify";
 import BouncingDotsLoader from "components/BouncingDotsLoader";
 
+// max uint value is 2^256 - 1
+const MAX_UINT_VAL = ethers.constants.MaxUint256;
+const INFINITE_APPROVAL_AMOUNT = MAX_UINT_VAL;
+
 interface Props {
   error: Error | undefined;
   amount: string;
