@@ -135,7 +135,10 @@ const PoolForm: FC<Props> = ({
           <PositionBlock>
             <PositionBlockItem>Fees earned</PositionBlockItem>
             <PositionBlockItem>
-              {formatUnits(feesEarned, decimals)} {symbol}
+              {Number(formatUnits(feesEarned, decimals)) < 0
+                ? formatUnits(feesEarned, decimals)
+                : "0.0000"}{" "}
+              {symbol}
             </PositionBlockItem>
           </PositionBlock>
           <PositionBlock>
