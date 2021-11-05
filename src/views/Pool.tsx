@@ -10,6 +10,7 @@ import {
   ChainId,
   Token,
   UnsupportedChainIdError,
+  COLORS,
 } from "utils";
 import { useAppSelector, useConnection } from "state/hooks";
 import get from "lodash/get";
@@ -81,7 +82,7 @@ const Pool: FC = () => {
   return (
     <Layout>
       {!showSuccess ? (
-        <>
+        <Wrapper>
           <PoolSelection
             wrongNetwork={wrongNetwork}
             token={token}
@@ -151,7 +152,7 @@ const Pool: FC = () => {
               <BigLoadingPositionWrapper />
             </LoadingWrapper>
           )}
-        </>
+        </Wrapper>
       ) : (
         <DepositSuccess
           depositUrl={depositUrl}
@@ -164,10 +165,16 @@ const Pool: FC = () => {
 };
 export default Pool;
 
+const Wrapper = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
 const LoadingWrapper = styled.div`
-  height: 82vh;
-  background-color: #6cf9d8;
-  border-radius: 12px;
+  flex: 1;
+  background-color: var(--color-primary);
+  border-radius: 12px 12px 0 0;
 `;
 
 const LoadingInfo = styled.div`
@@ -179,32 +186,30 @@ const LoadingLogo = styled.img`
   height: 30px;
   object-fit: cover;
   margin-right: 10px;
-  background-color: #ffffff;
+  background-color: var(--color-white);
   border-radius: 16px;
   padding: 4px;
   margin-top: 12px;
 `;
 
 const InfoText = styled.h3`
-  font-family: "Barlow";
-  font-size: 1.5rem;
-  color: hsla(231, 6%, 19%, 1);
-  margin-bottom: 1rem;
+  font-size: ${24 / 16}rem;
+  color: var(--color-gray);
+  margin-bottom: 16px;
 `;
 
 const LoadingPositionWrapper = styled.div`
-  background-color: rgba(45, 46, 51, 0.25);
+  background-color: hsla(${COLORS.gray[500]} / 0.2);
   width: 90%;
   margin-left: auto;
   margin-right: auto;
-  padding: 1rem;
-  font-family: "Barlow";
+  padding: 16px;
   border-radius: 5px;
-  min-height: 4rem;
-  margin-top: 1.25rem;
+  min-height: 64px;
+  margin-top: 20px;
 `;
 
 const BigLoadingPositionWrapper = styled(LoadingPositionWrapper)`
-  min-height: 20rem;
-  margin-top: 2rem;
+  min-height: 320px;
+  margin-top: 32px;
 `;
