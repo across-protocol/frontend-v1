@@ -19,14 +19,6 @@ import { clients } from "@uma/sdk";
 import { addEtherscan } from "utils/notify";
 import BouncingDotsLoader from "components/BouncingDotsLoader";
 
-// max uint value is 2^256 - 1
-const MAX_UINT_VAL = ethers.constants.MaxUint256;
-const INFINITE_APPROVAL_AMOUNT = MAX_UINT_VAL;
-
-const GAS_PRICE_BUFFER = toWeiSafe("25", 9);
-// Rounded up from a mainnet transaction sending eth
-const ADD_LIQUIDITY_ETH_GAS = BigNumber.from(80000);
-
 interface Props {
   error: Error | undefined;
   amount: string;
