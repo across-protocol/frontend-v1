@@ -18,15 +18,17 @@ import {
   PositionBlockItem,
   PositionBlockItemBold,
 } from "./PoolForm.styles";
-import { formatUnits, numberFormatter, estimateGas, getGasPrice } from "utils";
+import {
+  formatUnits,
+  numberFormatter,
+  estimateGas,
+  getGasPrice,
+  DEFAULT_GAS_PRICE,
+  GAS_PRICE_BUFFER,
+  ADD_LIQUIDITY_ETH_GAS,
+} from "utils";
 import { toWeiSafe } from "utils/weiMath";
 import { useConnection } from "state/hooks";
-
-// TODO: could move these 3 into envs
-const DEFAULT_GAS_PRICE = toWeiSafe("150", 9);
-const GAS_PRICE_BUFFER = toWeiSafe("25", 9);
-// Rounded up from a mainnet transaction sending eth
-const ADD_LIQUIDITY_ETH_GAS = ethers.BigNumber.from(80000);
 
 interface Props {
   symbol: string;
