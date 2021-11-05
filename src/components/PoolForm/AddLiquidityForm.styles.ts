@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-import { RoundBox as UnstyledBox } from "../Box";
+import { RoundBox as UnstyledBox, ErrorBox } from "../Box";
 import { SecondaryButton, PrimaryButton } from "../Buttons";
 
 export const RoundBox = styled(UnstyledBox)`
@@ -72,4 +72,8 @@ export const Balance = styled.div`
     margin-right: 1.5rem;
     margin-top: 0.66rem;
   }
+`;
+
+export const LiquidityErrorBox = styled(ErrorBox)`
+  margin-top: 10px;
 `;
