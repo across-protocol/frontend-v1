@@ -1,4 +1,4 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent, useEffect } from "react";
 import { ethers } from "ethers";
 import Tabs from "../Tabs";
 import AddLiquidityForm from "./AddLiquidityForm";
@@ -69,6 +69,12 @@ const PoolForm: FC<Props> = ({
     setInputAmount(event.target.value);
     if (Number(event.target.value) < 0) setFormError("Cannot be less than 0");
   };
+
+  // if pool changes, set input value to "".
+  useEffect(() => {
+    setInputAmount("");
+    setFormError("");
+  }, [bridgeAddress]);
   return (
     <Wrapper>
       <Info>
