@@ -38,6 +38,8 @@ interface Props {
   wrongNetwork?: boolean;
   formError: string;
   gasPrice: ethers.BigNumber;
+  // refetch balance
+  refetchBalance: () => void;
 }
 
 const AddLiquidityForm: FC<Props> = ({
@@ -55,6 +57,7 @@ const AddLiquidityForm: FC<Props> = ({
   wrongNetwork,
   formError,
   gasPrice,
+  refetchBalance,
 }) => {
   const { init } = onboard;
   const { isConnected, provider, signer, notify, account } = useConnection();
@@ -145,6 +148,7 @@ const AddLiquidityForm: FC<Props> = ({
             setTxSubmitted(false);
             const url = `https://etherscan.io/tx/${transaction.hash}`;
             setDepositUrl(url);
+            refetchBalance();
           });
           emitter.on("txFailed", () => {
             if (transaction.hash) notify.unsubscribe(transaction.hash);

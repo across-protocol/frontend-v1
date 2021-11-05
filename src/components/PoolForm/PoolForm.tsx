@@ -48,6 +48,8 @@ interface Props {
   setDepositUrl: React.Dispatch<React.SetStateAction<string>>;
   balance: ethers.BigNumber;
   wrongNetwork?: boolean;
+  // refetch balance
+  refetchBalance: () => void;
 }
 
 const PoolForm: FC<Props> = ({
@@ -66,6 +68,7 @@ const PoolForm: FC<Props> = ({
   setDepositUrl,
   balance,
   wrongNetwork,
+  refetchBalance,
 }) => {
   const [inputAmount, setInputAmount] = useState("");
   const [removeAmount, setRemoveAmount] = useState(0);
@@ -176,6 +179,7 @@ const PoolForm: FC<Props> = ({
             balance={balance}
             setAmount={setInputAmount}
             gasPrice={gasPrice}
+            refetchBalance={refetchBalance}
           />
         </TabContentWrapper>
         <TabContentWrapper data-label="Remove">

@@ -40,7 +40,7 @@ const Pool: FC = () => {
 
   const queries = useAppSelector((state) => state.api.queries);
 
-  const { balance } = useBalance({
+  const { balance, refetch: refetchBalance } = useBalance({
     chainId: ChainId.MAINNET,
     account,
     tokenAddress: token.address,
