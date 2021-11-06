@@ -52,12 +52,10 @@ const RemoveLiqudityForm: FC<Props> = ({
   symbol,
   setShowSuccess,
   setDepositUrl,
-  balance,
   position,
   feesEarned,
   wrongNetwork,
   totalPosition,
-  refetchBalance,
 }) => {
   const { init } = onboard;
   const { isConnected, provider, signer, notify } = useConnection();
