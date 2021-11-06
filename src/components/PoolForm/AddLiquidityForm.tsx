@@ -14,10 +14,11 @@ import {
 import { poolClient } from "state/poolsApi";
 import { toWeiSafe } from "utils/weiMath";
 import { useERC20 } from "hooks";
-import { ethers, BigNumber } from "ethers";
+import { ethers } from "ethers";
 import { clients } from "@uma/sdk";
 import { addEtherscan } from "utils/notify";
 import BouncingDotsLoader from "components/BouncingDotsLoader";
+import { ADD_LIQUIDITY_ETH_GAS, GAS_PRICE_BUFFER } from "utils/constants";
 
 // max uint value is 2^256 - 1
 const MAX_UINT_VAL = ethers.constants.MaxUint256;
@@ -57,7 +58,6 @@ const AddLiquidityForm: FC<Props> = ({
   wrongNetwork,
   formError,
   gasPrice,
-  refetchBalance,
 }) => {
   const { init } = onboard;
   const { isConnected, provider, signer, notify, account } = useConnection();
@@ -148,7 +148,6 @@ const AddLiquidityForm: FC<Props> = ({
             setTxSubmitted(false);
             const url = `https://etherscan.io/tx/${transaction.hash}`;
             setDepositUrl(url);
-            refetchBalance();
           });
           emitter.on("txFailed", () => {
             if (transaction.hash) notify.unsubscribe(transaction.hash);

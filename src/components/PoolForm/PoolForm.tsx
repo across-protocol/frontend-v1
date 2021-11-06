@@ -197,6 +197,7 @@ const PoolForm: FC<Props> = ({
             position={position}
             feesEarned={feesEarned}
             totalPosition={totalPosition}
+            refetchBalance={refetchBalance}
           />
         </TabContentWrapper>
       </Tabs>

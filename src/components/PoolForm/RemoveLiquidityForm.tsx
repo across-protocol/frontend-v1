@@ -40,6 +40,8 @@ interface Props {
   totalPosition: ethers.BigNumber;
   feesEarned: ethers.BigNumber;
   wrongNetwork?: boolean;
+  // refetch balance
+  refetchBalance: () => void;
 }
 const RemoveLiqudityForm: FC<Props> = ({
   removeAmount,
@@ -55,6 +57,7 @@ const RemoveLiqudityForm: FC<Props> = ({
   feesEarned,
   wrongNetwork,
   totalPosition,
+  refetchBalance,
 }) => {
   const { init } = onboard;
   const { isConnected, provider, signer, notify } = useConnection();
@@ -105,6 +108,10 @@ const RemoveLiqudityForm: FC<Props> = ({
             const url = `https://etherscan.io/tx/${transaction.hash}`;
             setShowSuccess(true);
             setDepositUrl(url);
+            // Recheck for balances. note: Onboard provider is faster than ours.
+            setTimeout(() => {
+              refetchBalance();
+            }, 15000);
           });
           emitter.on("txFailed", () => {
             if (transaction.hash) notify.unsubscribe(transaction.hash);

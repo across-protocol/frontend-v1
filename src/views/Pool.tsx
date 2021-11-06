@@ -66,6 +66,15 @@ const Pool: FC = () => {
     }
   }, [isConnected, connection.account, token.bridgePool]);
 
+  useEffect(() => {
+    // Recheck for balances. note: Onboard provider is faster than ours.
+    if (depositUrl) {
+      setTimeout(() => {
+        refetchBalance();
+      }, 15000);
+    }
+  }, [depositUrl, refetchBalance]);
+
   return (
     <Layout>
       {!showSuccess ? (
@@ -127,6 +136,7 @@ const Pool: FC = () => {
               setShowSuccess={setShowSuccess}
               setDepositUrl={setDepositUrl}
               balance={balance}
+              refetchBalance={refetchBalance}
             />
           ) : (
             <LoadingWrapper>
