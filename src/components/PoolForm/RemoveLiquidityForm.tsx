@@ -108,10 +108,6 @@ const RemoveLiqudityForm: FC<Props> = ({
             const url = `https://etherscan.io/tx/${transaction.hash}`;
             setShowSuccess(true);
             setDepositUrl(url);
-            // Recheck for balances. note: Onboard provider is faster than ours.
-            setTimeout(() => {
-              refetchBalance();
-            }, 15000);
           });
           emitter.on("txFailed", () => {
             if (transaction.hash) notify.unsubscribe(transaction.hash);
