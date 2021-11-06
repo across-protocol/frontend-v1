@@ -14,10 +14,11 @@ import {
 import { poolClient } from "state/poolsApi";
 import { toWeiSafe } from "utils/weiMath";
 import { useERC20 } from "hooks";
-import { ethers, BigNumber } from "ethers";
+import { ethers } from "ethers";
 import { clients } from "@uma/sdk";
 import { addEtherscan } from "utils/notify";
 import BouncingDotsLoader from "components/BouncingDotsLoader";
+import { ADD_LIQUIDITY_ETH_GAS, GAS_PRICE_BUFFER } from "utils/constants";
 
 // max uint value is 2^256 - 1
 const MAX_UINT_VAL = ethers.constants.MaxUint256;
@@ -38,6 +39,8 @@ interface Props {
   wrongNetwork?: boolean;
   formError: string;
   gasPrice: ethers.BigNumber;
+  // refetch balance
+  refetchBalance: () => void;
 }
 
 const AddLiquidityForm: FC<Props> = ({

@@ -40,7 +40,7 @@ const Pool: FC = () => {
 
   const queries = useAppSelector((state) => state.api.queries);
 
-  const { balance } = useBalance({
+  const { balance, refetch: refetchBalance } = useBalance({
     chainId: ChainId.MAINNET,
     account,
     tokenAddress: token.address,
@@ -65,6 +65,15 @@ const Pool: FC = () => {
       poolClient.updateUser(connection.account, token.bridgePool);
     }
   }, [isConnected, connection.account, token.bridgePool]);
+
+  useEffect(() => {
+    // Recheck for balances. note: Onboard provider is faster than ours.
+    if (depositUrl) {
+      setTimeout(() => {
+        refetchBalance();
+      }, 15000);
+    }
+  }, [depositUrl, refetchBalance]);
 
   return (
     <Layout>
@@ -127,6 +136,7 @@ const Pool: FC = () => {
               setShowSuccess={setShowSuccess}
               setDepositUrl={setDepositUrl}
               balance={balance}
+              refetchBalance={refetchBalance}
             />
           ) : (
             <LoadingWrapper>
