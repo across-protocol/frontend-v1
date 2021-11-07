@@ -15,27 +15,21 @@ const About: FC = () => {
         <BulletWrapper>
           <BulletImage src={BulletImg} alt="across_logo" />
           <BulletTextWrapper>
-            <BulletHeader>Fast Transfers</BulletHeader>
+            <BulletHeader>Instantaneous Liquidity</BulletHeader>
             <BulletText>
-              Lorem ipsum SEO sit amet, consectetur adipiscing elit. Sed vitae
-              tristique erat. Maecenas suscipit commodo quam, vitae scelerisque
-              elit vestibulum id.
-              <br /> <br />
-              Mauris sed magna tempor, feugiat elit placerat, sagittis urna.
-              Suspendisse porttitor neque ex, et rutrum here is a link sed. Cras
-              sodales nunc ac nunc.
+              Assets are bridged and available for use in the next block 
+              mined on Ethereum. 
             </BulletText>
           </BulletTextWrapper>
         </BulletWrapper>
         <BulletWrapper>
           <BulletImage src={BulletImg} alt="across_logo" />
           <BulletTextWrapper>
-            <BulletHeader>Across different chains</BulletHeader>
+            <BulletHeader>Secure</BulletHeader>
             <BulletText>
-              Cosectetur adipiscing SEO. Sed vitae tristique erat. Maecenas
-              suscipit commodo quam, vitae scelerisque elit vestibulum id.
-              <br /> <br />
-              Mauris sed magna tempor, feugiat elit placerat, sagittis urna.
+              Powered By UMA. Transfers are secured by UMA's Optimistic Oracle, which
+              is audited by OpenZeppelin and trusted by top teams to protect hundreds
+              of millions of dollars in value.
             </BulletText>
           </BulletTextWrapper>
         </BulletWrapper>
@@ -44,20 +38,15 @@ const About: FC = () => {
           <BulletTextWrapper>
             <BulletHeader>Secured by lorem ipsum</BulletHeader>
             <BulletText>
-              Lorem SEO dolor sit amet, consectetur adipiscing elit. Sed vitae
-              tristique erat. Maecenas suscipit commodo quam, vitae scelerisque
-              elit vestibulum id.
-              <br /> <br />
-              Mauris sed magna tempor, feugiat elit placerat, sagittis urna.
-              Suspendisse porttitor neque ex, et rutrum elit cursus sed. Cras
-              sodales nunc ac nunc.
-              <br /> <br />
+              Relayers and liquidity providers are compensated with fees from users
+              initiating transfers, but this fee is less than any other solution on
+              the market.
               <Link
                 href="https://umaproject.org"
                 target="_blank"
                 rel="noreferrer"
               >
-                Here is a link
+                Read more here
               </Link>
             </BulletText>
           </BulletTextWrapper>
