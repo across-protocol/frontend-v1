@@ -41,6 +41,7 @@ const About: FC = () => {
               Relayers and liquidity providers are compensated with fees from users
               initiating transfers, but this fee is less than any other solution on
               the market.
+              <br /> <br />
               <Link
                 href="https://umaproject.org"
                 target="_blank"
