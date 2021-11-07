@@ -190,7 +190,7 @@ const RemoveLiqudityForm: FC<Props> = ({
           </FeesBlockWrapper>
           <FeesBlockWrapper>
             <FeesBlock>
-              <FeesBoldInfo>You will get</FeesBoldInfo>
+              <FeesBoldInfo>You will receive</FeesBoldInfo>
             </FeesBlock>
             <FeesBlock>
               <FeesValues>
