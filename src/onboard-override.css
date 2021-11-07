@@ -20,7 +20,6 @@
 
 .bn-onboard-custom .bn-onboard-modal-content-header-heading {
   visibility: hidden;
-  /* position: absolute; */
 }
 
 .bn-onboard-custom .bn-onboard-modal-content-header-heading::before {
@@ -55,7 +54,6 @@
 
 .bn-onboard-custom.bn-onboard-icon-button {
   height: 50px;
-  /* width: 100%; */
 }
 .bn-onboard-custom.bn-onboard-modal-select-wallets ul li {
   width: 100%;
