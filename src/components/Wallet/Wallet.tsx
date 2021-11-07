@@ -24,7 +24,6 @@ const Wallet: React.FC = () => {
     { skip: !isConnected }
   );
 
-  console.log("values", isConnected, chainId, account);
   if (account && !isConnected && !chainId) {
     return (
       <UnsupportedNetwork>
