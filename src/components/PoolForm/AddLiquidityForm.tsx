@@ -165,7 +165,6 @@ const AddLiquidityForm: FC<Props> = ({
 
   function buttonMessage() {
     if (!isConnected) return "Connect wallet";
-    if (wrongNetwork) return "Switch to Ethereum Mainnet";
     if (userNeedsToApprove) return "Approve";
     return "Add Liquidity";
   }
