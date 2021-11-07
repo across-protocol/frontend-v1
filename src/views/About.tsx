@@ -27,7 +27,7 @@ const About: FC = () => {
           <BulletTextWrapper>
             <BulletHeader>Secure</BulletHeader>
             <BulletText>
-              Powered By UMA. Transfers are secured by UMA's Optimistic Oracle, which
+              Powered by UMA protocol. Transfers are secured by UMA's Optimistic Oracle, which
               is audited by OpenZeppelin and trusted by top teams to protect hundreds
               of millions of dollars in value.
             </BulletText>
@@ -114,7 +114,7 @@ const BulletTextWrapper = styled.div`
 const BulletText = styled.h4`
   font-family: "Barlow";
   font-weight: 400;
-  font-size: 0.875rem;
+  font-size: 1.125rem;
   line-height: 1rem;
   margin-bottom: 1rem;
 `;
