@@ -20,9 +20,7 @@ export function formatUnits(
   wei: ethers.BigNumberish,
   decimals: number
 ): string {
-  const decimal = ethers.utils.formatUnits(wei, decimals);
-  const rounded = Number(Number(decimal).toFixed(4));
-  return numberFormatter(rounded);
+  return numberFormatter(Number(ethers.utils.formatUnits(wei, decimals)));
 }
 
 export function formatEther(wei: ethers.BigNumberish): string {
