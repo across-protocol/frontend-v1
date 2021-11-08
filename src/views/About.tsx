@@ -75,8 +75,12 @@ const About: FC = () => {
 
 const Hero = styled.div`
   background-image: url(${heroBg});
-  min-height: 25vh;
+  /* min-height: 25vh; */
+  padding-top: 1rem;
+  padding-bottom: 4rem;
   height: auto;
+  background-size: cover;
+  background-repeat: no-repeat;
 `;
 
 const HeroHeader = styled.h1`
@@ -94,7 +98,7 @@ const HeroHeader = styled.h1`
 const Wrapper = styled.div``;
 
 const BodyWrapper = styled.div`
-  padding: 1.5rem 1.5rem 0;
+  padding: 1.5rem 1.5rem 0.75rem;
 `;
 
 const Link = styled.a`
