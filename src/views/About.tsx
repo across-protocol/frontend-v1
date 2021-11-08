@@ -8,7 +8,7 @@ const About: FC = () => {
     <Wrapper>
       <HeroBg>
         <HeroHeader>
-          Instantly Send Assets from L2 Rollups to L1 Ethereum
+          Instantly Send Assets from Layer 2 Rollups to Ethereum
         </HeroHeader>
       </HeroBg>
       <Body>
