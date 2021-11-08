@@ -61,8 +61,6 @@ const Layout: React.FC = ({ children }) => (
 export default Layout;
 
 const Footer = styled.footer`
-  position: sticky;
-  bottom: 0;
   padding: 0 15px 15px;
   align-self: self-end;
   &:last-of-type {
