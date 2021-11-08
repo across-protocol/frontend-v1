@@ -43,7 +43,7 @@ const About: FC = () => {
               the market.
               <br /> <br />
               <Link
-                href="https://umaproject.org"
+                href="https://across.gitbook.io/bridge/"
                 target="_blank"
                 rel="noreferrer"
               >
