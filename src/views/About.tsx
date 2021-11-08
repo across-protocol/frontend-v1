@@ -27,9 +27,9 @@ const About: FC = () => {
           <TextWrapper>
             <BulletHeader>Secure</BulletHeader>
             <BulletText>
-              Powered By UMA protocol. Transfers are secured by UMA's Optimistic Oracle,
-              which is audited by OpenZeppelin and trusted by top teams to
-              protect hundreds of millions of dollars in value.
+              Powered By UMA protocol. Transfers are secured by UMA's Optimistic
+              Oracle, which is audited by OpenZeppelin and trusted by top teams
+              to protect hundreds of millions of dollars in value.
             </BulletText>
           </TextWrapper>
         </Bullet>
