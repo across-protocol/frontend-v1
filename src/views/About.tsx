@@ -117,9 +117,13 @@ const About: FC = () => {
 const Wrapper = styled.div`
   --horinzontal-padding: 75px;
   --heroHeight: 240px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   padding: 0 var(--horinzontal-padding);
 `;
 const HeroBg = styled.div`
+  flex-basis: var(--heroHeight);
   background-image: url(${heroBg});
   background-size: cover;
   background-repeat: no-repeat;
@@ -127,7 +131,7 @@ const HeroBg = styled.div`
   margin: 0 calc(-1 * var(--horinzontal-padding));
   display: flex;
   align-items: center;
-  height: var(--heroHeight);
+  min-height: var(--heroHeight);
 `;
 
 const HeroHeader = styled.h1`
@@ -139,6 +143,7 @@ const HeroHeader = styled.h1`
 `;
 
 const Body = styled.section`
+  flex: 1;
   padding: 55px 0 65px;
 `;
 
@@ -187,6 +192,7 @@ const BulletHeader = styled.h4`
 const Footer = styled.footer`
   display: flex;
   align-items: center;
+  margin-top: auto;
   padding: 35px 0;
   color: hsla(${COLORS.white} / 0.5);
   border-top: 1px solid currentColor;
