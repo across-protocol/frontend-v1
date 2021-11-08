@@ -36,7 +36,7 @@ const About: FC = () => {
         <BulletWrapper>
           <BulletImage src={BulletImg} alt="across_logo" />
           <BulletTextWrapper>
-            <BulletHeader>Secured by lorem ipsum</BulletHeader>
+            <BulletHeader>Cheap</BulletHeader>
             <BulletText>
               Relayers and liquidity providers are compensated with fees from users
               initiating transfers, but this fee is less than any other solution on
