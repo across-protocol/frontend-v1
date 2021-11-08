@@ -13,7 +13,9 @@ const About: FC = () => {
       </Hero>
       <BodyWrapper>
         <BulletWrapper>
-          <BulletImage src={BulletImg} alt="across_logo" />
+          <BulletImageWrapper>
+            <BulletImage src={BulletImg} alt="across_logo" />
+          </BulletImageWrapper>
           <BulletTextWrapper>
             <BulletHeader>Fast Transfers</BulletHeader>
             <BulletText>
@@ -28,7 +30,9 @@ const About: FC = () => {
           </BulletTextWrapper>
         </BulletWrapper>
         <BulletWrapper>
-          <BulletImage src={BulletImg} alt="across_logo" />
+          <BulletImageWrapper>
+            <BulletImage src={BulletImg} alt="across_logo" />
+          </BulletImageWrapper>
           <BulletTextWrapper>
             <BulletHeader>Across different chains</BulletHeader>
             <BulletText>
@@ -40,7 +44,9 @@ const About: FC = () => {
           </BulletTextWrapper>
         </BulletWrapper>
         <BulletWrapper>
-          <BulletImage src={BulletImg} alt="across_logo" />
+          <BulletImageWrapper>
+            <BulletImage src={BulletImg} alt="across_logo" />
+          </BulletImageWrapper>
           <BulletTextWrapper>
             <BulletHeader>Secured by lorem ipsum</BulletHeader>
             <BulletText>
@@ -88,7 +94,7 @@ const HeroHeader = styled.h1`
 const Wrapper = styled.div``;
 
 const BodyWrapper = styled.div`
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 0;
 `;
 
 const Link = styled.a`
@@ -111,6 +117,11 @@ const BulletWrapper = styled.div`
   margin-bottom: 2rem;
 `;
 
+const BulletImageWrapper = styled.div`
+  flex-basis: 12%;
+  text-align: right;
+  margin-right: ${45 / 16}rem;
+`;
 const BulletImage = styled.img`
   flex-basis: 20%;
   height: 35px;
@@ -118,7 +129,10 @@ const BulletImage = styled.img`
 `;
 
 const BulletTextWrapper = styled.div`
-  flex-basis: 50%;
+  flex-basis: 40%;
+  > img {
+    justify-content: end;
+  }
 `;
 
 const BulletText = styled.h4`
