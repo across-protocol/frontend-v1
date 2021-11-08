@@ -114,7 +114,7 @@ const BulletTextWrapper = styled.div`
 const BulletText = styled.h4`
   font-family: "Barlow";
   font-weight: 400;
-  font-size: 1.125rem;
+  font-size: 1rem;
   line-height: 1rem;
   margin-bottom: 1rem;
 `;
