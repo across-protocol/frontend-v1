@@ -120,9 +120,6 @@ const AboutFooterWrapper = styled.footer`
   display: flex;
   justify-content: space-between;
   z-index: 1;
-  max-width: 1450px;
-  margin-left: auto;
-  margin-right: auto;
 `;
 
 const FooterWrapper = styled(AboutFooterWrapper)`
