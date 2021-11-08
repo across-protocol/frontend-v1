@@ -87,30 +87,33 @@ const CoinSelection = () => {
     }
   };
 
+  // checks for insufficient balance errors
   useEffect(() => {
-    if (balances && amount && inputAmount) {
-      const selectedIndex = tokenList.findIndex(
-        ({ address }) => address === token
-      );
-      const balance = balances[selectedIndex];
-      const isEth = tokenList[selectedIndex].symbol === "ETH";
-      if (
-        amount.lte(
-          isEth ? balance.sub(ethers.utils.parseEther(FEE_ESTIMATION)) : balance
-        )
-      ) {
-        // clear the previous error if it is not a parsing error
-        setError((oldError) => {
-          if (oldError instanceof ParsingError) {
-            return oldError;
-          }
-          return undefined;
-        });
-      } else {
-        setError(new Error("Insufficient balance."));
+    if (amount && inputAmount) {
+      // clear the previous error if it is not a parsing error
+      setError((oldError) => {
+        if (oldError instanceof ParsingError) {
+          return oldError;
+        }
+        return undefined;
+      });
+
+      if (balances) {
+        const selectedIndex = tokenList.findIndex(
+          ({ address }) => address === token
+        );
+        const balance = balances[selectedIndex];
+        const isEth = tokenList[selectedIndex].symbol === "ETH";
+        if (
+          amount.gt(
+            isEth
+              ? balance.sub(ethers.utils.parseEther(FEE_ESTIMATION))
+              : balance
+          )
+        ) {
+          setError(new Error("Insufficient balance."));
+        }
       }
-    } else {
-      setError(undefined);
     }
   }, [balances, amount, token, tokenList, inputAmount]);
 
