@@ -8,15 +8,25 @@ export const AccentSection = styled(UnstyledAccentSection)`
 
 export const InfoIcon = styled(UnstyledInfoIcon)`
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 30px;
+  right: 0px;
+  cursor: pointer;
+  color: var(--color-gray);
+  fill: currentColor;
+  & > line {
+    stroke: var(--color-white-transparent);
+    transition: stroke 100ms linear;
+  }
+  &:hover > line {
+    stroke: var(--color-white);
+  }
 `;
 
 export const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 40px 0;
+  padding: 65px 0;
 `;
 
 export const Info = styled.div`

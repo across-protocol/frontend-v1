@@ -18,9 +18,10 @@ import {
   formatUnits,
   receiveAmount,
 } from "utils";
-import { PrimaryButton } from "components";
+import { PrimaryButton } from "../Buttons";
 import { Wrapper, Info, AccentSection, InfoIcon } from "./SendAction.styles";
 import api from "state/chainApi";
+import InformationDialog from "components/InformationDialog";
 
 const CONFIRMATIONS = 1;
 const MAX_APPROVAL_AMOUNT = ethers.constants.MaxUint256;
@@ -40,6 +41,8 @@ const SendAction: React.FC = () => {
 
   const { block } = useBlocks(toChain);
 
+  const [isInfoModalOpen, setOpenInfoModal] = useState(false);
+  const toggleInfoModal = () => setOpenInfoModal((oldOpen) => !oldOpen);
   const [isSendPending, setSendPending] = useState(false);
   const [isApprovalPending, setApprovalPending] = useState(false);
   const { addTransaction } = useTransactions();
@@ -169,14 +172,15 @@ const SendAction: React.FC = () => {
                 {tokenInfo.symbol}
               </div>
             </Info>
+            <InfoIcon aria-label="info dialog" onClick={toggleInfoModal} />
           </>
         )}
 
         <PrimaryButton onClick={handleClick} disabled={buttonDisabled}>
           {buttonMsg()}
         </PrimaryButton>
-        <InfoIcon />
       </Wrapper>
+      <InformationDialog isOpen={isInfoModalOpen} onClose={toggleInfoModal} />
     </AccentSection>
   );
 };
