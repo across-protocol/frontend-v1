@@ -1,6 +1,19 @@
 import styled from "@emotion/styled";
+import { Info as UnstyledInfoIcon } from "react-feather";
+import { AccentSection as UnstyledAccentSection } from "../Section";
+
+export const AccentSection = styled(UnstyledAccentSection)`
+  position: relative;
+`;
+
+export const InfoIcon = styled(UnstyledInfoIcon)`
+  position: absolute;
+  top: 0;
+  right: 0;
+`;
 
 export const Wrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 40px 0;

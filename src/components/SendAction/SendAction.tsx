@@ -18,8 +18,8 @@ import {
   formatUnits,
   receiveAmount,
 } from "utils";
-import { PrimaryButton, AccentSection } from "components";
-import { Wrapper, Info } from "./SendAction.styles";
+import { PrimaryButton } from "components";
+import { Wrapper, Info, AccentSection, InfoIcon } from "./SendAction.styles";
 import api from "state/chainApi";
 
 const CONFIRMATIONS = 1;
@@ -175,6 +175,7 @@ const SendAction: React.FC = () => {
         <PrimaryButton onClick={handleClick} disabled={buttonDisabled}>
           {buttonMsg()}
         </PrimaryButton>
+        <InfoIcon />
       </Wrapper>
     </AccentSection>
   );
