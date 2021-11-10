@@ -50,7 +50,7 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
         <li>
           Click{" "}
           <Link
-            href="https://app.gitbook.com/o/-MlBqw0sVAJZO0pl5jGc/s/-MlBr3oaDzSVL5ybJHcV/how-does-across-work-1/architecture-process-walkthrough"
+            href="https://across.gitbook.io/bridge/how-does-across-work-1/architecture-process-walkthrough"
             target="_blank"
             rel="noopener noreferrer"
           >
