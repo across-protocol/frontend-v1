@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { onboard } from "utils";
 import { useConnection, useSend } from "state/hooks";
 import { CHAINS, switchChain } from "utils";
@@ -8,12 +8,20 @@ import {
   RoundBox,
   Logo,
   ConnectButton,
+  Menu,
+  Item,
+  ToggleIcon,
+  ToggleButton,
+  InputGroup,
 } from "./ChainSelection.styles";
+import { useSelect } from "downshift";
+import { CHAINS_SELECTION } from "utils/constants";
 
 const ChainSelection: React.FC = () => {
   const { init } = onboard;
   const { isConnected, provider } = useConnection();
   const { hasToSwitchChain, fromChain } = useSend();
+  const [, setCurrentChainDropdown] = useState(CHAINS_SELECTION[0]);
 
   const buttonText = hasToSwitchChain
     ? `Switch to ${CHAINS[fromChain].name}`
@@ -29,17 +37,47 @@ const ChainSelection: React.FC = () => {
     }
   };
 
+  const {
+    isOpen,
+    selectedItem,
+    getLabelProps,
+    getToggleButtonProps,
+    getItemProps,
+    getMenuProps,
+  } = useSelect({
+    items: CHAINS_SELECTION,
+    defaultSelectedItem: CHAINS_SELECTION[0],
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (selectedItem) {
+        setCurrentChainDropdown(selectedItem);
+      }
+    },
+  });
+
   return (
     <Section>
       <Wrapper>
         <SectionTitle>From</SectionTitle>
-        <RoundBox>
-          <Logo
-            src={CHAINS[fromChain].logoURI}
-            alt={`${CHAINS[fromChain].name}`}
-          />
-          <span>{CHAINS[fromChain].name}</span>
-        </RoundBox>
+        <InputGroup>
+          <RoundBox as="label" {...getLabelProps()}>
+            <ToggleButton type="button" {...getToggleButtonProps()}>
+              <Logo src={selectedItem?.logoURI} alt={selectedItem?.name} />
+              <div>{selectedItem?.name}</div>
+              <ToggleIcon />
+            </ToggleButton>
+          </RoundBox>
+          <Menu {...getMenuProps()}>
+            {isOpen &&
+              CHAINS_SELECTION.map((t, index) => {
+                return (
+                  <Item {...getItemProps({ item: t, index })} key={t.chainId}>
+                    <Logo src={t.logoURI} alt={t.name} />
+                    <div>{t.name}</div>
+                  </Item>
+                );
+              })}
+          </Menu>
+        </InputGroup>
         {(hasToSwitchChain || !isConnected) && (
           <ConnectButton onClick={handleClick}>{buttonText}</ConnectButton>
         )}

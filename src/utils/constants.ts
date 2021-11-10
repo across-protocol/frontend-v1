@@ -530,3 +530,35 @@ export const GAS_PRICE_BUFFER = toWeiSafe(
 );
 // Rounded up from a mainnet transaction sending eth gas limit
 export const ADD_LIQUIDITY_ETH_GAS = ethers.BigNumber.from(82796);
+
+export const CHAINS_SELECTION = [
+  {
+    name: "Optimistic",
+    chainId: ChainId.OPTIMISM,
+    logoURI: optimismLogo,
+    rpcUrl: "https://mainnet.optimism.io",
+    explorerUrl: "https://optimistic.etherscan.io",
+    constructExplorerLink: defaultConstructExplorerLink(
+      "https://optimistic.etherscan.io"
+    ),
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "OETH",
+      decimals: 18,
+    },
+  },
+  {
+    name: "Arbitrum",
+    chainId: ChainId.ARBITRUM,
+    logoURI: arbitrumLogo,
+    rpcUrl: "https://arb1.arbitrum.io/rpc",
+    explorerUrl: "https://arbiscan.io",
+    constructExplorerLink: (txHash: string) =>
+      `https://arbiscan.io/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "AETH",
+      decimals: 18,
+    },
+  },
+];
