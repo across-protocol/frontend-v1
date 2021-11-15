@@ -4,6 +4,7 @@ Layer 2 bridge interface
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
+
 ## Env variables
 
 - REACT_APP_PUBLIC_INFURA_ID: an infura ID used to set up providers
