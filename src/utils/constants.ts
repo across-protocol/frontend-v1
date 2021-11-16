@@ -5,7 +5,7 @@ import usdcLogo from "assets/usdc-logo.png";
 import optimismLogo from "assets/optimism.svg";
 import wethLogo from "assets/weth-logo.svg";
 import arbitrumLogo from "assets/arbitrum-logo.svg";
-import memoize from "lodash.memoize";
+import memoize from "lodash-es/memoize";
 import umaLogo from "assets/UMA-round.svg";
 import { getAddress } from "./address";
 /* Colors and Media Queries section */

@@ -222,7 +222,9 @@ const AddLiquidityForm: FC<Props> = ({
         </FormButton>
       ) : (
         <FormButton
-          disabled={(!provider || !!formError || Number(amount) <= 0) && isConnected}
+          disabled={
+            (!provider || !!formError || Number(amount) <= 0) && isConnected
+          }
           onClick={() =>
             approveOrPoolTransactionHandler().catch((err) =>
               console.error("Error on click to approve or pool tx", err)

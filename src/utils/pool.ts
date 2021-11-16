@@ -1,6 +1,6 @@
 import assert from "assert";
-import debounce from "lodash.debounce";
-import throttle from "lodash.throttle";
+import debounce from "lodash-es/debounce";
+import throttle from "lodash-es/throttle";
 import { clients } from "@uma/sdk";
 import { ethers, Signer, BigNumberish, BigNumber } from "ethers";
 import { toWeiSafe } from "./weiMath";
