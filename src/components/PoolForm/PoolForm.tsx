@@ -1,10 +1,9 @@
-import { FC, useState, ChangeEvent, useEffect, useCallback } from "react";
-import { ethers } from "ethers";
+import { FC, useState, useEffect, useCallback } from "react";
+import { ethers, BigNumber } from "ethers";
 import Tabs from "../Tabs";
 import AddLiquidityForm from "./AddLiquidityForm";
 import RemoveLiquidityForm from "./RemoveLiquidityForm";
 import { QuerySubState } from "@reduxjs/toolkit/dist/query/core/apiState";
-
 import {
   Wrapper,
   Info,
@@ -20,14 +19,13 @@ import {
 } from "./PoolForm.styles";
 import {
   formatUnits,
+  formatEtherRaw,
+  max,
   numberFormatter,
-  estimateGas,
-  getGasPrice,
-  DEFAULT_GAS_PRICE,
-  GAS_PRICE_BUFFER,
-  ADD_LIQUIDITY_ETH_GAS,
+  estimateGasForAddEthLiquidityDebounce,
+  ADD_LIQUIDITY_ETH_GAS_ESTIMATE,
+  toWeiSafe,
 } from "utils";
-import { toWeiSafe } from "utils/weiMath";
 import { useConnection } from "state/hooks";
 
 interface Props {
@@ -46,7 +44,7 @@ interface Props {
   erc20Balances: QuerySubState<any> | null | undefined;
   setShowSuccess: React.Dispatch<React.SetStateAction<boolean>>;
   setDepositUrl: React.Dispatch<React.SetStateAction<string>>;
-  balance: ethers.BigNumber;
+  balance: string;
   wrongNetwork?: boolean;
   // refetch balance
   refetchBalance: () => void;
@@ -80,64 +78,80 @@ const PoolForm: FC<Props> = ({
   const [removeAmount, setRemoveAmount] = useState(0);
   const [error] = useState<Error>();
   const [formError, setFormError] = useState("");
-  const [gasPrice, setGasPrice] = useState<ethers.BigNumber>(DEFAULT_GAS_PRICE);
-
-  const { isConnected, provider } = useConnection();
-
-  useEffect(() => {
-    if (!provider || !isConnected) return;
-    getGasPrice(provider)
-      .then(setGasPrice)
-      .catch((err) => console.error("Error getting gas price", err));
-
-    // get gas price on an interval
-    const handle = setInterval(() => {
-      getGasPrice(provider)
-        .then(setGasPrice)
-        .catch((err) => console.error("Error getting gas price", err));
-    }, 30000);
-
-    return () => clearInterval(handle);
-  }, [provider, isConnected]);
-
-  const addLiquidityOnChangeHandler = (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormError("");
-    setInputAmount(event.target.value);
-    validateInput(event.target.value);
-  };
-
-  const validateInput = useCallback(
-    (value: string) => {
-      try {
-        if (Number(value) < 0) return setFormError("Cannot be less than 0.");
-        if (value && balance) {
-          const valueToWei = toWeiSafe(value, decimals);
-          if (valueToWei.gt(balance))
-            return setFormError("Liquidity amount greater than balance.");
-        }
-
-        if (value && symbol === "ETH") {
-          const valueToWei = toWeiSafe(value, decimals);
-
-          const approxGas = estimateGas(
-            ADD_LIQUIDITY_ETH_GAS,
-            gasPrice,
-            GAS_PRICE_BUFFER
-          );
-
-          if (valueToWei.add(approxGas).gt(balance))
-            return setFormError(
-              "Transaction may fail due to insufficient gas."
-            );
-        }
-      } catch (e) {
-        return setFormError("Invalid number.");
-      }
-    },
-    [balance, decimals, symbol, gasPrice]
+  const [addLiquidityGas, setAddLiquidityGas] = useState<ethers.BigNumber>(
+    ADD_LIQUIDITY_ETH_GAS_ESTIMATE
   );
+  const { isConnected, provider, signer } = useConnection();
+
+  const refetchAddLiquidityGas = useCallback(async () => {
+    if (!provider || !signer || !isConnected || symbol !== "ETH") return "0";
+    try {
+      const gasEstimate =
+        (await estimateGasForAddEthLiquidityDebounce(
+          signer,
+          bridgeAddress,
+          balance
+        )) || ADD_LIQUIDITY_ETH_GAS_ESTIMATE;
+      setAddLiquidityGas(gasEstimate);
+      return gasEstimate;
+    } catch (err) {
+      console.error("Warning: Unable to estimate gas", err);
+      return ADD_LIQUIDITY_ETH_GAS_ESTIMATE;
+    }
+  }, [signer, provider, isConnected, bridgeAddress, balance, symbol]);
+
+  // Validate input on change
+  useEffect(() => {
+    const value = inputAmount;
+    try {
+      if (Number(value) < 0) return setFormError("Cannot be less than 0.");
+      if (value && balance) {
+        const valueToWei = toWeiSafe(value, decimals);
+        if (valueToWei.gt(balance)) {
+          return setFormError("Liquidity amount greater than balance.");
+        }
+      }
+
+      if (value && symbol === "ETH") {
+        const valueToWei = toWeiSafe(value, decimals);
+        if (valueToWei.add(addLiquidityGas).gt(balance)) {
+          return setFormError("Transaction may fail due to insufficient gas.");
+        }
+      }
+    } catch (e) {
+      return setFormError("Invalid number.");
+    }
+    // clear form if no errors were presented. All errors should return early.
+    setFormError("");
+  }, [inputAmount, balance, decimals, symbol, addLiquidityGas]);
+
+  const addLiquidityOnChangeHandler = useCallback(
+    (value: string) => {
+      // this is debounced and throttled in the utility call, so we can call on every input change
+      refetchAddLiquidityGas();
+      setInputAmount(value);
+    },
+    [setInputAmount, refetchAddLiquidityGas]
+  );
+
+  const handleMaxClick = useCallback(() => {
+    let value = ethers.utils.formatUnits(balance, decimals);
+    if (symbol !== "ETH") return addLiquidityOnChangeHandler(value);
+    refetchAddLiquidityGas()
+      .then((approxGas) => {
+        value = formatEtherRaw(
+          max("0", BigNumber.from(balance).sub(approxGas))
+        );
+        addLiquidityOnChangeHandler(value);
+      })
+      .catch((err) => console.error("Error Maxing Adding Eth Liquidity", err));
+  }, [
+    balance,
+    decimals,
+    addLiquidityOnChangeHandler,
+    symbol,
+    refetchAddLiquidityGas,
+  ]);
 
   // if pool changes, set input value to "".
   useEffect(() => {
@@ -145,6 +159,7 @@ const PoolForm: FC<Props> = ({
     setFormError("");
     setRemoveAmount(0);
   }, [bridgeAddress]);
+
   return (
     <Wrapper>
       <Info>
@@ -209,8 +224,8 @@ const PoolForm: FC<Props> = ({
             setDepositUrl={setDepositUrl}
             balance={balance}
             setAmount={setInputAmount}
-            gasPrice={gasPrice}
             refetchBalance={refetchBalance}
+            onMaxClick={handleMaxClick}
           />
         </TabContentWrapper>
         <TabContentWrapper data-label="Remove">
