@@ -11,6 +11,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - REACT_APP_CONFIRMATIONS: how many confirms before we consider transaction mined
 - REACT_APP_GAS_PRICE_BUFFER: additional gas price to add to ensure enough buffer when sending max eth tx, specify in gwei
 - REACT_APP_DEFAULT_GAS_PRICE: default gas price estimate when no online estimate is available, specify in gwei
+- REACT_APP_REFETCH_GAS_THROTTLE_MS: how fast we can refetch gas prices. By default every 1 second (1000).
 
 ## Available Scripts
 

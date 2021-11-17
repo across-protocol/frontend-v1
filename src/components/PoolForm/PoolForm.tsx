@@ -22,7 +22,7 @@ import {
   formatEtherRaw,
   max,
   numberFormatter,
-  estimateGasForAddEthLiquidityDebounce,
+  estimateGasForAddEthLiquidityThrottled,
   ADD_LIQUIDITY_ETH_GAS_ESTIMATE,
   toWeiSafe,
 } from "utils";
@@ -87,7 +87,7 @@ const PoolForm: FC<Props> = ({
     if (!provider || !signer || !isConnected || symbol !== "ETH") return "0";
     try {
       const gasEstimate =
-        (await estimateGasForAddEthLiquidityDebounce(
+        (await estimateGasForAddEthLiquidityThrottled(
           signer,
           bridgeAddress,
           balance
@@ -136,22 +136,16 @@ const PoolForm: FC<Props> = ({
 
   const handleMaxClick = useCallback(() => {
     let value = ethers.utils.formatUnits(balance, decimals);
-    if (symbol !== "ETH") return addLiquidityOnChangeHandler(value);
+    if (symbol !== "ETH") return setInputAmount(value);
     refetchAddLiquidityGas()
       .then((approxGas) => {
         value = formatEtherRaw(
           max("0", BigNumber.from(balance).sub(approxGas))
         );
-        addLiquidityOnChangeHandler(value);
+        setInputAmount(value);
       })
       .catch((err) => console.error("Error Maxing Adding Eth Liquidity", err));
-  }, [
-    balance,
-    decimals,
-    addLiquidityOnChangeHandler,
-    symbol,
-    refetchAddLiquidityGas,
-  ]);
+  }, [balance, decimals, symbol, refetchAddLiquidityGas]);
 
   // if pool changes, set input value to "".
   useEffect(() => {
