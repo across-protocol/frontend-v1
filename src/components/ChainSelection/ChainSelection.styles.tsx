@@ -89,7 +89,6 @@ export const Item = styled.li`
 
     > * {
       opacity: 0.5;
-
     }
   }
 `;

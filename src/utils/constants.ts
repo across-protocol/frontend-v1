@@ -7,6 +7,7 @@ import wethLogo from "assets/weth-logo.svg";
 import arbitrumLogo from "assets/arbitrum-logo.svg";
 import memoize from "lodash.memoize";
 import umaLogo from "assets/UMA-round.svg";
+import bobaLogo from "assets/boba_logo.svg";
 import { getAddress } from "./address";
 import { toWeiSafe } from "./weiMath";
 /* Colors and Media Queries section */
@@ -56,6 +57,7 @@ export enum ChainId {
   KOVAN_OPTIMISM = 69,
   ARBITRUM = 42161,
   ARBITRUM_RINKEBY = 421611,
+  BOBA = 28,
 }
 
 export type Token = {
@@ -261,6 +263,25 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       bridgePool: "",
     },
   ],
+  // Stubbed
+  [ChainId.BOBA]: [
+    {
+      address: getAddress("0xB47e6A5f8b33b3F17603C83a0535A9dcD7E32681"),
+      name: "Wrapped Ether",
+      symbol: "WETH",
+      decimals: 18,
+      logoURI: wethLogo,
+      bridgePool: "",
+    },
+    {
+      address: ethers.constants.AddressZero,
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+      logoURI: ethereumLogo,
+      bridgePool: "",
+    },
+  ]
 };
 
 type ChainInfo = {
@@ -378,6 +399,21 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
       decimals: 18,
     },
   },
+  [ChainId.BOBA]: {
+    name: "Boba",
+    chainId: ChainId.BOBA,
+    logoURI: bobaLogo,
+    // Doesn't have an RPC on Infura. Need to know how to handle this
+    rpcUrl: "https://arb1.arbitrum.io/rpc",
+    explorerUrl: "https://blockexplorer.boba.network/",
+    constructExplorerLink: (txHash: string) =>
+      `https://blockexplorer.boba.network//tx/${txHash}`,
+    nativeCurrency: {
+      name: "Boba",
+      symbol: "BOBA",
+      decimals: 18,
+    },
+  },
 };
 
 export const ADDRESSES: Record<ChainId, { BRIDGE?: string }> = {
@@ -385,6 +421,10 @@ export const ADDRESSES: Record<ChainId, { BRIDGE?: string }> = {
   [ChainId.RINKEBY]: {},
   [ChainId.KOVAN]: {},
   [ChainId.OPTIMISM]: {
+    // Stubbed value. Does not work. TODO: Change this out when contract deployed.
+    BRIDGE: "0x2271a5E74eA8A29764ab10523575b41AA52455f0",
+  },
+  [ChainId.BOBA]: {
     // Stubbed value. Does not work. TODO: Change this out when contract deployed.
     BRIDGE: "0x2271a5E74eA8A29764ab10523575b41AA52455f0",
   },
@@ -438,6 +478,13 @@ export const PROVIDERS: Record<ChainId, GetProvider> = {
       )
   ),
   [ChainId.ARBITRUM_RINKEBY]: memoize(
+    () =>
+      new ethers.providers.StaticJsonRpcProvider(
+        `https://arbitrum-rinkeby.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
+      )
+  ),
+  // Doesn't have an rpc on infura.
+  [ChainId.BOBA]: memoize(
     () =>
       new ethers.providers.StaticJsonRpcProvider(
         `https://arbitrum-rinkeby.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
@@ -561,6 +608,21 @@ export const CHAINS_SELECTION = [
     nativeCurrency: {
       name: "Ether",
       symbol: "AETH",
+      decimals: 18,
+    },
+  },
+  {
+    name: "Boba",
+    chainId: ChainId.BOBA,
+    logoURI: bobaLogo,
+    // Doesn't have an RPC on Infura. Need to know how to handle this
+    rpcUrl: "https://arb1.arbitrum.io/rpc",
+    explorerUrl: "https://blockexplorer.boba.network/",
+    constructExplorerLink: (txHash: string) =>
+      `https://blockexplorer.boba.network//tx/${txHash}`,
+    nativeCurrency: {
+      name: "Boba",
+      symbol: "BOBA",
       decimals: 18,
     },
   },
