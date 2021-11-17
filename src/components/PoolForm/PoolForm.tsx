@@ -22,8 +22,9 @@ import {
   formatEtherRaw,
   max,
   numberFormatter,
-  estimateGasForAddEthLiquidityThrottled,
+  estimateGasForAddEthLiquidity,
   ADD_LIQUIDITY_ETH_GAS_ESTIMATE,
+  UPDATE_GAS_INTERVAL_MS,
   toWeiSafe,
 } from "utils";
 import { useConnection } from "state/hooks";
@@ -81,24 +82,29 @@ const PoolForm: FC<Props> = ({
   const [addLiquidityGas, setAddLiquidityGas] = useState<ethers.BigNumber>(
     ADD_LIQUIDITY_ETH_GAS_ESTIMATE
   );
-  const { isConnected, provider, signer } = useConnection();
+  const { isConnected, signer } = useConnection();
 
-  const refetchAddLiquidityGas = useCallback(async () => {
-    if (!provider || !signer || !isConnected || symbol !== "ETH") return "0";
-    try {
-      const gasEstimate =
-        (await estimateGasForAddEthLiquidityThrottled(
-          signer,
-          bridgeAddress,
-          balance
-        )) || ADD_LIQUIDITY_ETH_GAS_ESTIMATE;
-      setAddLiquidityGas(gasEstimate);
-      return gasEstimate;
-    } catch (err) {
-      console.error("Warning: Unable to estimate gas", err);
-      return ADD_LIQUIDITY_ETH_GAS_ESTIMATE;
-    }
-  }, [signer, provider, isConnected, bridgeAddress, balance, symbol]);
+  // update our add-liquidity to contract call gas usage on an interval for eth only
+  useEffect(() => {
+    if (!signer || !bridgeAddress || !isConnected || symbol !== "ETH") return;
+
+    estimateGasForAddEthLiquidity(signer, bridgeAddress)
+      .then(setAddLiquidityGas)
+      .catch((err) => {
+        console.error("Error getting estimating gas usage", err);
+      });
+
+    // get gas estimate on an interval
+    const handle = setInterval(() => {
+      estimateGasForAddEthLiquidity(signer, bridgeAddress)
+        .then(setAddLiquidityGas)
+        .catch((err) => {
+          console.error("Error getting estimating gas usage", err);
+        });
+    }, UPDATE_GAS_INTERVAL_MS);
+
+    return () => clearInterval(handle);
+  }, [signer, isConnected, bridgeAddress, symbol]);
 
   // Validate input on change
   useEffect(() => {
@@ -125,27 +131,14 @@ const PoolForm: FC<Props> = ({
     setFormError("");
   }, [inputAmount, balance, decimals, symbol, addLiquidityGas]);
 
-  const addLiquidityOnChangeHandler = useCallback(
-    (value: string) => {
-      // this is debounced and throttled in the utility call, so we can call on every input change
-      refetchAddLiquidityGas();
-      setInputAmount(value);
-    },
-    [setInputAmount, refetchAddLiquidityGas]
-  );
-
   const handleMaxClick = useCallback(() => {
     let value = ethers.utils.formatUnits(balance, decimals);
     if (symbol !== "ETH") return setInputAmount(value);
-    refetchAddLiquidityGas()
-      .then((approxGas) => {
-        value = formatEtherRaw(
-          max("0", BigNumber.from(balance).sub(approxGas))
-        );
-        setInputAmount(value);
-      })
-      .catch((err) => console.error("Error Maxing Adding Eth Liquidity", err));
-  }, [balance, decimals, symbol, refetchAddLiquidityGas]);
+    value = formatEtherRaw(
+      max("0", BigNumber.from(balance).sub(addLiquidityGas))
+    );
+    setInputAmount(value);
+  }, [balance, decimals, symbol, addLiquidityGas]);
 
   // if pool changes, set input value to "".
   useEffect(() => {
@@ -209,7 +202,7 @@ const PoolForm: FC<Props> = ({
             error={error}
             formError={formError}
             amount={inputAmount}
-            onChange={addLiquidityOnChangeHandler}
+            onChange={setInputAmount}
             bridgeAddress={bridgeAddress}
             decimals={decimals}
             symbol={symbol}

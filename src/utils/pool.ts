@@ -1,5 +1,4 @@
 import assert from "assert";
-import throttle from "lodash-es/throttle";
 import { clients } from "@uma/sdk";
 import { ethers, Signer, BigNumberish, BigNumber } from "ethers";
 import { toWeiSafe } from "./weiMath";
@@ -21,8 +20,8 @@ export const ADD_LIQUIDITY_ETH_GAS_ESTIMATE = estimateGas(
   GAS_PRICE_BUFFER
 );
 
-export const REFETCH_GAS_THROTTLE_MS = parseInt(
-  process.env.REACT_APP_REFETCH_GAS_THROTTLE_MS || "1000"
+export const UPDATE_GAS_INTERVAL_MS = parseInt(
+  process.env.REACT_APP_UPDATE_GAS_INTERVAL_MS || "30000"
 );
 
 // for a dynamic gas estimation
@@ -57,17 +56,10 @@ export async function gasForAddEthLiquidity(
 export async function estimateGasForAddEthLiquidity(
   signer: Signer,
   bridgeAddress: string,
-  balance: BigNumberish
+  balance: BigNumberish = BigNumber.from("1")
 ) {
   assert(signer.provider, "requires signer with provider");
   const gasPrice = await getGasPrice(signer.provider);
   const gas = await gasForAddEthLiquidity(signer, bridgeAddress, balance);
   return estimateGas(gas, gasPrice, GAS_PRICE_BUFFER);
 }
-
-// throttle this to prevent hammering call during typing or spamming max button
-export const estimateGasForAddEthLiquidityThrottled = throttle(
-  estimateGasForAddEthLiquidity,
-  REFETCH_GAS_THROTTLE_MS,
-  { leading: true, trailing: false }
-);
