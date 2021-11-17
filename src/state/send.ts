@@ -76,7 +76,7 @@ const sendSlice = createSlice({
       }),
 });
 
-const { actions, reducer } = sendSlice;
+export const { actions, reducer } = sendSlice;
 // Extract and export each action creator by name
 export const { token, amount, fromChain, toChain, toAddress, error } = actions;
 // Export the reducer, either as a default or named export

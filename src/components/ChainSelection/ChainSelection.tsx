@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { onboard } from "utils";
 import { useConnection, useSend } from "state/hooks";
 import { CHAINS, switchChain } from "utils";
@@ -16,13 +16,15 @@ import {
 } from "./ChainSelection.styles";
 import { useSelect } from "downshift";
 import { CHAINS_SELECTION } from "utils/constants";
+import { actions } from "state/send";
+import { useAppDispatch, useAppSelector } from "state/hooks";
 
 const ChainSelection: React.FC = () => {
   const { init } = onboard;
   const { isConnected, provider } = useConnection();
   const { hasToSwitchChain, fromChain } = useSend();
-  const [, setCurrentChainDropdown] = useState(CHAINS_SELECTION[0]);
-
+  const dispatch = useAppDispatch();
+  const sendState = useAppSelector(state => state.send);
   const buttonText = hasToSwitchChain
     ? `Switch to ${CHAINS[fromChain].name}`
     : !isConnected
@@ -49,7 +51,8 @@ const ChainSelection: React.FC = () => {
     defaultSelectedItem: CHAINS_SELECTION[0],
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-        setCurrentChainDropdown(selectedItem);
+        const nextState = {...sendState, fromChain: selectedItem.chainId}
+        dispatch(actions.fromChain(nextState))
       }
     },
   });
