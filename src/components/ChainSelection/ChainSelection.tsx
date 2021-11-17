@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { onboard } from "utils";
 import { useConnection, useSend } from "state/hooks";
 import { CHAINS, switchChain } from "utils";
@@ -23,8 +23,11 @@ const ChainSelection: React.FC = () => {
   const { init } = onboard;
   const { isConnected, provider } = useConnection();
   const { hasToSwitchChain, fromChain } = useSend();
+  const sendState = useAppSelector((state) => state.send);
+  const [currentlySelectedChain, setCurrentlySelectedChain] = useState(
+    CHAINS_SELECTION[1]
+  );
   const dispatch = useAppDispatch();
-  const sendState = useAppSelector(state => state.send);
   const buttonText = hasToSwitchChain
     ? `Switch to ${CHAINS[fromChain].name}`
     : !isConnected
@@ -48,11 +51,12 @@ const ChainSelection: React.FC = () => {
     getMenuProps,
   } = useSelect({
     items: CHAINS_SELECTION,
-    defaultSelectedItem: CHAINS_SELECTION[0],
+    defaultSelectedItem: CHAINS_SELECTION[1],
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-        const nextState = {...sendState, fromChain: selectedItem.chainId}
-        dispatch(actions.fromChain(nextState))
+        setCurrentlySelectedChain(selectedItem);
+        const nextState = { ...sendState, fromChain: selectedItem.chainId };
+        dispatch(actions.fromChain(nextState));
       }
     },
   });
@@ -73,7 +77,11 @@ const ChainSelection: React.FC = () => {
             {isOpen &&
               CHAINS_SELECTION.map((t, index) => {
                 return (
-                  <Item {...getItemProps({ item: t, index })} key={t.chainId}>
+                  <Item
+                    className={t === currentlySelectedChain ? "disabled" : ""}
+                    {...getItemProps({ item: t, index })}
+                    key={t.chainId}
+                  >
                     <Logo src={t.logoURI} alt={t.name} />
                     <div>{t.name}</div>
                   </Item>

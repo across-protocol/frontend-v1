@@ -62,7 +62,8 @@ export const Item = styled.li`
   gap: 10px;
   cursor: pointer;
   background-color: var(--color-white);
-  color: var(--color-gray);
+
+  font-family: "Barlow";
   transition: background-color 100ms linear;
   &:first-of-type {
     border-radius: 16px 16px 0 0;
@@ -78,7 +79,18 @@ export const Item = styled.li`
 
   & > div:last-of-type {
     margin-left: 0.25rem;
-    color: hsla(${COLORS.gray[500]} / 0.5);
+    color: #2d2e33;
+  }
+
+  &.disabled {
+    background-color: var(--color-white);
+    color: rgba(255, 255, 255, 0.65);
+    pointer-events: none;
+
+    > * {
+      opacity: 0.5;
+
+    }
   }
 `;
 
