@@ -1,14 +1,15 @@
-import { useCallback, useMemo, useEffect, useState } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { ethers, BigNumber } from "ethers";
+import type { Block } from "@ethersproject/abstract-provider";
 import { bindActionCreators } from "redux";
 import {
   getDepositBox,
   isValidAddress,
   TOKENS_LIST,
-  PROVIDERS,
   TransactionError,
   ChainId,
+  Timer,
 } from "utils";
 import type { RootState, AppDispatch } from "./";
 import { update, disconnect, error as errorAction } from "./connection";
@@ -23,12 +24,17 @@ import {
 import chainApi, { useAllowance, useBridgeFees } from "./chainApi";
 import { add } from "./transactions";
 import { deposit as depositAction, toggle } from "./deposits";
+import { setTime } from "./timers";
+import { store } from ".";
 
 const FEE_ESTIMATION = "0.004";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+// set a timer which updates by defalt every 30 seconds
+Timer((time) => store.dispatch(setTime(time)));
 
 export function useConnection() {
   const { account, signer, provider, error, chainId, notify } = useAppSelector(
@@ -56,41 +62,11 @@ export function useConnection() {
   };
 }
 
-// TODO: put this back into global state. Wasnt able to get it working.
-export function useBlocks(toChain: ChainId) {
-  const [state, setBlock] = useState<
-    (ethers.providers.Block & { blockNumber: number }) | undefined
-  >();
-  useEffect(() => {
-    const provider = PROVIDERS[toChain]();
-    provider
-      .getBlock("latest")
-      .then((block) => {
-        setBlock({ ...block, blockNumber: block.number });
-      })
-      .catch((error) => console.error("Error getting block", error))
-      .finally(() => {
-        provider.on("block", async (blockNumber: number) => {
-          const block = await provider.getBlock(blockNumber);
-          setBlock({ ...block, blockNumber });
-        });
-      });
-
-    return () => {
-      provider.removeAllListeners();
-    };
-  }, [toChain]);
-
-  return {
-    block: state,
-    setBlock: setBlock,
-  };
-}
-
 export function useSend() {
-  const { isConnected, chainId, account, signer } = useConnection();
+  const { isConnected, chainId, account, signer, provider } = useConnection();
   const { fromChain, toChain, toAddress, amount, token, error } =
     useAppSelector((state) => state.send);
+  const { time } = useAppSelector((state) => state.time);
   const dispatch = useAppDispatch();
   const actions = bindActionCreators(
     {
@@ -110,8 +86,6 @@ export function useSend() {
     tokenAddress: token,
   });
   const balance = BigNumber.from(balanceStr);
-  const { block } = useBlocks(toChain);
-
   const depositBox = getDepositBox(fromChain);
   const { data: allowance } = useAllowance(
     {
@@ -135,15 +109,14 @@ export function useSend() {
     {
       amount,
       tokenSymbol,
-      blockNumber: block?.blockNumber ?? 0,
+      blockNumber: time,
     },
-    { skip: tokenSymbol === "" || amount.lte(0) || !block }
+    { skip: tokenSymbol === "" || amount.lte(0) || time === undefined }
   );
 
   const canSend = useMemo(
     () =>
       fromChain &&
-      block &&
       toChain &&
       amount &&
       token &&
@@ -164,7 +137,6 @@ export function useSend() {
         .gte(amount),
     [
       fromChain,
-      block,
       toChain,
       amount,
       token,
@@ -177,11 +149,13 @@ export function useSend() {
     ]
   );
   const send = useCallback(async () => {
-    if (!signer || !canSend || !fees || !toAddress || !block) {
+    if (!signer || !canSend || !fees || !toAddress || !provider) {
       return {};
     }
 
+    let block: Block | undefined = undefined;
     try {
+      block = await provider.getBlock("latest");
       const depositBox = getDepositBox(fromChain, signer);
       const isETH = token === ethers.constants.AddressZero;
       const value = isETH ? amount : ethers.constants.Zero;
@@ -208,12 +182,11 @@ export function useSend() {
         amount,
         fees.slowRelayFee.pct,
         fees.instantRelayFee.pct,
-        block.timestamp
+        block?.timestamp
       );
     }
   }, [
     amount,
-    block,
     canSend,
     depositBox.address,
     fees,
@@ -221,6 +194,7 @@ export function useSend() {
     signer,
     toAddress,
     token,
+    provider,
   ]);
 
   return {

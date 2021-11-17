@@ -6,8 +6,8 @@ import {
   useDeposits,
   useSend,
   useTransactions,
-  useBlocks,
   useAllowance,
+  useAppSelector,
 } from "state/hooks";
 import { TransactionTypes } from "state/transactions";
 import { useERC20 } from "hooks";
@@ -37,9 +37,7 @@ const SendAction: React.FC = () => {
     canSend,
     toAddress,
   } = useSend();
-  const { account } = useConnection();
-
-  const { block } = useBlocks(toChain);
+  const { account, signer } = useConnection();
 
   const [isInfoModalOpen, setOpenInfoModal] = useState(false);
   const toggleInfoModal = () => setOpenInfoModal((oldOpen) => !oldOpen);
@@ -48,19 +46,19 @@ const SendAction: React.FC = () => {
   const { addTransaction } = useTransactions();
   const { addDeposit } = useDeposits();
   const { approve } = useERC20(token);
-  const { signer } = useConnection();
   const [updateEthBalance] = api.endpoints.ethBalance.useLazyQuery();
   // trigger balance update
   const [updateBalances] = api.endpoints.balances.useLazyQuery();
   const tokenInfo = TOKENS_LIST[fromChain].find((t) => t.address === token);
+  const { time } = useAppSelector((state) => state.time);
 
   const { data: fees } = useBridgeFees(
     {
       amount,
       tokenSymbol: tokenInfo!.symbol,
-      blockNumber: block?.blockNumber ?? 0,
+      blockNumber: time,
     },
-    { skip: !tokenInfo || !block || !amount.gt(0) }
+    { skip: !tokenInfo || !amount.gt(0) }
   );
 
   const depositBox = getDepositBox(fromChain);

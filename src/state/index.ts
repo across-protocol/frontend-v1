@@ -7,6 +7,7 @@ import transactionsReducer from "./transactions";
 import depositsReducer from "./deposits";
 import blocksReducer from "./blocks";
 import poolsReducer from "./pools";
+import timerReducer from "./timers";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     deposits: depositsReducer,
     blocks: blocksReducer,
     pools: poolsReducer,
+    time: timerReducer,
     [chainApi.reducerPath]: chainApi.reducer,
   },
   middleware: (getDefaultMiddleWare) =>

@@ -8,7 +8,7 @@ import {
   useBalances,
   useConnection,
   useBridgeFees,
-  useBlocks,
+  useAppSelector,
 } from "state/hooks";
 import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
 import { Section, SectionTitle } from "../Section";
@@ -30,7 +30,8 @@ import {
 const FEE_ESTIMATION = ".004";
 const CoinSelection = () => {
   const { account, isConnected } = useConnection();
-  const { setAmount, setToken, fromChain, toChain, amount, token } = useSend();
+  const { setAmount, setToken, fromChain, amount, token } = useSend();
+  const { time } = useAppSelector((state) => state.time);
 
   const [error, setError] = React.useState<Error>();
   const tokenList = TOKENS_LIST[fromChain];
@@ -138,15 +139,13 @@ const CoinSelection = () => {
     }
   };
 
-  const { block } = useBlocks(toChain);
-
   const { data: fees } = useBridgeFees(
     {
       amount,
       tokenSymbol: selectedItem!.symbol,
-      blockNumber: block?.blockNumber ?? 0,
+      blockNumber: time,
     },
-    { skip: amount.lte(0) || !block || !selectedItem?.symbol }
+    { skip: amount.lte(0) || !selectedItem?.symbol }
   );
 
   const errorMsg = error
