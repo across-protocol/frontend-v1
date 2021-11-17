@@ -384,7 +384,10 @@ export const ADDRESSES: Record<ChainId, { BRIDGE?: string }> = {
   [ChainId.MAINNET]: {},
   [ChainId.RINKEBY]: {},
   [ChainId.KOVAN]: {},
-  [ChainId.OPTIMISM]: {},
+  [ChainId.OPTIMISM]: {
+    // Stubbed value. Does not work. TODO: Change this out when contract deployed.
+    BRIDGE: "0x2271a5E74eA8A29764ab10523575b41AA52455f0"
+  },
   [ChainId.KOVAN_OPTIMISM]: {
     BRIDGE: "0x2271a5E74eA8A29764ab10523575b41AA52455f0",
   },
