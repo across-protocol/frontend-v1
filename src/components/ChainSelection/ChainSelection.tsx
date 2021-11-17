@@ -57,6 +57,9 @@ const ChainSelection: React.FC = () => {
         setCurrentlySelectedChain(selectedItem);
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
+        const nsToChain = {...sendState, toChain: 1}
+        if (selectedItem.chainId === 1) nsToChain.toChain = 10;
+        dispatch(actions.toChain(nsToChain));
       }
     },
   });
