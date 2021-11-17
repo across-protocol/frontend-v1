@@ -617,9 +617,24 @@ export const CHAINS_SELECTION = [
     logoURI: bobaLogo,
     // Doesn't have an RPC on Infura. Need to know how to handle this
     rpcUrl: "https://arb1.arbitrum.io/rpc",
-    explorerUrl: "https://blockexplorer.boba.network/",
+    explorerUrl: "https://blockexplorer.boba.network",
     constructExplorerLink: (txHash: string) =>
-      `https://blockexplorer.boba.network//tx/${txHash}`,
+      `https://blockexplorer.boba.network/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Boba",
+      symbol: "BOBA",
+      decimals: 18,
+    },
+  },
+  {
+    name: "Ether",
+    chainId: ChainId.MAINNET,
+    logoURI: ethereumLogo,
+    // Doesn't have an RPC on Infura. Need to know how to handle this
+    rpcUrl: "https://mainnet.infura.io/v3/",
+    explorerUrl: "https://etherscan.io",
+    constructExplorerLink: (txHash: string) =>
+      `https://etherscan.io/tx/${txHash}`,
     nativeCurrency: {
       name: "Boba",
       symbol: "BOBA",

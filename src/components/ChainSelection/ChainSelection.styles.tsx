@@ -82,6 +82,17 @@ export const Item = styled.li`
     color: #2d2e33;
   }
 
+  div {
+    flex-basis: 15%;
+  }
+
+  span {
+    color: #2d2e33;
+    flex-basis: 75%;
+    text-align: right;
+    padding-right: 8px;
+  }
+
   &.disabled {
     background-color: var(--color-white);
     color: rgba(255, 255, 255, 0.65);
