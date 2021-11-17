@@ -110,6 +110,8 @@ const PoolForm: FC<Props> = ({
   useEffect(() => {
     const value = inputAmount;
     try {
+      // liquidity button should be disabled if value is 0, so we dont actually need an error.
+      if (Number(value) === 0) return setFormError("");
       if (Number(value) < 0) return setFormError("Cannot be less than 0.");
       if (value && balance) {
         const valueToWei = toWeiSafe(value, decimals);
