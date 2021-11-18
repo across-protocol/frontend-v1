@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { PrimaryButton } from "../Buttons";
 import { RoundBox as UnstyledBox } from "../Box";
 import { ChevronDown } from "react-feather";
-import { COLORS } from "utils";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -31,6 +30,7 @@ export const RoundBox = styled(UnstyledBox)`
 
 export const ConnectButton = styled(PrimaryButton)`
   margin-top: 16px;
+  /* z-index: 10000; */
 `;
 
 export const Logo = styled.img`
@@ -40,7 +40,11 @@ export const Logo = styled.img`
   margin-right: 20px;
 `;
 
-export const Menu = styled.ul`
+interface IMenuProps {
+  isOpen? :boolean;
+}
+
+export const Menu = styled.ul<IMenuProps>`
   position: absolute;
   top: 0;
   left: 0;
@@ -49,12 +53,13 @@ export const Menu = styled.ul`
   padding-top: 10px;
   transform: translateY(100%);
   list-style: none;
-  display: flex;
+  display: ${props => props.isOpen ? "flex": "none"};;
   flex-direction: column;
   z-index: 1;
   width: 95%;
   margin: 0 auto;
 `;
+
 
 export const Item = styled.li`
   padding: 15px 10px 10px;
@@ -65,7 +70,8 @@ export const Item = styled.li`
 
   font-family: "Barlow";
   transition: background-color 100ms linear;
-  &:first-of-type {
+
+  &:first-of-type { 
     border-radius: 16px 16px 0 0;
   }
 
@@ -96,7 +102,7 @@ export const Item = styled.li`
   &.disabled {
     background-color: var(--color-white);
     color: rgba(255, 255, 255, 0.65);
-    pointer-events: none;
+    /* pointer-events: none; */
 
     > * {
       opacity: 0.5;

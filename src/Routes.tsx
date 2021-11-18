@@ -4,7 +4,6 @@ import { Send, Confirmation, Pool, About } from "views";
 import { Header, SuperHeader } from "components";
 import { useConnection, useDeposits, useSend } from "state/hooks";
 import {
-  DEFAULT_FROM_CHAIN_ID,
   DEFAULT_TO_CHAIN_ID,
   CHAINS,
   UnsupportedChainIdError,
@@ -18,6 +17,7 @@ const Routes: FC<Props> = () => {
   const { fromChain } = useSend();
   const { showConfirmationScreen } = useDeposits();
   const { error, provider, chainId } = useConnection();
+  console.log("From chain", fromChain, "chainId", chainId)
   const location = useLocation();
   const wrongNetworkSend =
     provider &&
@@ -33,7 +33,7 @@ const Routes: FC<Props> = () => {
           <div>
             You are on an incorrect network. Please{" "}
             <button onClick={() => switchChain(provider, fromChain)}>
-              switch to {CHAINS[DEFAULT_FROM_CHAIN_ID].name}
+              switch to {CHAINS[fromChain].name}
             </button>
           </div>
         </SuperHeader>

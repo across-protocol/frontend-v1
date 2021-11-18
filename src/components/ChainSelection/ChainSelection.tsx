@@ -76,11 +76,12 @@ const ChainSelection: React.FC = () => {
               <ToggleIcon />
             </ToggleButton>
           </RoundBox>
-          <Menu {...getMenuProps()}>
+          <Menu isOpen={isOpen} {...getMenuProps()}>
             {isOpen &&
               CHAINS_SELECTION.map((t, index) => {
                 return (
                   <Item
+
                     className={t === currentlySelectedChain ? "disabled" : ""}
                     {...getItemProps({ item: t, index })}
                     key={t.chainId}
