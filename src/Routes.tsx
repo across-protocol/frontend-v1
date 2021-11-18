@@ -17,7 +17,6 @@ const Routes: FC<Props> = () => {
   const { fromChain } = useSend();
   const { showConfirmationScreen } = useDeposits();
   const { error, provider, chainId } = useConnection();
-  console.log("From chain", fromChain, "chainId", chainId);
   const location = useLocation();
   const wrongNetworkSend =
     provider &&
