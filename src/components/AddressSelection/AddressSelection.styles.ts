@@ -38,10 +38,23 @@ export const Address = styled.div`
   color: var(--color-white-transparent);
   font-size: ${14 / 16}rem;
 `;
-export const ChangeButton = styled(SecondaryButton)`
-  margin-left: auto;
-  padding: 10px 14px;
-  font-size: ${14 / 16}rem;
+
+export const ChangeWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 8px;
+`;
+
+export const ChangeButton = styled.div`
+  color: #6cf9d8;
+  font-size: 0.8rem;
+  font-family: "Barlow";
+  cursor: pointer;
+  margin-top: 4px;
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 `;
 
 export const DialogTitle = styled.h3``;

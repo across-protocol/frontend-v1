@@ -10,6 +10,7 @@ import {
   Wrapper,
   MainBox,
   Logo,
+  ChangeWrapper,
   ChangeButton,
   Address,
   Info,
@@ -35,6 +36,7 @@ const AddressSelection: React.FC = () => {
 
   const toggle = () => {
     // modal is closing, reset address to the current toAddress
+    if (!isConnected) return;
     if (open) setAddress(toAddress || address);
     setOpen((oldOpen) => !oldOpen);
   };
@@ -63,10 +65,12 @@ const AddressSelection: React.FC = () => {
             <div>{CHAINS[toChain].name}</div>
             {toAddress && <Address>{shortenAddress(toAddress)}</Address>}
           </Info>
-          <ChangeButton onClick={toggle} disabled={!isConnected}>
+        </MainBox>
+        <ChangeWrapper onClick={toggle}>
+          <ChangeButton className={!isConnected ? "disabled" : ""}>
             Change
           </ChangeButton>
-        </MainBox>
+        </ChangeWrapper>
       </Wrapper>
       <Dialog isOpen={open} onClose={toggle}>
         <h3>Send To</h3>
