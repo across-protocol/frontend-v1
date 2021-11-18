@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { onboard } from "utils";
 import { useConnection, useSend } from "state/hooks";
-import { CHAINS, switchChain } from "utils";
+import { CHAINS, switchChain, ChainId } from "utils";
 import { Section, SectionTitle } from "../Section";
 import {
   Wrapper,
@@ -43,6 +43,15 @@ const ChainSelection: React.FC = () => {
     }
   };
 
+  // When redux state changes, make sure local inputs change.
+  useEffect(() => {
+    if (sendState.fromChain === ChainId.MAINNET) {
+      setCurrentlySelectedChain(CHAINS_SELECTION[0]);
+    } else {
+      setCurrentlySelectedChain(CHAINS_SELECTION[3]);
+    }
+  }, [sendState.fromChain]);
+
   const {
     isOpen,
     selectedItem,
@@ -53,13 +62,15 @@ const ChainSelection: React.FC = () => {
   } = useSelect({
     items: CHAINS_SELECTION,
     defaultSelectedItem: CHAINS_SELECTION[1],
+    selectedItem: currentlySelectedChain,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
         setCurrentlySelectedChain(selectedItem);
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
-        const nsToChain = { ...sendState, toChain: 1 };
-        if (selectedItem.chainId === 1) nsToChain.toChain = 10;
+        const nsToChain = { ...sendState, toChain: ChainId.MAINNET };
+        if (selectedItem.chainId === ChainId.MAINNET)
+          nsToChain.toChain = ChainId.OPTIMISM;
         dispatch(actions.toChain(nsToChain));
       }
     },

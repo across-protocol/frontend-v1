@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { XOctagon } from "react-feather";
 import { useConnection, useSend } from "state/hooks";
-import { CHAINS, shortenAddress, isValidAddress } from "utils";
+import { CHAINS, shortenAddress, isValidAddress, ChainId } from "utils";
 import { SectionTitle } from "../Section";
 import Dialog from "../Dialog";
 import { SecondaryButton } from "../Buttons";
@@ -24,23 +24,33 @@ import {
   InputGroup,
   RoundBox,
   ToggleChainName,
-  Address
+  Address,
 } from "./AddressSelection.styles";
 import { useSelect } from "downshift";
 import { CHAINS_SELECTION } from "utils/constants";
 import { useAppDispatch, useAppSelector } from "state/hooks";
-
+import { actions } from "state/send";
 
 const AddressSelection: React.FC = () => {
   const { isConnected } = useConnection();
   const { toChain, toAddress, setToAddress } = useSend();
   const [address, setAddress] = useState("");
   const [open, setOpen] = useState(false);
+  const dispatch = useAppDispatch();
+
   const sendState = useAppSelector((state) => state.send);
   const [currentlySelectedChain, setCurrentlySelectedChain] = useState(
-    CHAINS_SELECTION[1]
+    CHAINS_SELECTION[3]
   );
 
+  // When redux state changes, make sure local inputs change.
+  useEffect(() => {
+    if (sendState.fromChain === ChainId.MAINNET) {
+      setCurrentlySelectedChain(CHAINS_SELECTION[0]);
+    } else {
+      setCurrentlySelectedChain(CHAINS_SELECTION[3]);
+    }
+  }, [sendState.fromChain]);
   const {
     isOpen,
     selectedItem,
@@ -51,14 +61,16 @@ const AddressSelection: React.FC = () => {
   } = useSelect({
     items: CHAINS_SELECTION,
     defaultSelectedItem: CHAINS_SELECTION[3],
+    selectedItem: currentlySelectedChain,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-      //   setCurrentlySelectedChain(selectedItem);
-      //   const nextState = { ...sendState, fromChain: selectedItem.chainId };
-      //   dispatch(actions.fromChain(nextState));
-      //   const nsToChain = { ...sendState, toChain: 1 };
-      //   if (selectedItem.chainId === 1) nsToChain.toChain = 10;
-      //   dispatch(actions.toChain(nsToChain));
+        setCurrentlySelectedChain(selectedItem);
+        const nextState = { ...sendState, toChain: selectedItem.chainId };
+        dispatch(actions.fromChain(nextState));
+        const nsToChain = { ...sendState, fromChain: ChainId.MAINNET };
+        if (selectedItem.chainId === ChainId.MAINNET)
+          nsToChain.fromChain = ChainId.OPTIMISM;
+        dispatch(actions.toChain(nsToChain));
       }
     },
   });
@@ -94,21 +106,19 @@ const AddressSelection: React.FC = () => {
     <LastSection>
       <Wrapper>
         <SectionTitle>To</SectionTitle>
-        {/* <MainBox>
-          <Logo src={CHAINS[toChain].logoURI} alt={CHAINS[toChain].name} />
-          <Info>
-            <div>{CHAINS[toChain].name}</div>
-            {toAddress && <Address>{shortenAddress(toAddress)}</Address>}
-          </Info>
-        </MainBox> */}
-                <InputGroup>
+        <InputGroup>
           <RoundBox as="label" {...getLabelProps()}>
             <ToggleButton type="button" {...getToggleButtonProps()}>
               <Logo src={selectedItem?.logoURI} alt={selectedItem?.name} />
-              <div><ToggleChainName>{selectedItem?.name === "Ether" ? "Mainnet(your account)" : selectedItem?.name}</ToggleChainName>
+              <div>
+                <ToggleChainName>
+                  {selectedItem?.name === "Ether"
+                    ? "Mainnet"
+                    : selectedItem?.name}
+                </ToggleChainName>
 
-              {toAddress && <Address>{shortenAddress(toAddress)}</Address>}
-</div>
+                {toAddress && <Address>{shortenAddress(toAddress)}</Address>}
+              </div>
               <ToggleIcon />
             </ToggleButton>
           </RoundBox>
