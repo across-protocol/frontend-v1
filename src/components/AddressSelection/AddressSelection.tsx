@@ -8,25 +8,60 @@ import { SecondaryButton } from "../Buttons";
 import {
   LastSection,
   Wrapper,
-  MainBox,
   Logo,
   ChangeWrapper,
   ChangeButton,
-  Address,
-  Info,
   InputWrapper,
   Input,
   ClearButton,
   CancelButton,
   ButtonGroup,
   InputError,
+  Menu,
+  Item,
+  ToggleIcon,
+  ToggleButton,
+  InputGroup,
+  RoundBox,
+  ToggleChainName,
+  Address
 } from "./AddressSelection.styles";
+import { useSelect } from "downshift";
+import { CHAINS_SELECTION } from "utils/constants";
+import { useAppDispatch, useAppSelector } from "state/hooks";
+
 
 const AddressSelection: React.FC = () => {
   const { isConnected } = useConnection();
   const { toChain, toAddress, setToAddress } = useSend();
   const [address, setAddress] = useState("");
   const [open, setOpen] = useState(false);
+  const sendState = useAppSelector((state) => state.send);
+  const [currentlySelectedChain, setCurrentlySelectedChain] = useState(
+    CHAINS_SELECTION[1]
+  );
+
+  const {
+    isOpen,
+    selectedItem,
+    getLabelProps,
+    getToggleButtonProps,
+    getItemProps,
+    getMenuProps,
+  } = useSelect({
+    items: CHAINS_SELECTION,
+    defaultSelectedItem: CHAINS_SELECTION[3],
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (selectedItem) {
+      //   setCurrentlySelectedChain(selectedItem);
+      //   const nextState = { ...sendState, fromChain: selectedItem.chainId };
+      //   dispatch(actions.fromChain(nextState));
+      //   const nsToChain = { ...sendState, toChain: 1 };
+      //   if (selectedItem.chainId === 1) nsToChain.toChain = 10;
+      //   dispatch(actions.toChain(nsToChain));
+      }
+    },
+  });
 
   useEffect(() => {
     if (toAddress) {
@@ -59,16 +94,46 @@ const AddressSelection: React.FC = () => {
     <LastSection>
       <Wrapper>
         <SectionTitle>To</SectionTitle>
-        <MainBox>
+        {/* <MainBox>
           <Logo src={CHAINS[toChain].logoURI} alt={CHAINS[toChain].name} />
           <Info>
             <div>{CHAINS[toChain].name}</div>
             {toAddress && <Address>{shortenAddress(toAddress)}</Address>}
           </Info>
-        </MainBox>
+        </MainBox> */}
+                <InputGroup>
+          <RoundBox as="label" {...getLabelProps()}>
+            <ToggleButton type="button" {...getToggleButtonProps()}>
+              <Logo src={selectedItem?.logoURI} alt={selectedItem?.name} />
+              <div><ToggleChainName>{selectedItem?.name === "Ether" ? "Mainnet(your account)" : selectedItem?.name}</ToggleChainName>
+
+              {toAddress && <Address>{shortenAddress(toAddress)}</Address>}
+</div>
+              <ToggleIcon />
+            </ToggleButton>
+          </RoundBox>
+          <Menu isOpen={isOpen} {...getMenuProps()}>
+            {isOpen &&
+              CHAINS_SELECTION.map((t, index) => {
+                return (
+                  <Item
+                    className={t === currentlySelectedChain ? "disabled" : ""}
+                    {...getItemProps({ item: t, index })}
+                    key={t.chainId}
+                  >
+                    <Logo src={t.logoURI} alt={t.name} />
+                    <div>{t.name}</div>
+                    <span className="layer-type">
+                      {t.name !== "Ether" ? "L2" : "L1"}
+                    </span>
+                  </Item>
+                );
+              })}
+          </Menu>
+        </InputGroup>
         <ChangeWrapper onClick={toggle}>
           <ChangeButton className={!isConnected ? "disabled" : ""}>
-            Change
+            Change account
           </ChangeButton>
         </ChangeWrapper>
       </Wrapper>
