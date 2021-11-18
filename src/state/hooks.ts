@@ -294,7 +294,6 @@ export function useBalance(params: {
     ? result.data[selectedIndex] || BigNumber.from("0")
     : BigNumber.from("0");
 
-    console.log("balance", balance, "result", result)
   return {
     balance,
     refetch,

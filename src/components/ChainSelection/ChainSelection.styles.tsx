@@ -23,14 +23,13 @@ export const RoundBox = styled(UnstyledBox)`
     outline: var(--outline-color) solid 1px;
   }
   &:first-of-type {
-    margin-right: 16px;
+    /* margin-right: 16px; */
     flex: 1;
   }
 `;
 
 export const ConnectButton = styled(PrimaryButton)`
   margin-top: 16px;
-  /* z-index: 10000; */
 `;
 
 export const Logo = styled.img`
@@ -41,7 +40,7 @@ export const Logo = styled.img`
 `;
 
 interface IMenuProps {
-  isOpen? :boolean;
+  isOpen?: boolean;
 }
 
 export const Menu = styled.ul<IMenuProps>`
@@ -53,13 +52,12 @@ export const Menu = styled.ul<IMenuProps>`
   padding-top: 10px;
   transform: translateY(100%);
   list-style: none;
-  display: ${props => props.isOpen ? "flex": "none"};;
+  display: ${(props) => (props.isOpen ? "flex" : "none")};
   flex-direction: column;
-  z-index: 1;
+  z-index: 10000;
   width: 95%;
   margin: 0 auto;
 `;
-
 
 export const Item = styled.li`
   padding: 15px 10px 10px;
@@ -71,7 +69,7 @@ export const Item = styled.li`
   font-family: "Barlow";
   transition: background-color 100ms linear;
 
-  &:first-of-type { 
+  &:first-of-type {
     border-radius: 16px 16px 0 0;
   }
 
@@ -102,7 +100,6 @@ export const Item = styled.li`
   &.disabled {
     background-color: var(--color-white);
     color: rgba(255, 255, 255, 0.65);
-    /* pointer-events: none; */
 
     > * {
       opacity: 0.5;
@@ -111,7 +108,7 @@ export const Item = styled.li`
 `;
 
 export const ToggleIcon = styled(ChevronDown)`
-  margin-left: 260px;
+  margin-left: 250px;
 `;
 
 export const ToggleButton = styled.button`
@@ -129,4 +126,10 @@ export const ToggleButton = styled.button`
 export const InputGroup = styled.div`
   position: relative;
   display: flex;
+  width: 100%;
+`;
+
+export const ToggleChainName = styled.div`
+  width: 85px;
+  text-align: left;
 `;

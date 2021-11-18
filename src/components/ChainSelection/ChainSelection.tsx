@@ -13,6 +13,7 @@ import {
   ToggleIcon,
   ToggleButton,
   InputGroup,
+  ToggleChainName,
 } from "./ChainSelection.styles";
 import { useSelect } from "downshift";
 import { CHAINS_SELECTION } from "utils/constants";
@@ -57,7 +58,7 @@ const ChainSelection: React.FC = () => {
         setCurrentlySelectedChain(selectedItem);
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
-        const nsToChain = {...sendState, toChain: 1}
+        const nsToChain = { ...sendState, toChain: 1 };
         if (selectedItem.chainId === 1) nsToChain.toChain = 10;
         dispatch(actions.toChain(nsToChain));
       }
@@ -72,7 +73,7 @@ const ChainSelection: React.FC = () => {
           <RoundBox as="label" {...getLabelProps()}>
             <ToggleButton type="button" {...getToggleButtonProps()}>
               <Logo src={selectedItem?.logoURI} alt={selectedItem?.name} />
-              <div>{selectedItem?.name}</div>
+              <ToggleChainName>{selectedItem?.name}</ToggleChainName>
               <ToggleIcon />
             </ToggleButton>
           </RoundBox>
@@ -81,14 +82,15 @@ const ChainSelection: React.FC = () => {
               CHAINS_SELECTION.map((t, index) => {
                 return (
                   <Item
-
                     className={t === currentlySelectedChain ? "disabled" : ""}
                     {...getItemProps({ item: t, index })}
                     key={t.chainId}
                   >
                     <Logo src={t.logoURI} alt={t.name} />
                     <div>{t.name}</div>
-                    <span className="layer-type">{t.name !== "Ether" ? "L2": "L1"}</span>
+                    <span className="layer-type">
+                      {t.name !== "Ether" ? "L2" : "L1"}
+                    </span>
                   </Item>
                 );
               })}
