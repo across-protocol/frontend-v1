@@ -14,7 +14,7 @@ export const GAS_PRICE_BUFFER = toWeiSafe(
 // Rounded up from a mainnet transaction sending eth gas limit
 export const ADD_LIQUIDITY_ETH_GAS = ethers.BigNumber.from(100000);
 
-export const ADD_LIQUIDITY_ETH_GAS_ESTIMATE = estimateGas(
+export const DEFAULT_ADD_LIQUIDITY_ETH_GAS_ESTIMATE = estimateGas(
   ADD_LIQUIDITY_ETH_GAS,
   DEFAULT_GAS_PRICE,
   GAS_PRICE_BUFFER

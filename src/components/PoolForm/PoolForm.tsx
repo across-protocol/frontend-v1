@@ -23,7 +23,7 @@ import {
   max,
   numberFormatter,
   estimateGasForAddEthLiquidity,
-  ADD_LIQUIDITY_ETH_GAS_ESTIMATE,
+  DEFAULT_ADD_LIQUIDITY_ETH_GAS_ESTIMATE,
   UPDATE_GAS_INTERVAL_MS,
   toWeiSafe,
 } from "utils";
@@ -80,7 +80,7 @@ const PoolForm: FC<Props> = ({
   const [error] = useState<Error>();
   const [formError, setFormError] = useState("");
   const [addLiquidityGas, setAddLiquidityGas] = useState<ethers.BigNumber>(
-    ADD_LIQUIDITY_ETH_GAS_ESTIMATE
+    DEFAULT_ADD_LIQUIDITY_ETH_GAS_ESTIMATE
   );
   const { isConnected, signer } = useConnection();
 
