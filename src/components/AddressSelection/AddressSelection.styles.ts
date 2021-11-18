@@ -170,7 +170,8 @@ export const Item = styled.li`
   &.disabled {
     background-color: var(--color-white);
     color: rgba(255, 255, 255, 0.65);
-
+    pointer-events: none;
+    cursor: not-allowed;
     > * {
       opacity: 0.5;
     }
@@ -202,4 +203,9 @@ export const InputGroup = styled.div`
 export const ToggleChainName = styled.div`
   width: 85px;
   text-align: left;
+`;
+
+export const ItemWarning = styled(Item)`
+  background-color: #6cf9d8;
+  color: #000000;
 `;

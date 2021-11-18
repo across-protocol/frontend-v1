@@ -45,12 +45,12 @@ const ChainSelection: React.FC = () => {
 
   // When redux state changes, make sure local inputs change.
   useEffect(() => {
-    if (sendState.fromChain === ChainId.MAINNET) {
+    if (sendState.toChain === ChainId.MAINNET) {
       setCurrentlySelectedChain(CHAINS_SELECTION[0]);
     } else {
       setCurrentlySelectedChain(CHAINS_SELECTION[3]);
     }
-  }, [sendState.fromChain]);
+  }, [sendState.toChain]);
 
   const {
     isOpen,
@@ -69,9 +69,10 @@ const ChainSelection: React.FC = () => {
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
         const nsToChain = { ...sendState, toChain: ChainId.MAINNET };
-        if (selectedItem.chainId === ChainId.MAINNET)
+        if (selectedItem.chainId === ChainId.MAINNET) {
           nsToChain.toChain = ChainId.OPTIMISM;
-        dispatch(actions.toChain(nsToChain));
+          dispatch(actions.toChain(nsToChain));
+        }
       }
     },
   });

@@ -25,6 +25,7 @@ import {
   RoundBox,
   ToggleChainName,
   Address,
+  ItemWarning,
 } from "./AddressSelection.styles";
 import { useSelect } from "downshift";
 import { CHAINS_SELECTION } from "utils/constants";
@@ -66,11 +67,12 @@ const AddressSelection: React.FC = () => {
       if (selectedItem) {
         setCurrentlySelectedChain(selectedItem);
         const nextState = { ...sendState, toChain: selectedItem.chainId };
-        dispatch(actions.fromChain(nextState));
-        const nsToChain = { ...sendState, fromChain: ChainId.MAINNET };
-        if (selectedItem.chainId === ChainId.MAINNET)
+        dispatch(actions.toChain(nextState));
+        const nsToChain = { ...sendState };
+        if (selectedItem.chainId === ChainId.MAINNET) {
           nsToChain.fromChain = ChainId.OPTIMISM;
-        dispatch(actions.toChain(nsToChain));
+          dispatch(actions.fromChain(nsToChain));
+        }
       }
     },
   });
@@ -124,6 +126,7 @@ const AddressSelection: React.FC = () => {
           </RoundBox>
           <Menu isOpen={isOpen} {...getMenuProps()}>
             {isOpen &&
+              currentlySelectedChain.chainId !== ChainId.MAINNET &&
               CHAINS_SELECTION.map((t, index) => {
                 return (
                   <Item
@@ -139,6 +142,28 @@ const AddressSelection: React.FC = () => {
                   </Item>
                 );
               })}
+            {isOpen && currentlySelectedChain.chainId === ChainId.MAINNET && (
+              <>
+                <ItemWarning>
+                  <p>Transaction between L2 chains not possible yet</p>
+                </ItemWarning>
+                {CHAINS_SELECTION.map((t, index) => {
+                  return (
+                    <Item
+                      className={"disabled"}
+                      {...getItemProps({ item: t, index })}
+                      key={t.chainId}
+                    >
+                      <Logo src={t.logoURI} alt={t.name} />
+                      <div>{t.name}</div>
+                      <span className="layer-type">
+                        {t.name !== "Ether" ? "L2" : "L1"}
+                      </span>
+                    </Item>
+                  );
+                })}
+              </>
+            )}
           </Menu>
         </InputGroup>
         <ChangeWrapper onClick={toggle}>
