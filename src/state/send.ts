@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { update } from "./connection";
 import { toggle as toggleConfirmationScreen } from "./deposits";
-import { IChainSelection, CHAINS_SELECTION } from "utils"
+import { IChainSelection, CHAINS_SELECTION } from "utils";
 
 import {
   ChainId,
@@ -28,7 +28,7 @@ const initialState: State = {
   toChain: DEFAULT_TO_CHAIN_ID,
   fromChain: DEFAULT_FROM_CHAIN_ID,
   currentlySelectedToChain: CHAINS_SELECTION[2],
-  currentlySelectedFromChain: CHAINS_SELECTION[0]
+  currentlySelectedFromChain: CHAINS_SELECTION[0],
 };
 
 const sendSlice = createSlice({
@@ -51,11 +51,14 @@ const sendSlice = createSlice({
       state.fromChain = action.payload.fromChain;
       return state;
     },
-    updateSelectedToChain: ( state, action: PayloadAction<IChainSelection>) => {
+    updateSelectedToChain: (state, action: PayloadAction<IChainSelection>) => {
       state.currentlySelectedToChain = action.payload;
       return state;
     },
-    updateSelectedFromChain: ( state, action: PayloadAction<IChainSelection>) => {
+    updateSelectedFromChain: (
+      state,
+      action: PayloadAction<IChainSelection>
+    ) => {
       state.currentlySelectedFromChain = action.payload;
       return state;
     },

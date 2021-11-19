@@ -1,7 +1,7 @@
 import React from "react";
 import { onboard } from "utils";
-import { useConnection, useSend } from "state/hooks";
-import { CHAINS, switchChain, ChainId } from "utils";
+import { useConnection } from "state/hooks";
+import { CHAINS, switchChain, ChainId, UnsupportedChainIdError } from "utils";
 import { Section, SectionTitle } from "../Section";
 import {
   Wrapper,
@@ -22,13 +22,19 @@ import { useAppDispatch, useAppSelector } from "state/hooks";
 
 const ChainSelection: React.FC = () => {
   const { init } = onboard;
-  const { isConnected, provider } = useConnection();
-  const { hasToSwitchChain, fromChain } = useSend();
+  const { isConnected, provider, chainId, error } = useConnection();
   const sendState = useAppSelector((state) => state.send);
 
   const dispatch = useAppDispatch();
-  const buttonText = hasToSwitchChain
-    ? `Switch to ${CHAINS[fromChain].name}`
+
+  const wrongNetworkSend =
+    provider &&
+    chainId &&
+    (error instanceof UnsupportedChainIdError ||
+      chainId !== sendState.currentlySelectedFromChain.chainId);
+
+  const buttonText = wrongNetworkSend
+    ? `Switch to ${CHAINS[sendState.currentlySelectedFromChain.chainId].name}`
     : !isConnected
     ? "Connect Wallet"
     : null;
@@ -36,8 +42,8 @@ const ChainSelection: React.FC = () => {
   const handleClick = () => {
     if (!provider) {
       init();
-    } else if (hasToSwitchChain) {
-      switchChain(provider, fromChain);
+    } else if (wrongNetworkSend) {
+      switchChain(provider, sendState.currentlySelectedFromChain.chainId);
     }
   };
 
@@ -56,15 +62,18 @@ const ChainSelection: React.FC = () => {
       if (selectedItem) {
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
-        dispatch(actions.updateSelectedFromChain(selectedItem))
+        dispatch(actions.updateSelectedFromChain(selectedItem));
         const nsToChain = { ...sendState, toChain: ChainId.MAINNET };
         if (selectedItem.chainId === ChainId.MAINNET) {
           nsToChain.toChain = ChainId.OPTIMISM;
           dispatch(actions.toChain(nsToChain));
-          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[0]))
+          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[0]));
         }
-        if (selectedItem.chainId !== ChainId.MAINNET && sendState.currentlySelectedToChain.chainId !== ChainId.MAINNET) {
-          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[2]))
+        if (
+          selectedItem.chainId !== ChainId.MAINNET &&
+          sendState.currentlySelectedToChain.chainId !== ChainId.MAINNET
+        ) {
+          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[2]));
         }
       }
     },
@@ -87,7 +96,11 @@ const ChainSelection: React.FC = () => {
               CHAINS_SELECTION.map((t, index) => {
                 return (
                   <Item
-                    className={t === sendState.currentlySelectedFromChain ? "disabled" : ""}
+                    className={
+                      t === sendState.currentlySelectedFromChain
+                        ? "disabled"
+                        : ""
+                    }
                     {...getItemProps({ item: t, index })}
                     key={t.chainId}
                   >
@@ -101,7 +114,7 @@ const ChainSelection: React.FC = () => {
               })}
           </Menu>
         </InputGroup>
-        {(hasToSwitchChain || !isConnected) && (
+        {(wrongNetworkSend || !isConnected) && (
           <ConnectButton onClick={handleClick}>{buttonText}</ConnectButton>
         )}
       </Wrapper>

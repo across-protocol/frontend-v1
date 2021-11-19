@@ -41,14 +41,6 @@ const AddressSelection: React.FC = () => {
 
   const sendState = useAppSelector((state) => state.send);
 
-  // When redux state changes, make sure local inputs change.
-  // useEffect(() => {
-  //   if (sendState.fromChain === ChainId.MAINNET) {
-  //     setCurrentlySelectedChain(CHAINS_SELECTION[0]);
-  //   } else {
-  //     setCurrentlySelectedChain(CHAINS_SELECTION[2]);
-  //   }
-  // }, [sendState.fromChain]);
   const {
     isOpen,
     selectedItem,
@@ -64,12 +56,12 @@ const AddressSelection: React.FC = () => {
       if (selectedItem) {
         const nextState = { ...sendState, toChain: selectedItem.chainId };
         dispatch(actions.toChain(nextState));
-        dispatch(actions.updateSelectedToChain(selectedItem))
+        dispatch(actions.updateSelectedToChain(selectedItem));
         const nsToChain = { ...sendState };
         if (selectedItem.chainId === ChainId.MAINNET) {
           nsToChain.fromChain = ChainId.OPTIMISM;
           dispatch(actions.fromChain(nsToChain));
-          dispatch(actions.updateSelectedFromChain(CHAINS_SELECTION[0]))
+          dispatch(actions.updateSelectedFromChain(CHAINS_SELECTION[0]));
         }
       }
     },
@@ -128,7 +120,9 @@ const AddressSelection: React.FC = () => {
               CHAINS_SELECTION.map((t, index) => {
                 return (
                   <Item
-                    className={t === sendState.currentlySelectedToChain ? "disabled" : ""}
+                    className={
+                      t === sendState.currentlySelectedToChain ? "disabled" : ""
+                    }
                     {...getItemProps({ item: t, index })}
                     key={t.chainId}
                   >
@@ -140,28 +134,30 @@ const AddressSelection: React.FC = () => {
                   </Item>
                 );
               })}
-            {isOpen && sendState.currentlySelectedToChain.chainId === ChainId.MAINNET && (
-              <>
-                <ItemWarning>
-                  <p>Transaction between L2 chains not possible yet</p>
-                </ItemWarning>
-                {CHAINS_SELECTION.map((t, index) => {
-                  return (
-                    <Item
-                      className={"disabled"}
-                      {...getItemProps({ item: t, index })}
-                      key={t.chainId}
-                    >
-                      <Logo src={t.logoURI} alt={t.name} />
-                      <div>{t.name}</div>
-                      <span className="layer-type">
-                        {t.name !== "Ether" ? "L2" : "L1"}
-                      </span>
-                    </Item>
-                  );
-                })}
-              </>
-            )}
+            {isOpen &&
+              sendState.currentlySelectedToChain.chainId ===
+                ChainId.MAINNET && (
+                <>
+                  <ItemWarning>
+                    <p>Transaction between L2 chains not possible yet</p>
+                  </ItemWarning>
+                  {CHAINS_SELECTION.map((t, index) => {
+                    return (
+                      <Item
+                        className={"disabled"}
+                        {...getItemProps({ item: t, index })}
+                        key={t.chainId}
+                      >
+                        <Logo src={t.logoURI} alt={t.name} />
+                        <div>{t.name}</div>
+                        <span className="layer-type">
+                          {t.name !== "Ether" ? "L2" : "L1"}
+                        </span>
+                      </Item>
+                    );
+                  })}
+                </>
+              )}
           </Menu>
         </InputGroup>
         <ChangeWrapper onClick={toggle}>
