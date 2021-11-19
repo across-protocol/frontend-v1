@@ -41,7 +41,7 @@ const AddressSelection: React.FC = () => {
 
   const sendState = useAppSelector((state) => state.send);
   const [currentlySelectedChain, setCurrentlySelectedChain] = useState(
-    CHAINS_SELECTION[3]
+    sendState.currentlySelectedToChain
   );
 
   // When redux state changes, make sure local inputs change.
@@ -61,17 +61,19 @@ const AddressSelection: React.FC = () => {
     getMenuProps,
   } = useSelect({
     items: CHAINS_SELECTION,
-    defaultSelectedItem: CHAINS_SELECTION[3],
+    defaultSelectedItem: currentlySelectedChain,
     selectedItem: currentlySelectedChain,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
         setCurrentlySelectedChain(selectedItem);
         const nextState = { ...sendState, toChain: selectedItem.chainId };
         dispatch(actions.toChain(nextState));
+        dispatch(actions.updateSelectedToChain(selectedItem))
         const nsToChain = { ...sendState };
         if (selectedItem.chainId === ChainId.MAINNET) {
           nsToChain.fromChain = ChainId.OPTIMISM;
           dispatch(actions.fromChain(nsToChain));
+          dispatch(actions.updateSelectedFromChain(CHAINS_SELECTION[0]))
         }
       }
     },

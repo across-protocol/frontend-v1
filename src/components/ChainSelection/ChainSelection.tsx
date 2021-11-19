@@ -26,7 +26,8 @@ const ChainSelection: React.FC = () => {
   const { hasToSwitchChain, fromChain } = useSend();
   const sendState = useAppSelector((state) => state.send);
   const [currentlySelectedChain, setCurrentlySelectedChain] = useState(
-    CHAINS_SELECTION[1]
+    sendState.currentlySelectedFromChain
+
   );
   const dispatch = useAppDispatch();
   const buttonText = hasToSwitchChain
@@ -68,10 +69,12 @@ const ChainSelection: React.FC = () => {
         setCurrentlySelectedChain(selectedItem);
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
+        dispatch(actions.updateSelectedFromChain(selectedItem))
         const nsToChain = { ...sendState, toChain: ChainId.MAINNET };
         if (selectedItem.chainId === ChainId.MAINNET) {
           nsToChain.toChain = ChainId.OPTIMISM;
           dispatch(actions.toChain(nsToChain));
+          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[0]))
         }
       }
     },

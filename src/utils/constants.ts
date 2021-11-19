@@ -597,6 +597,20 @@ export const GAS_PRICE_BUFFER = toWeiSafe(
 );
 // Rounded up from a mainnet transaction sending eth gas limit
 export const ADD_LIQUIDITY_ETH_GAS = ethers.BigNumber.from(82796);
+export interface IChainSelection {
+  name: string;
+  chainId: ChainId;
+  logoURI: string;
+  rpcUrl: string;
+  explorerUrl: string;
+  constructExplorerLink: (txHash: string) => string;
+  nativeCurrency: {
+      name: string;
+      symbol: string;
+      decimals: number;
+  };
+
+}
 
 export const CHAINS_SELECTION = [
   {
@@ -628,20 +642,21 @@ export const CHAINS_SELECTION = [
       decimals: 18,
     },
   },
-  {
-    name: "Boba",
-    chainId: ChainId.BOBA,
-    logoURI: bobaLogo,
-    rpcUrl: "https://mainnet.boba.network",
-    explorerUrl: "https://blockexplorer.boba.network",
-    constructExplorerLink: (txHash: string) =>
-      `https://blockexplorer.boba.network/tx/${txHash}`,
-    nativeCurrency: {
-      name: "Boba",
-      symbol: "BOBA",
-      decimals: 18,
-    },
-  },
+  // Stretch goal.
+  // {
+  //   name: "Boba",
+  //   chainId: ChainId.BOBA,
+  //   logoURI: bobaLogo,
+  //   rpcUrl: "https://mainnet.boba.network",
+  //   explorerUrl: "https://blockexplorer.boba.network",
+  //   constructExplorerLink: (txHash: string) =>
+  //     `https://blockexplorer.boba.network/tx/${txHash}`,
+  //   nativeCurrency: {
+  //     name: "Boba",
+  //     symbol: "BOBA",
+  //     decimals: 18,
+  //   },
+  // },
   {
     name: "Ether",
     chainId: ChainId.MAINNET,
