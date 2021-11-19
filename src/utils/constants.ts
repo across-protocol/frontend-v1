@@ -57,7 +57,7 @@ export enum ChainId {
   KOVAN_OPTIMISM = 69,
   ARBITRUM = 42161,
   ARBITRUM_RINKEBY = 421611,
-  BOBA = 28,
+  BOBA = 288,
 }
 
 export type Token = {
@@ -358,7 +358,7 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
     },
   },
   [ChainId.KOVAN_OPTIMISM]: {
-    name: "Optimistic Ethereum Testnet Kovan",
+    name: "Optimism Testnet Kovan",
     chainId: ChainId.KOVAN_OPTIMISM,
     logoURI: optimismLogo,
     rpcUrl: "https://kovan.optimism.io",
@@ -403,11 +403,10 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
     name: "Boba",
     chainId: ChainId.BOBA,
     logoURI: bobaLogo,
-    // Doesn't have an RPC on Infura. Need to know how to handle this
-    rpcUrl: "https://arb1.arbitrum.io/rpc",
-    explorerUrl: "https://blockexplorer.boba.network/",
+    rpcUrl: "https://mainnet.boba.network",
+    explorerUrl: "https://blockexplorer.boba.network",
     constructExplorerLink: (txHash: string) =>
-      `https://blockexplorer.boba.network//tx/${txHash}`,
+      `https://blockexplorer.boba.network/tx/${txHash}`,
     nativeCurrency: {
       name: "Boba",
       symbol: "BOBA",
@@ -585,7 +584,7 @@ export const ADD_LIQUIDITY_ETH_GAS = ethers.BigNumber.from(82796);
 
 export const CHAINS_SELECTION = [
   {
-    name: "Optimisism",
+    name: "Optimism",
     chainId: ChainId.OPTIMISM,
     logoURI: optimismLogo,
     rpcUrl: "https://mainnet.optimism.io",
@@ -617,7 +616,6 @@ export const CHAINS_SELECTION = [
     name: "Boba",
     chainId: ChainId.BOBA,
     logoURI: bobaLogo,
-    // Doesn't have an RPC on Infura. Need to know how to handle this
     rpcUrl: "https://mainnet.boba.network",
     explorerUrl: "https://blockexplorer.boba.network",
     constructExplorerLink: (txHash: string) =>
