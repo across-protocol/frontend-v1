@@ -274,6 +274,22 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       bridgePool: "",
     },
     {
+      address: getAddress("0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc"),
+      name: "USD Coin",
+      symbol: "USDC",
+      decimals: 6,
+      logoURI: usdcLogo,
+      bridgePool: getAddress("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
+    },
+    {
+      address: getAddress("0xa18bF3994C0Cc6E3b63ac420308E5383f53120D7"),
+      name: "Boba",
+      symbol: "BOBA",
+      decimals: 18,
+      logoURI: bobaLogo,
+      bridgePool: getAddress("0x42bbfa2e77757c645eeaad1655e0911a7553efbc"),
+    },
+    {
       address: ethers.constants.AddressZero,
       name: "Ether",
       symbol: "ETH",
