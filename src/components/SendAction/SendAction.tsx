@@ -27,15 +27,8 @@ import { useAppSelector } from "state/hooks";
 const CONFIRMATIONS = 1;
 const MAX_APPROVAL_AMOUNT = ethers.constants.MaxUint256;
 const SendAction: React.FC = () => {
-  const {
-    amount,
-    token,
-    send,
-    hasToApprove,
-    canApprove,
-    canSend,
-    toAddress,
-  } = useSend();
+  const { amount, token, send, hasToApprove, canApprove, canSend, toAddress } =
+    useSend();
   const { account } = useConnection();
   const sendState = useAppSelector((state) => state.send);
 
@@ -52,18 +45,22 @@ const SendAction: React.FC = () => {
   const [updateEthBalance] = api.endpoints.ethBalance.useLazyQuery();
   // trigger balance update
   const [updateBalances] = api.endpoints.balances.useLazyQuery();
-  const tokenInfo = TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].find((t) => t.address === token);
+  const tokenInfo = TOKENS_LIST[
+    sendState.currentlySelectedFromChain.chainId
+  ].find((t) => t.address === token);
 
   const { data: fees } = useBridgeFees(
     {
       amount,
-      tokenSymbol: tokenInfo ?   tokenInfo.symbol : "",
+      tokenSymbol: tokenInfo ? tokenInfo.symbol : "",
       blockNumber: block?.blockNumber ?? 0,
     },
     { skip: !tokenInfo || !block || !amount.gt(0) }
   );
 
-  const depositBox = getDepositBox(sendState.currentlySelectedFromChain.chainId);
+  const depositBox = getDepositBox(
+    sendState.currentlySelectedFromChain.chainId
+  );
   const { refetch } = useAllowance(
     {
       owner: account!,
@@ -103,8 +100,14 @@ const SendAction: React.FC = () => {
       });
       // update balances after tx
       if (account) {
-        updateEthBalance({ chainId: sendState.currentlySelectedFromChain.chainId, account });
-        updateBalances({ chainId: sendState.currentlySelectedFromChain.chainId, account });
+        updateEthBalance({
+          chainId: sendState.currentlySelectedFromChain.chainId,
+          account,
+        });
+        updateBalances({
+          chainId: sendState.currentlySelectedFromChain.chainId,
+          account,
+        });
       }
     }
   };
@@ -151,7 +154,10 @@ const SendAction: React.FC = () => {
         {amount.gt(0) && fees && tokenInfo && (
           <>
             <Info>
-              <div>Time to {CHAINS[sendState.currentlySelectedToChain.chainId].name}</div>
+              <div>
+                Time to{" "}
+                {CHAINS[sendState.currentlySelectedToChain.chainId].name}
+              </div>
               <div>~1-3 minutes</div>
             </Info>
             <Info>

@@ -141,7 +141,7 @@ const CoinSelection = () => {
     }
   };
 
-  const { block} = useBlocks(sendState.currentlySelectedToChain.chainId)
+  const { block } = useBlocks(sendState.currentlySelectedToChain.chainId);
 
   const { data: fees } = useBridgeFees(
     {
