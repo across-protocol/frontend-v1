@@ -57,7 +57,7 @@ const SendAction: React.FC = () => {
   const { data: fees } = useBridgeFees(
     {
       amount,
-      tokenSymbol: tokenInfo!.symbol,
+      tokenSymbol: tokenInfo ?   tokenInfo.symbol : "",
       blockNumber: block?.blockNumber ?? 0,
     },
     { skip: !tokenInfo || !block || !amount.gt(0) }
