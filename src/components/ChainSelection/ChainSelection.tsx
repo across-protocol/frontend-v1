@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { onboard } from "utils";
 import { useConnection, useSend } from "state/hooks";
 import { CHAINS, switchChain, ChainId } from "utils";
@@ -25,10 +25,7 @@ const ChainSelection: React.FC = () => {
   const { isConnected, provider } = useConnection();
   const { hasToSwitchChain, fromChain } = useSend();
   const sendState = useAppSelector((state) => state.send);
-  const [currentlySelectedChain, setCurrentlySelectedChain] = useState(
-    sendState.currentlySelectedFromChain
 
-  );
   const dispatch = useAppDispatch();
   const buttonText = hasToSwitchChain
     ? `Switch to ${CHAINS[fromChain].name}`
@@ -44,15 +41,6 @@ const ChainSelection: React.FC = () => {
     }
   };
 
-  // When redux state changes, make sure local inputs change.
-  useEffect(() => {
-    if (sendState.toChain === ChainId.MAINNET) {
-      setCurrentlySelectedChain(CHAINS_SELECTION[0]);
-    } else {
-      setCurrentlySelectedChain(CHAINS_SELECTION[3]);
-    }
-  }, [sendState.toChain]);
-
   const {
     isOpen,
     selectedItem,
@@ -62,11 +50,10 @@ const ChainSelection: React.FC = () => {
     getMenuProps,
   } = useSelect({
     items: CHAINS_SELECTION,
-    defaultSelectedItem: CHAINS_SELECTION[1],
-    selectedItem: currentlySelectedChain,
+    defaultSelectedItem: sendState.currentlySelectedFromChain,
+    selectedItem: sendState.currentlySelectedFromChain,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-        setCurrentlySelectedChain(selectedItem);
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
         dispatch(actions.updateSelectedFromChain(selectedItem))
@@ -75,6 +62,9 @@ const ChainSelection: React.FC = () => {
           nsToChain.toChain = ChainId.OPTIMISM;
           dispatch(actions.toChain(nsToChain));
           dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[0]))
+        }
+        if (selectedItem.chainId !== ChainId.MAINNET && sendState.currentlySelectedToChain.chainId !== ChainId.MAINNET) {
+          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[2]))
         }
       }
     },
@@ -97,7 +87,7 @@ const ChainSelection: React.FC = () => {
               CHAINS_SELECTION.map((t, index) => {
                 return (
                   <Item
-                    className={t === currentlySelectedChain ? "disabled" : ""}
+                    className={t === sendState.currentlySelectedFromChain ? "disabled" : ""}
                     {...getItemProps({ item: t, index })}
                     key={t.chainId}
                   >

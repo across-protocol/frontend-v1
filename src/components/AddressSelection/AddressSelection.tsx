@@ -40,18 +40,15 @@ const AddressSelection: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const sendState = useAppSelector((state) => state.send);
-  const [currentlySelectedChain, setCurrentlySelectedChain] = useState(
-    sendState.currentlySelectedToChain
-  );
 
   // When redux state changes, make sure local inputs change.
-  useEffect(() => {
-    if (sendState.fromChain === ChainId.MAINNET) {
-      setCurrentlySelectedChain(CHAINS_SELECTION[0]);
-    } else {
-      setCurrentlySelectedChain(CHAINS_SELECTION[3]);
-    }
-  }, [sendState.fromChain]);
+  // useEffect(() => {
+  //   if (sendState.fromChain === ChainId.MAINNET) {
+  //     setCurrentlySelectedChain(CHAINS_SELECTION[0]);
+  //   } else {
+  //     setCurrentlySelectedChain(CHAINS_SELECTION[2]);
+  //   }
+  // }, [sendState.fromChain]);
   const {
     isOpen,
     selectedItem,
@@ -61,11 +58,10 @@ const AddressSelection: React.FC = () => {
     getMenuProps,
   } = useSelect({
     items: CHAINS_SELECTION,
-    defaultSelectedItem: currentlySelectedChain,
-    selectedItem: currentlySelectedChain,
+    defaultSelectedItem: sendState.currentlySelectedToChain,
+    selectedItem: sendState.currentlySelectedToChain,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-        setCurrentlySelectedChain(selectedItem);
         const nextState = { ...sendState, toChain: selectedItem.chainId };
         dispatch(actions.toChain(nextState));
         dispatch(actions.updateSelectedToChain(selectedItem))
@@ -128,11 +124,11 @@ const AddressSelection: React.FC = () => {
           </RoundBox>
           <Menu isOpen={isOpen} {...getMenuProps()}>
             {isOpen &&
-              currentlySelectedChain.chainId !== ChainId.MAINNET &&
+              sendState.currentlySelectedToChain.chainId !== ChainId.MAINNET &&
               CHAINS_SELECTION.map((t, index) => {
                 return (
                   <Item
-                    className={t === currentlySelectedChain ? "disabled" : ""}
+                    className={t === sendState.currentlySelectedToChain ? "disabled" : ""}
                     {...getItemProps({ item: t, index })}
                     key={t.chainId}
                   >
@@ -144,7 +140,7 @@ const AddressSelection: React.FC = () => {
                   </Item>
                 );
               })}
-            {isOpen && currentlySelectedChain.chainId === ChainId.MAINNET && (
+            {isOpen && sendState.currentlySelectedToChain.chainId === ChainId.MAINNET && (
               <>
                 <ItemWarning>
                   <p>Transaction between L2 chains not possible yet</p>

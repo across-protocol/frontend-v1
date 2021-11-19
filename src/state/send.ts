@@ -27,7 +27,7 @@ const initialState: State = {
   amount: ethers.constants.Zero,
   toChain: DEFAULT_TO_CHAIN_ID,
   fromChain: DEFAULT_FROM_CHAIN_ID,
-  currentlySelectedToChain: CHAINS_SELECTION[3],
+  currentlySelectedToChain: CHAINS_SELECTION[2],
   currentlySelectedFromChain: CHAINS_SELECTION[0]
 };
 
