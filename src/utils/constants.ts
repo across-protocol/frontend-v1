@@ -618,7 +618,7 @@ export const CHAINS_SELECTION = [
     chainId: ChainId.BOBA,
     logoURI: bobaLogo,
     // Doesn't have an RPC on Infura. Need to know how to handle this
-    rpcUrl: "https://arb1.arbitrum.io/rpc",
+    rpcUrl: "https://mainnet.boba.network",
     explorerUrl: "https://blockexplorer.boba.network",
     constructExplorerLink: (txHash: string) =>
       `https://blockexplorer.boba.network/tx/${txHash}`,
