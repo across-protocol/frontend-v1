@@ -291,7 +291,7 @@ export function useBalance(params: {
   const selectedIndex = tokenList.findIndex(
     ({ address }) => address === tokenAddress
   );
-  const balance = result?.data ? result.data[selectedIndex].toString() : "0";
+  const balance = result?.data && result.data[selectedIndex]  ? result.data[selectedIndex].toString() : "0";
 
   return {
     balance,

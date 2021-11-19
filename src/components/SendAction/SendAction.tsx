@@ -22,14 +22,13 @@ import { PrimaryButton } from "../Buttons";
 import { Wrapper, Info, AccentSection, InfoIcon } from "./SendAction.styles";
 import api from "state/chainApi";
 import InformationDialog from "components/InformationDialog";
+import { useAppSelector } from "state/hooks";
 
 const CONFIRMATIONS = 1;
 const MAX_APPROVAL_AMOUNT = ethers.constants.MaxUint256;
 const SendAction: React.FC = () => {
   const {
     amount,
-    fromChain,
-    toChain,
     token,
     send,
     hasToApprove,
@@ -38,8 +37,9 @@ const SendAction: React.FC = () => {
     toAddress,
   } = useSend();
   const { account } = useConnection();
+  const sendState = useAppSelector((state) => state.send);
 
-  const { block } = useBlocks(toChain);
+  const { block } = useBlocks(sendState.currentlySelectedToChain.chainId);
 
   const [isInfoModalOpen, setOpenInfoModal] = useState(false);
   const toggleInfoModal = () => setOpenInfoModal((oldOpen) => !oldOpen);
@@ -52,7 +52,7 @@ const SendAction: React.FC = () => {
   const [updateEthBalance] = api.endpoints.ethBalance.useLazyQuery();
   // trigger balance update
   const [updateBalances] = api.endpoints.balances.useLazyQuery();
-  const tokenInfo = TOKENS_LIST[fromChain].find((t) => t.address === token);
+  const tokenInfo = TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].find((t) => t.address === token);
 
   const { data: fees } = useBridgeFees(
     {
@@ -63,12 +63,12 @@ const SendAction: React.FC = () => {
     { skip: !tokenInfo || !block || !amount.gt(0) }
   );
 
-  const depositBox = getDepositBox(fromChain);
+  const depositBox = getDepositBox(sendState.currentlySelectedFromChain.chainId);
   const { refetch } = useAllowance(
     {
       owner: account!,
       spender: depositBox.address,
-      chainId: fromChain,
+      chainId: sendState.currentlySelectedFromChain.chainId,
       token,
       amount,
     },
@@ -86,6 +86,7 @@ const SendAction: React.FC = () => {
       refetch();
     }
   };
+
   const handleSend = async () => {
     const { tx, fees } = await send();
     if (tx && fees) {
@@ -93,8 +94,8 @@ const SendAction: React.FC = () => {
       const receipt = await tx.wait(CONFIRMATIONS);
       addDeposit({
         tx: receipt,
-        toChain,
-        fromChain,
+        toChain: sendState.currentlySelectedToChain.chainId,
+        fromChain: sendState.currentlySelectedFromChain.chainId,
         amount,
         token,
         toAddress,
@@ -102,8 +103,8 @@ const SendAction: React.FC = () => {
       });
       // update balances after tx
       if (account) {
-        updateEthBalance({ chainId: fromChain, account });
-        updateBalances({ chainId: fromChain, account });
+        updateEthBalance({ chainId: sendState.currentlySelectedFromChain.chainId, account });
+        updateBalances({ chainId: sendState.currentlySelectedFromChain.chainId, account });
       }
     }
   };
@@ -150,7 +151,7 @@ const SendAction: React.FC = () => {
         {amount.gt(0) && fees && tokenInfo && (
           <>
             <Info>
-              <div>Time to {CHAINS[toChain].name}</div>
+              <div>Time to {CHAINS[sendState.currentlySelectedToChain.chainId].name}</div>
               <div>~1-3 minutes</div>
             </Info>
             <Info>
