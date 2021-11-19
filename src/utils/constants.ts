@@ -343,14 +343,14 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
     },
   },
   [ChainId.OPTIMISM]: {
-    name: "Optimistic Ethereum",
+    name: "Optimism",
     chainId: ChainId.OPTIMISM,
     logoURI: optimismLogo,
     rpcUrl: "https://mainnet.optimism.io",
     explorerUrl: "https://optimistic.etherscan.io",
-    constructExplorerLink: defaultConstructExplorerLink(
+    constructExplorerLink: (txHash: string) =>
       "https://optimistic.etherscan.io"
-    ),
+    ,
     nativeCurrency: {
       name: "Ether",
       symbol: "OETH",
@@ -424,8 +424,7 @@ export const ADDRESSES: Record<ChainId, { BRIDGE?: string }> = {
   [ChainId.RINKEBY]: {},
   [ChainId.KOVAN]: {},
   [ChainId.OPTIMISM]: {
-    // Stubbed value. Does not work. TODO: Change this out when contract deployed.
-    BRIDGE: "0x2271a5E74eA8A29764ab10523575b41AA52455f0",
+    BRIDGE: "0x3baD7AD0728f9917d1Bf08af5782dCbD516cDd96",
   },
   [ChainId.BOBA]: {
     // Stubbed value. Does not work. TODO: Change this out when contract deployed.
@@ -586,7 +585,7 @@ export const ADD_LIQUIDITY_ETH_GAS = ethers.BigNumber.from(82796);
 
 export const CHAINS_SELECTION = [
   {
-    name: "Optimistic",
+    name: "Optimisism",
     chainId: ChainId.OPTIMISM,
     logoURI: optimismLogo,
     rpcUrl: "https://mainnet.optimism.io",
@@ -639,8 +638,8 @@ export const CHAINS_SELECTION = [
     constructExplorerLink: (txHash: string) =>
       `https://etherscan.io/tx/${txHash}`,
     nativeCurrency: {
-      name: "Boba",
-      symbol: "BOBA",
+      name: "Ether",
+      symbol: "ETH",
       decimals: 18,
     },
   },
