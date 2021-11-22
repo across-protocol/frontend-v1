@@ -3,13 +3,7 @@ import { ethers, BigNumber } from "ethers";
 import { useSelect } from "downshift";
 import { max } from "utils";
 
-import {
-  useSend,
-  useBalances,
-  useConnection,
-  useBridgeFees,
-  useBlocks,
-} from "state/hooks";
+import { useSend, useBalances, useConnection } from "state/hooks";
 import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
 import { Section, SectionTitle } from "../Section";
 
@@ -30,7 +24,7 @@ import {
 const FEE_ESTIMATION = ".004";
 const CoinSelection = () => {
   const { account, isConnected } = useConnection();
-  const { setAmount, setToken, fromChain, toChain, amount, token } = useSend();
+  const { setAmount, setToken, fromChain, amount, token, fees } = useSend();
 
   const [error, setError] = React.useState<Error>();
   const tokenList = TOKENS_LIST[fromChain];
@@ -137,17 +131,6 @@ const CoinSelection = () => {
       setInputAmount(formatUnits(balance, selectedItem.decimals));
     }
   };
-
-  const { block } = useBlocks(toChain);
-
-  const { data: fees } = useBridgeFees(
-    {
-      amount,
-      tokenSymbol: selectedItem!.symbol,
-      blockNumber: block?.blockNumber ?? 0,
-    },
-    { skip: amount.lte(0) || !block || !selectedItem?.symbol }
-  );
 
   const errorMsg = error
     ? error.message

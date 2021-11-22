@@ -9,6 +9,7 @@ import {
   PROVIDERS,
   TransactionError,
   ChainId,
+  MAX_APPROVAL_AMOUNT,
 } from "utils";
 import type { RootState, AppDispatch } from "./";
 import { update, disconnect, error as errorAction } from "./connection";
@@ -23,6 +24,8 @@ import {
 import chainApi, { useAllowance, useBridgeFees } from "./chainApi";
 import { add } from "./transactions";
 import { deposit as depositAction, toggle } from "./deposits";
+import { useERC20 } from "hooks";
+import { Bridge } from "arb-ts";
 
 const FEE_ESTIMATION = "0.004";
 
@@ -87,10 +90,110 @@ export function useBlocks(toChain: ChainId) {
   };
 }
 
-export function useSend() {
+export function useSendArbitrum() {
+  const [bridge, setBridge] = useState<Bridge | undefined>();
   const { isConnected, chainId, account, signer } = useConnection();
-  const { fromChain, toChain, toAddress, amount, token, error } =
-    useAppSelector((state) => state.send);
+  const { fromChain, toChain, toAddress, amount, token } = useAppSelector(
+    (state) => state.send
+  );
+
+  const { balance: balanceStr } = useBalance({
+    chainId: fromChain,
+    account,
+    tokenAddress: token,
+  });
+  const balance = BigNumber.from(balanceStr);
+  const [refetchAllowance, { data: allowance, error: allowanceError }] =
+    chainApi.endpoints.allowance.useLazyQuery();
+  console.log(allowance, allowanceError);
+  const canApprove = balance.gte(amount) && amount.gte(0);
+  const hasToApprove = allowance?.hasToApprove ?? true;
+  //TODO: Add fees
+  const [fees] = useState({
+    instantRelayFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    slowRelayFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    lpFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    isAmountTooLow: false,
+    isLiquidityInsufficient: false,
+  });
+
+  useEffect(() => {
+    if (!signer || !account) return;
+    if (fromChain !== ChainId.MAINNET) return;
+    if (toChain !== ChainId.ARBITRUM) return;
+    if (!isConnected) return;
+    const provider = PROVIDERS[ChainId.ARBITRUM]();
+    console.log("setting bridge");
+    Bridge.init(signer, provider.getSigner(account))
+      .then(setBridge)
+      .catch(console.error);
+  }, [signer, account, fromChain, toChain, isConnected]);
+
+  const send = useCallback(async () => {
+    if (!bridge || !isConnected) return {};
+    if (token === ethers.constants.AddressZero) {
+      return {
+        tx: await bridge.depositETH(amount),
+        fees,
+      };
+    } else {
+      const depositParams = await bridge.getDepositTxParams({
+        erc20L1Address: token,
+        amount,
+        destinationAddress: toAddress,
+      });
+      console.log(depositParams);
+      return {
+        tx: await bridge.deposit(depositParams),
+        fees,
+      };
+    }
+  }, [bridge, amount, fees, token, isConnected, toAddress]);
+
+  const approve = useCallback(() => {
+    if (!bridge) return;
+    return bridge.approveToken(token, MAX_APPROVAL_AMOUNT);
+  }, [bridge, token]);
+
+  useEffect(() => {
+    if (!bridge || !account || !token || !chainId || !amount) return;
+
+    bridge.l1Bridge
+      .getGatewayAddress(token)
+      .then((spender) => {
+        return refetchAllowance({
+          owner: account,
+          spender,
+          chainId,
+          token,
+          amount,
+        });
+      })
+      .catch(console.error);
+  }, [bridge, amount, token, chainId, account, refetchAllowance]);
+
+  const canSend = true;
+  const hasToSwitchChain = false;
+  return {
+    canSend,
+    canApprove,
+    hasToApprove,
+    hasToSwitchChain,
+    send,
+    approve,
+    fees,
+  };
+}
+export function useSend() {
   const dispatch = useAppDispatch();
   const actions = bindActionCreators(
     {
@@ -103,6 +206,34 @@ export function useSend() {
     },
     dispatch
   );
+  const send = useAppSelector((state) => state.send);
+  const sendAcross = useSendAcross();
+  const sendArbitrum = useSendArbitrum();
+  const setSend = {
+    setToken: actions.tokenAction,
+    setAmount: actions.amountAction,
+    setFromChain: actions.fromChainAction,
+    setToChain: actions.toChainAction,
+    setToAddress: actions.toAddressAction,
+    setError: actions.sendErrorAction,
+  };
+  if (send.fromChain === ChainId.MAINNET && send.toChain === ChainId.ARBITRUM) {
+    return {
+      ...send,
+      ...setSend,
+      ...sendArbitrum,
+    };
+  }
+  return {
+    ...send,
+    ...setSend,
+    ...sendAcross,
+  };
+}
+export function useSendAcross() {
+  const { isConnected, chainId, account, signer } = useConnection();
+  const { fromChain, toChain, toAddress, amount, token, error } =
+    useAppSelector((state) => state.send);
 
   const { balance: balanceStr } = useBalance({
     chainId: fromChain,
@@ -123,9 +254,17 @@ export function useSend() {
     },
     { skip: !account || !isConnected || !depositBox }
   );
+  const { approve: rawApprove } = useERC20(token);
   const canApprove = balance.gte(amount) && amount.gte(0);
   const hasToApprove = allowance?.hasToApprove ?? false;
 
+  async function approve() {
+    return rawApprove({
+      amount: MAX_APPROVAL_AMOUNT,
+      spender: depositBox.address,
+      signer,
+    });
+  }
   const hasToSwitchChain = isConnected && fromChain !== chainId;
 
   const tokenSymbol =
@@ -230,17 +369,13 @@ export function useSend() {
     amount,
     token,
     error,
-    setToken: actions.tokenAction,
-    setAmount: actions.amountAction,
-    setFromChain: actions.fromChainAction,
-    setToChain: actions.toChainAction,
-    setToAddress: actions.toAddressAction,
-    setError: actions.sendErrorAction,
     canSend,
     canApprove,
     hasToApprove,
     hasToSwitchChain,
     send,
+    approve,
+    fees,
   };
 }
 
@@ -291,7 +426,7 @@ export function useBalance(params: {
   const selectedIndex = tokenList.findIndex(
     ({ address }) => address === tokenAddress
   );
-  const balance = result?.data ? result.data[selectedIndex].toString() : "0";
+  const balance = result?.data ? result.data[selectedIndex]?.toString() : "0";
 
   return {
     balance,

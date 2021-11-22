@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import { ethers } from "ethers";
 import {
-  useBridgeFees,
   useConnection,
   useDeposits,
   useSend,
   useTransactions,
-  useBlocks,
   useAllowance,
 } from "state/hooks";
 import { TransactionTypes } from "state/transactions";
-import { useERC20 } from "hooks";
 import {
   CHAINS,
   getDepositBox,
@@ -24,7 +20,6 @@ import api from "state/chainApi";
 import InformationDialog from "components/InformationDialog";
 
 const CONFIRMATIONS = 1;
-const MAX_APPROVAL_AMOUNT = ethers.constants.MaxUint256;
 const SendAction: React.FC = () => {
   const {
     amount,
@@ -36,10 +31,11 @@ const SendAction: React.FC = () => {
     canApprove,
     canSend,
     toAddress,
+    approve,
+    fees,
   } = useSend();
-  const { account } = useConnection();
 
-  const { block } = useBlocks(toChain);
+  const { signer, account } = useConnection();
 
   const [isInfoModalOpen, setOpenInfoModal] = useState(false);
   const toggleInfoModal = () => setOpenInfoModal((oldOpen) => !oldOpen);
@@ -47,21 +43,10 @@ const SendAction: React.FC = () => {
   const [isApprovalPending, setApprovalPending] = useState(false);
   const { addTransaction } = useTransactions();
   const { addDeposit } = useDeposits();
-  const { approve } = useERC20(token);
-  const { signer } = useConnection();
   const [updateEthBalance] = api.endpoints.ethBalance.useLazyQuery();
   // trigger balance update
   const [updateBalances] = api.endpoints.balances.useLazyQuery();
   const tokenInfo = TOKENS_LIST[fromChain].find((t) => t.address === token);
-
-  const { data: fees } = useBridgeFees(
-    {
-      amount,
-      tokenSymbol: tokenInfo!.symbol,
-      blockNumber: block?.blockNumber ?? 0,
-    },
-    { skip: !tokenInfo || !block || !amount.gt(0) }
-  );
 
   const depositBox = getDepositBox(fromChain);
   const { refetch } = useAllowance(
@@ -75,11 +60,7 @@ const SendAction: React.FC = () => {
     { skip: !account }
   );
   const handleApprove = async () => {
-    const tx = await approve({
-      amount: MAX_APPROVAL_AMOUNT,
-      spender: depositBox.address,
-      signer,
-    });
+    const tx = await approve();
     if (tx) {
       addTransaction({ ...tx, meta: { label: TransactionTypes.APPROVE } });
       await tx.wait(CONFIRMATIONS);
