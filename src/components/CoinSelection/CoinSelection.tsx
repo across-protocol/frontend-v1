@@ -107,17 +107,20 @@ const CoinSelection = () => {
         const selectedIndex = tokenList.findIndex(
           ({ address }) => address === token
         );
-        const balance = balances[selectedIndex];
-        const isEth = tokenList[selectedIndex].symbol === "ETH";
-        if (
-          amount.gt(
-            isEth
-              ? balance.sub(ethers.utils.parseEther(FEE_ESTIMATION))
-              : balance
-          )
-        ) {
-          setError(new Error("Insufficient balance."));
+        if (balances[selectedIndex]) {
+          const balance = balances[selectedIndex] || ethers.BigNumber.from("0");
+          const isEth = tokenList[selectedIndex].symbol === "ETH";
+          if (
+            amount.gt(
+              isEth
+                ? balance.sub(ethers.utils.parseEther(FEE_ESTIMATION))
+                : balance
+            )
+          ) {
+            setError(new Error("Insufficient balance."));
+          }
         }
+
       }
     }
   }, [balances, amount, token, tokenList, inputAmount]);
