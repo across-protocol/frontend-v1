@@ -141,7 +141,11 @@ const CoinSelection = () => {
           : balances[selectedIndex];
         setAmount({ amount: balance });
         setInputAmount(formatUnits(balance, selectedItem.decimals));
+      } else {
+        setAmount({ amount: ethers.BigNumber.from("0") })
+        setInputAmount(formatUnits(ethers.BigNumber.from("0"), selectedItem.decimals))
       }
+
     }
   };
 
