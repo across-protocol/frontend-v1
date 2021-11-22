@@ -120,7 +120,6 @@ const CoinSelection = () => {
             setError(new Error("Insufficient balance."));
           }
         }
-
       }
     }
   }, [balances, amount, token, tokenList, inputAmount]);
@@ -130,17 +129,19 @@ const CoinSelection = () => {
       const selectedIndex = tokenList.findIndex(
         ({ address }) => address === selectedItem.address
       );
-      const isEth = tokenList[selectedIndex].symbol === "ETH";
-      const balance = isEth
-        ? max(
-            balances[selectedIndex].sub(
-              ethers.utils.parseEther(FEE_ESTIMATION)
-            ),
-            0
-          )
-        : balances[selectedIndex];
-      setAmount({ amount: balance });
-      setInputAmount(formatUnits(balance, selectedItem.decimals));
+      if (balances[selectedIndex]) {
+        const isEth = tokenList[selectedIndex].symbol === "ETH";
+        const balance = isEth
+          ? max(
+              balances[selectedIndex].sub(
+                ethers.utils.parseEther(FEE_ESTIMATION)
+              ),
+              0
+            )
+          : balances[selectedIndex];
+        setAmount({ amount: balance });
+        setInputAmount(formatUnits(balance, selectedItem.decimals));
+      }
     }
   };
 
