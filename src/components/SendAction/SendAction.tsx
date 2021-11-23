@@ -148,9 +148,6 @@ const SendAction: React.FC = () => {
     (hasToApprove && !canApprove) ||
     amountMinusFees.lte(0);
 
-    console.log("buttonDisabled", buttonDisabled, isSendPending, isApprovalPending, (!hasToApprove && !canSend), (hasToApprove && !canApprove), amountMinusFees.lte(0))
-    console.log("which of these fails", (!hasToApprove), (!canSend))
-
   return (
     <AccentSection>
       <Wrapper>

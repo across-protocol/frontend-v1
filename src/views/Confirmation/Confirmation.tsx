@@ -18,7 +18,6 @@ import {
   SubHeading,
 } from "./Confirmation.styles";
 
-
 const Confirmation: React.FC = () => {
   const { deposit, toggle } = useDeposits();
 
@@ -28,8 +27,6 @@ const Confirmation: React.FC = () => {
   const tokenInfo = TOKENS_LIST[deposit.fromChain].find(
     (t) => t.address === deposit.token
   );
-
-
 
   return (
     <Layout>

@@ -89,8 +89,16 @@ export function useBlocks(toChain: ChainId) {
 
 export function useSend() {
   const { isConnected, chainId, account, signer } = useConnection();
-  const { fromChain, toChain, toAddress, amount, token, error, currentlySelectedFromChain, currentlySelectedToChain  } =
-    useAppSelector((state) => state.send);
+  const {
+    fromChain,
+    toChain,
+    toAddress,
+    amount,
+    token,
+    error,
+    currentlySelectedFromChain,
+    currentlySelectedToChain,
+  } = useAppSelector((state) => state.send);
   const dispatch = useAppDispatch();
   const actions = bindActionCreators(
     {
@@ -126,7 +134,8 @@ export function useSend() {
   const canApprove = balance.gte(amount) && amount.gte(0);
   const hasToApprove = allowance?.hasToApprove ?? false;
 
-  const hasToSwitchChain = isConnected && currentlySelectedFromChain.chainId !== chainId;
+  const hasToSwitchChain =
+    isConnected && currentlySelectedFromChain.chainId !== chainId;
 
   const tokenSymbol =
     TOKENS_LIST[fromChain].find((t) => t.address === token)?.symbol ?? "";
@@ -142,7 +151,7 @@ export function useSend() {
 
   const canSend = useMemo(
     () =>
-    currentlySelectedFromChain.chainId &&
+      currentlySelectedFromChain.chainId &&
       block &&
       currentlySelectedToChain.chainId &&
       amount &&
@@ -163,7 +172,7 @@ export function useSend() {
         )
         .gte(amount),
     [
-      currentlySelectedFromChain.chainId ,
+      currentlySelectedFromChain.chainId,
       block,
       currentlySelectedToChain.chainId,
       amount,
@@ -182,12 +191,23 @@ export function useSend() {
     }
 
     try {
-      const depositBox = getDepositBox(currentlySelectedFromChain.chainId, signer);
+      const depositBox = getDepositBox(
+        currentlySelectedFromChain.chainId,
+        signer
+      );
       const isETH = token === ethers.constants.AddressZero;
       const value = isETH ? amount : ethers.constants.Zero;
-      const l2Token = isETH ? TOKENS_LIST[currentlySelectedFromChain.chainId][0].address : token;
+      const l2Token = isETH
+        ? TOKENS_LIST[currentlySelectedFromChain.chainId][0].address
+        : token;
       const { instantRelayFee, slowRelayFee } = fees;
-      const timestamp = block.timestamp - (1000 * 60 * 10);
+      let timestamp = block.timestamp;
+      // MAJOR HACK FOR OPTIMISM TESTING. DO NOT MERGE INTO PRODUCTION
+      // This is due to a bug in Optimism currently being 10-12 minutes behind Eth Mainnet.
+      if (currentlySelectedFromChain.chainId === ChainId.OPTIMISM) {
+        const TEN_MINUTES_IN_SECONDS = 600;
+        timestamp = block.timestamp - TEN_MINUTES_IN_SECONDS;
+      }
 
       const tx = await depositBox.deposit(
         toAddress,

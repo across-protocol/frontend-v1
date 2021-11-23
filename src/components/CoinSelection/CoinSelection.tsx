@@ -142,10 +142,11 @@ const CoinSelection = () => {
         setAmount({ amount: balance });
         setInputAmount(formatUnits(balance, selectedItem.decimals));
       } else {
-        setAmount({ amount: ethers.BigNumber.from("0") })
-        setInputAmount(formatUnits(ethers.BigNumber.from("0"), selectedItem.decimals))
+        setAmount({ amount: ethers.BigNumber.from("0") });
+        setInputAmount(
+          formatUnits(ethers.BigNumber.from("0"), selectedItem.decimals)
+        );
       }
-
     }
   };
 
