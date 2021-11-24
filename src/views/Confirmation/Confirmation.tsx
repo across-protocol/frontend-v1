@@ -20,6 +20,7 @@ import {
 
 const Confirmation: React.FC = () => {
   const { deposit, toggle } = useDeposits();
+
   if (!deposit) return null;
   const amountMinusFees = receiveAmount(deposit.amount, deposit.fees);
 
@@ -118,7 +119,7 @@ const Confirmation: React.FC = () => {
               </div>
             </Info>
             <Info>
-              <h3>ETA to {CHAINS[deposit.toChain].name}</h3>
+              <h3>Estimated time of arrival</h3>
               <div>
                 <div>~2 minutes</div>
               </div>
