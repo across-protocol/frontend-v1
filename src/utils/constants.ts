@@ -502,7 +502,7 @@ export const PROVIDERS: Record<ChainId, GetProvider> = {
   [ChainId.BOBA]: memoize(
     () =>
       new ethers.providers.StaticJsonRpcProvider(
-        `https://arbitrum-rinkeby.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
+        `https://mainnet.boba.network`
       )
   ),
 };
@@ -629,20 +629,20 @@ export const CHAINS_SELECTION = [
     },
   },
   // Stretch goal.
-  // {
-  //   name: "Boba",
-  //   chainId: ChainId.BOBA,
-  //   logoURI: bobaLogo,
-  //   rpcUrl: "https://mainnet.boba.network",
-  //   explorerUrl: "https://blockexplorer.boba.network",
-  //   constructExplorerLink: (txHash: string) =>
-  //     `https://blockexplorer.boba.network/tx/${txHash}`,
-  //   nativeCurrency: {
-  //     name: "Boba",
-  //     symbol: "BOBA",
-  //     decimals: 18,
-  //   },
-  // },
+  {
+    name: "Boba",
+    chainId: ChainId.BOBA,
+    logoURI: bobaLogo,
+    rpcUrl: "https://mainnet.boba.network",
+    explorerUrl: "https://blockexplorer.boba.network",
+    constructExplorerLink: (txHash: string) =>
+      `https://blockexplorer.boba.network/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Boba",
+      symbol: "BOBA",
+      decimals: 18,
+    },
+  },
   {
     name: "Ether",
     chainId: ChainId.MAINNET,
