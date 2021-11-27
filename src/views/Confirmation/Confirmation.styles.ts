@@ -68,7 +68,7 @@ export const Logo = styled.img`
 export const SuccessIconRow = styled.div`
   display: inline-block;
   margin: 0;
-  width: 31%;
+  width: 33%;
   background-color: #6cf9d8;
   height: 2px;
   > div {
@@ -84,7 +84,7 @@ export const SuccessIconRow = styled.div`
 `;
 
 export const ConfirmationLine = styled.div`
-  width: 33%;
+  width: 31%;
   background-color: #6cf9d8;
   height: 2px;
   opacity: 0.3;
