@@ -30,7 +30,7 @@ import {
 
 const Confirmation: React.FC = () => {
   const { deposit, toggle } = useDeposits();
-  const [l1DepositSuccess] = useState(false);
+  const [l1DepositSuccess] = useState(true);
 
   if (!deposit) return null;
   // const amountMinusFees = receiveAmount(deposit.amount, deposit.fees);
@@ -74,7 +74,7 @@ const Confirmation: React.FC = () => {
             <SuccessInfoBlock>
               {l1DepositSuccess ? (
                 <>
-                  <SuccessInfoText>Deposit succeeded</SuccessInfoText>
+                  <SuccessInfoText>Transfer succeeded</SuccessInfoText>
                   <Link
                     href={CHAINS[deposit.fromChain].constructExplorerLink(
                       deposit.txHash
