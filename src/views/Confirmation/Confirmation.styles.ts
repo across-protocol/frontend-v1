@@ -1,29 +1,12 @@
 import styled from "@emotion/styled";
-import {
-  PrimaryButton,
-  SectionTitle,
-  Section,
-  AccentSection,
-} from "components";
+import { PrimaryButton, Section, AccentSection } from "components";
 
 export const Wrapper = styled.div`
   padding-top: 50px;
 `;
 
 export const Header = styled(Section)`
-  /* display: grid;
-  place-items: center; */
   padding: 8px 0 45px;
-`;
-
-export const Heading = styled(SectionTitle)`
-  font-weight: 700;
-  font-size: ${30 / 16}rem;
-`;
-
-export const SubHeading = styled(SectionTitle)`
-  font-weight: 100;
-  margin-bottom: 20px;
 `;
 
 export const Link = styled.a`
@@ -37,6 +20,7 @@ export const Link = styled.a`
     text-decoration: underline;
     opacity: 0.8;
   }
+  margin-top: 0.5rem;
 `;
 
 export const SecondaryLink = styled(Link)`
@@ -82,38 +66,25 @@ export const Logo = styled.img`
 `;
 
 export const SuccessIconRow = styled.div`
-  /* display: flex;
-  justify-content: space-evenly;
-  width: 100%;
-  > div {
-    &::before {
-      height: 2px;
-      background-color: #6cf9d8;
-      width: 20px;
-    }
-  } */
   display: inline-block;
   margin: 0;
-  width: 33%;
+  width: 31%;
   background-color: #6cf9d8;
   height: 2px;
   > div {
     margin-top: -36px;
 
     &:first-child {
-      /* top: 0;
-      left: 0; */
-      margin-left: 100px;
+      margin-left: 110px;
     }
     &:nth-child(2) {
-      /* right: 0; */
-      margin-left: 300px;
+      margin-left: 320px;
     }
   }
 `;
 
 export const ConfirmationLine = styled.div`
-  width: 27%;
+  width: 33%;
   background-color: #6cf9d8;
   height: 2px;
   opacity: 0.3;
@@ -138,4 +109,23 @@ export const ConfirmationIcon = styled(SuccessIcon)`
   > div {
     font-size: 0.8rem;
   }
+`;
+
+export const SuccessInfoRow = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  margin-top: 2rem;
+`;
+
+export const SuccessInfoBlock = styled.div``;
+
+export const SuccessInfoText = styled.div`
+  color: #ffffff;
+  font-weight: 600;
+`;
+
+export const ConfirmationText = styled(SuccessInfoText)`
+  opacity: 0.5;
+  color: hsla(0, 0%, 100%, 1);
 `;

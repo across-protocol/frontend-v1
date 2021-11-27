@@ -5,7 +5,6 @@ import { useDeposits } from "state/hooks";
 import { Layout } from "components";
 import {
   Wrapper,
-  Heading,
   SuccessIcon,
   Link,
   SecondaryLink,
@@ -15,10 +14,13 @@ import {
   InfoSection,
   Header,
   Row,
-  SubHeading,
   SuccessIconRow,
   ConfirmationIcon,
   ConfirmationLine,
+  SuccessInfoRow,
+  SuccessInfoBlock,
+  SuccessInfoText,
+  ConfirmationText,
 } from "./Confirmation.styles";
 
 const Confirmation: React.FC = () => {
@@ -47,17 +49,25 @@ const Confirmation: React.FC = () => {
             </ConfirmationIcon>
           </SuccessIconRow>
           <ConfirmationLine />
+          <SuccessInfoRow>
+            <SuccessInfoBlock>
+              <SuccessInfoText>Deposit succeeded</SuccessInfoText>
+              <Link
+                href={CHAINS[deposit.fromChain].constructExplorerLink(
+                  deposit.txHash
+                )}
+                target="_blank"
+                rel="noopener norefferrer"
+              >
+                Explorer <ArrowUpRight width={16} height={16} />
+              </Link>
+            </SuccessInfoBlock>
+            <SuccessInfoBlock>
+              <ConfirmationText>Funds transferred</ConfirmationText>
+            </SuccessInfoBlock>
+          </SuccessInfoRow>
         </Header>
         <InfoSection>
-          <Link
-            href={CHAINS[deposit.fromChain].constructExplorerLink(
-              deposit.txHash
-            )}
-            target="_blank"
-            rel="noopener norefferrer"
-          >
-            Explorer <ArrowUpRight width={16} height={16} />
-          </Link>
           <div>
             <Row>
               <Info>
