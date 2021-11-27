@@ -25,16 +25,6 @@ export const SubHeading = styled(SectionTitle)`
   margin-bottom: 20px;
 `;
 
-export const SuccessIcon = styled.div`
-  background-color: var(--color-primary);
-  color: var(--color-gray);
-  border-radius: 9999px;
-  width: 70px;
-  height: 70px;
-  display: grid;
-  place-items: center;
-`;
-
 export const Link = styled.a`
   color: var(--color-primary);
   cursor: pointer;
@@ -88,4 +78,20 @@ export const Logo = styled.img`
   height: 30px;
   border-radius: 99px;
   margin-right: 10px;
+`;
+
+export const SuccessIconRow = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+`;
+
+export const SuccessIcon = styled.div`
+  background-color: var(--color-primary);
+  color: var(--color-gray);
+  border-radius: 9999px;
+  width: 70px;
+  height: 70px;
+  display: grid;
+  place-items: center;
 `;
