@@ -17,6 +17,8 @@ import {
   Row,
   SubHeading,
   SuccessIconRow,
+  ConfirmationIcon,
+  ConfirmationLine,
 } from "./Confirmation.styles";
 
 const Confirmation: React.FC = () => {
@@ -39,10 +41,12 @@ const Confirmation: React.FC = () => {
             <SuccessIcon>
               <Check strokeWidth={4} />
             </SuccessIcon>
-            <SuccessIcon>
-              <Check strokeWidth={4} />
-            </SuccessIcon>
+
+            <ConfirmationIcon>
+              <div>~2 minutes</div>
+            </ConfirmationIcon>
           </SuccessIconRow>
+          <ConfirmationLine />
         </Header>
         <InfoSection>
           <Link
