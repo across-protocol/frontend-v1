@@ -265,7 +265,7 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
   // Stubbed
   [ChainId.BOBA]: [
     {
-      address: getAddress("0xB47e6A5f8b33b3F17603C83a0535A9dcD7E32681"),
+      address: getAddress("0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"),
       name: "Wrapped Ether",
       symbol: "WETH",
       decimals: 18,
@@ -281,19 +281,11 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       bridgePool: getAddress("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
     },
     {
-      address: getAddress("0xa18bF3994C0Cc6E3b63ac420308E5383f53120D7"),
+      address: ethers.constants.AddressZero,
       name: "Boba",
       symbol: "BOBA",
       decimals: 18,
       logoURI: bobaLogo,
-      bridgePool: getAddress("0x42bbfa2e77757c645eeaad1655e0911a7553efbc"),
-    },
-    {
-      address: ethers.constants.AddressZero,
-      name: "Ether",
-      symbol: "ETH",
-      decimals: 18,
-      logoURI: ethereumLogo,
       bridgePool: "",
     },
   ],
@@ -501,9 +493,7 @@ export const PROVIDERS: Record<ChainId, GetProvider> = {
   // Doesn't have an rpc on infura.
   [ChainId.BOBA]: memoize(
     () =>
-      new ethers.providers.StaticJsonRpcProvider(
-        `https://arbitrum-rinkeby.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`
-      )
+      new ethers.providers.StaticJsonRpcProvider(`https://mainnet.boba.network`)
   ),
 };
 
@@ -598,7 +588,22 @@ export interface IChainSelection {
   };
 }
 
-export const CHAINS_SELECTION = [
+interface EthChainInfo {
+  name: "Ether";
+  chainId: 1;
+  logoURI: string;
+  rpcUrl: string;
+  explorerUrl: string;
+  constructExplorerLink: (txHash: string) => string;
+  nativeCurrency: {
+    name: "Ether";
+    symbol: "ETH";
+    decimals: 18;
+  };
+}
+
+type ChainsSelection = [...IChainSelection[], EthChainInfo];
+export const CHAINS_SELECTION: ChainsSelection = [
   {
     name: "Optimism",
     chainId: ChainId.OPTIMISM,
@@ -629,20 +634,20 @@ export const CHAINS_SELECTION = [
     },
   },
   // Stretch goal.
-  // {
-  //   name: "Boba",
-  //   chainId: ChainId.BOBA,
-  //   logoURI: bobaLogo,
-  //   rpcUrl: "https://mainnet.boba.network",
-  //   explorerUrl: "https://blockexplorer.boba.network",
-  //   constructExplorerLink: (txHash: string) =>
-  //     `https://blockexplorer.boba.network/tx/${txHash}`,
-  //   nativeCurrency: {
-  //     name: "Boba",
-  //     symbol: "BOBA",
-  //     decimals: 18,
-  //   },
-  // },
+  {
+    name: "Boba",
+    chainId: ChainId.BOBA,
+    logoURI: bobaLogo,
+    rpcUrl: "https://mainnet.boba.network",
+    explorerUrl: "https://blockexplorer.boba.network",
+    constructExplorerLink: (txHash: string) =>
+      `https://blockexplorer.boba.network/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Boba",
+      symbol: "BOBA",
+      decimals: 18,
+    },
+  },
   {
     name: "Ether",
     chainId: ChainId.MAINNET,

@@ -73,7 +73,7 @@ const ChainSelection: React.FC = () => {
           selectedItem.chainId !== ChainId.MAINNET &&
           sendState.currentlySelectedToChain.chainId !== ChainId.MAINNET
         ) {
-          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[2]));
+          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[CHAINS_SELECTION.length - 1]));
         }
       }
     },
