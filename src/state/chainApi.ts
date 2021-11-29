@@ -41,7 +41,7 @@ const api = createApi({
             TOKENS_LIST[chainId].map(async (token) => {
               try {
                 // If it is ETH, use getBalance from the provider
-                if (token.symbol === "ETH") {
+                if (token.address === ethers.constants.AddressZero) {
                   return provider.getBalance(account);
                 }
                 const contract = ERC20Ethers__factory.connect(
