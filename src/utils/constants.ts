@@ -265,7 +265,7 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
   // Stubbed
   [ChainId.BOBA]: [
     {
-      address: getAddress("0xB47e6A5f8b33b3F17603C83a0535A9dcD7E32681"),
+      address: getAddress("0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"),
       name: "Wrapped Ether",
       symbol: "WETH",
       decimals: 18,
@@ -501,9 +501,7 @@ export const PROVIDERS: Record<ChainId, GetProvider> = {
   // Doesn't have an rpc on infura.
   [ChainId.BOBA]: memoize(
     () =>
-      new ethers.providers.StaticJsonRpcProvider(
-        `https://mainnet.boba.network`
-      )
+      new ethers.providers.StaticJsonRpcProvider(`https://mainnet.boba.network`)
   ),
 };
 
