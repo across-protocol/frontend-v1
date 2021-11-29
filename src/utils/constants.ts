@@ -606,6 +606,7 @@ export const CHAINS_SELECTION: [
   IChainSelection,
   IChainSelection,
   IChainSelection,
+  // this must be the last element
   EthChainInfo
 ] = [
   {
