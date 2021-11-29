@@ -26,7 +26,7 @@ import {
   SuccessInfoBlock,
   SuccessInfoText,
   ConfirmationText,
-} from "./Confirmation.styles";
+} from "./NewConfirmation.styles";
 
 const Confirmation: React.FC = () => {
   const { deposit, toggle } = useDeposits();
