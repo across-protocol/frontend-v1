@@ -174,7 +174,6 @@ const CoinSelection = () => {
     (fees?.isAmountTooLow && amount.gt(0)) ||
     (fees?.isLiquidityInsufficient && amount.gt(0));
 
-  console.log("tokensList", tokenList, balances);
   return (
     <Section>
       <Wrapper>
