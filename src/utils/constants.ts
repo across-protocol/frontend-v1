@@ -588,7 +588,26 @@ export interface IChainSelection {
   };
 }
 
-export const CHAINS_SELECTION = [
+interface EthChainInfo {
+  name: "Ether";
+  chainId: 1;
+  logoURI: string;
+  rpcUrl: string;
+  explorerUrl: string;
+  constructExplorerLink: (txHash: string) => string;
+  nativeCurrency: {
+    name: "Ether";
+    symbol: "ETH";
+    decimals: 18;
+  };
+}
+
+export const CHAINS_SELECTION: [
+  IChainSelection,
+  IChainSelection,
+  IChainSelection,
+  EthChainInfo
+] = [
   {
     name: "Optimism",
     chainId: ChainId.OPTIMISM,
