@@ -602,13 +602,8 @@ interface EthChainInfo {
   };
 }
 
-export const CHAINS_SELECTION: [
-  IChainSelection,
-  IChainSelection,
-  IChainSelection,
-  // this must be the last element
-  EthChainInfo
-] = [
+type ChainsSelection = [...IChainSelection[], EthChainInfo];
+export const CHAINS_SELECTION: ChainsSelection = [
   {
     name: "Optimism",
     chainId: ChainId.OPTIMISM,
