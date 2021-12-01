@@ -589,7 +589,7 @@ export interface IChainSelection {
 }
 
 interface EthChainInfo {
-  name: "Ether";
+  name: "Ethereum";
   chainId: 1;
   logoURI: string;
   rpcUrl: string;
@@ -649,7 +649,7 @@ export const CHAINS_SELECTION: ChainsSelection = [
     },
   },
   {
-    name: "Ether",
+    name: "Ethereum",
     chainId: ChainId.MAINNET,
     logoURI: ethereumLogo,
     // Doesn't have an RPC on Infura. Need to know how to handle this
