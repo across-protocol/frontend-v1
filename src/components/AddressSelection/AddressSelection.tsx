@@ -139,7 +139,9 @@ const AddressSelection: React.FC = () => {
                 ChainId.MAINNET && (
                 <>
                   <ItemWarning>
-                    <p>Transaction between L2 chains not possible yet</p>
+                    <p>
+                      Transfers between L2 chains is not possible at this time
+                    </p>
                   </ItemWarning>
                   {CHAINS_SELECTION.map((t, index) => {
                     return (
