@@ -73,7 +73,11 @@ const ChainSelection: React.FC = () => {
           selectedItem.chainId !== ChainId.MAINNET &&
           sendState.currentlySelectedToChain.chainId !== ChainId.MAINNET
         ) {
-          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[CHAINS_SELECTION.length - 1]));
+          dispatch(
+            actions.updateSelectedToChain(
+              CHAINS_SELECTION[CHAINS_SELECTION.length - 1]
+            )
+          );
         }
       }
     },
@@ -107,7 +111,7 @@ const ChainSelection: React.FC = () => {
                     <Logo src={t.logoURI} alt={t.name} />
                     <div>{t.name}</div>
                     <span className="layer-type">
-                      {t.name !== "Ether" ? "L2" : "L1"}
+                      {index !== CHAINS_SELECTION.length - 1 ? "L2" : "L1"}
                     </span>
                   </Item>
                 );
