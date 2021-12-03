@@ -356,7 +356,7 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
     rpcUrl: "https://mainnet.optimism.io",
     explorerUrl: "https://optimistic.etherscan.io",
     constructExplorerLink: (txHash: string) =>
-      "https://optimistic.etherscan.io",
+      `https://optimistic.etherscan.io/tx/${txHash}`,
     nativeCurrency: {
       name: "Ether",
       symbol: "OETH",
