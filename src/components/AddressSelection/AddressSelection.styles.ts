@@ -211,5 +211,6 @@ export const ItemWarning = styled(Item)`
   color: #000000;
   &:hover {
     background-color: #6cf9d8;
+    cursor: not-allowed;
   }
 `;
