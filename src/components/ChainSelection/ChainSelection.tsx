@@ -20,6 +20,9 @@ import { CHAINS_SELECTION } from "utils/constants";
 import { actions } from "state/send";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 
+// Remove eth from this list.
+const filteredChains = CHAINS_SELECTION.slice(0, CHAINS_SELECTION.length - 1);
+
 const ChainSelection: React.FC = () => {
   const { init } = onboard;
   const { isConnected, provider, chainId, error } = useConnection();
@@ -55,7 +58,7 @@ const ChainSelection: React.FC = () => {
     getItemProps,
     getMenuProps,
   } = useSelect({
-    items: CHAINS_SELECTION,
+    items: filteredChains,
     defaultSelectedItem: sendState.currentlySelectedFromChain,
     selectedItem: sendState.currentlySelectedFromChain,
     onSelectedItemChange: ({ selectedItem }) => {
@@ -73,7 +76,11 @@ const ChainSelection: React.FC = () => {
           selectedItem.chainId !== ChainId.MAINNET &&
           sendState.currentlySelectedToChain.chainId !== ChainId.MAINNET
         ) {
-          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[CHAINS_SELECTION.length - 1]));
+          dispatch(
+            actions.updateSelectedToChain(
+              CHAINS_SELECTION[CHAINS_SELECTION.length - 1]
+            )
+          );
         }
       }
     },
@@ -93,7 +100,7 @@ const ChainSelection: React.FC = () => {
           </RoundBox>
           <Menu isOpen={isOpen} {...getMenuProps()}>
             {isOpen &&
-              CHAINS_SELECTION.map((t, index) => {
+              filteredChains.map((t, index) => {
                 return (
                   <Item
                     className={
@@ -107,7 +114,7 @@ const ChainSelection: React.FC = () => {
                     <Logo src={t.logoURI} alt={t.name} />
                     <div>{t.name}</div>
                     <span className="layer-type">
-                      {t.name !== "Ether" ? "L2" : "L1"}
+                      {index !== CHAINS_SELECTION.length - 1 ? "L2" : "L1"}
                     </span>
                   </Item>
                 );

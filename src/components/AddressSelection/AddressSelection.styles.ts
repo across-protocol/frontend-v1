@@ -127,6 +127,7 @@ export const Menu = styled.ul<IMenuProps>`
   z-index: 10000;
   width: 95%;
   margin: 0 auto;
+  box-shadow: inset 0 8px 8% rgba(45, 46, 51, 0.2);
 `;
 
 export const Item = styled.li`
@@ -208,4 +209,8 @@ export const ToggleChainName = styled.div`
 export const ItemWarning = styled(Item)`
   background-color: #6cf9d8;
   color: #000000;
+  &:hover {
+    background-color: #6cf9d8;
+    cursor: not-allowed;
+  }
 `;

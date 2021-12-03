@@ -51,6 +51,7 @@ export const Menu = styled.ul<IMenuProps>`
   right: 0;
   padding-top: 10px;
   transform: translateY(100%);
+  box-shadow: inset 0 8px 8% rgba(45, 46, 51, 0.2);
   list-style: none;
   display: ${(props) => (props.isOpen ? "flex" : "none")};
   flex-direction: column;
