@@ -7,7 +7,7 @@ import wethLogo from "assets/weth-logo.svg";
 import arbitrumLogo from "assets/arbitrum-logo.svg";
 import memoize from "lodash-es/memoize";
 import umaLogo from "assets/UMA-round.svg";
-import bobaLogo from "assets/boba_logo.svg";
+import bobaLogo from "assets/Across-Boba-Color30x30.svg";
 import { getAddress } from "./address";
 /* Colors and Media Queries section */
 
