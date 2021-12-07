@@ -223,10 +223,7 @@ const RemoveLiqudityForm: FC<Props> = ({
       <RemoveFormButtonWrapper>
         {errorMessage && (
           <RemoveFormErrorBox>
-            <div>
-              Utilization too high to remove amount, try lowering withdraw
-              amount
-            </div>
+            <div>{errorMessage}</div>
           </RemoveFormErrorBox>
         )}
         {wrongNetwork && provider ? (
