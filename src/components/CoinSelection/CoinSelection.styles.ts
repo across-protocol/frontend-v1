@@ -100,7 +100,9 @@ export const MaxButton = styled(SecondaryButton)`
   padding: 10px 20px;
   font-size: ${14 / 16}rem;
   transition: background-color 100ms linear;
-
+  &::after {
+    box-shadow: none;
+  }
   &:hover {
     background-color: var(--color-gray-300);
   }
