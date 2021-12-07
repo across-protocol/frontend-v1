@@ -75,14 +75,14 @@ const RemoveLiqudityForm: FC<Props> = ({
     if (wrongNetwork) return "Switch to Ethereum Mainnet";
     return "Remove liquidity";
   }
-  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleButtonClick = async () => {
     if (!provider) {
       init();
     }
     if (isConnected && removeAmount > 0 && signer) {
-      setHasError(false);
+      setErrorMessage("");
       const scaler = toBN("10").pow(decimals);
 
       const removeAmountToWei = toWeiSafe(
@@ -133,8 +133,8 @@ const RemoveLiqudityForm: FC<Props> = ({
           });
         }
         return transaction;
-      } catch (err) {
-        setHasError(true);
+      } catch (err: any) {
+        setErrorMessage(err.message);
         console.error("err in RemoveLiquidity call", err);
       }
     }
@@ -221,7 +221,7 @@ const RemoveLiqudityForm: FC<Props> = ({
         </>
       )}
       <RemoveFormButtonWrapper>
-        {hasError && (
+        {errorMessage && (
           <RemoveFormErrorBox>
             <div>
               Utilization too high to remove amount, try lowering withdraw
