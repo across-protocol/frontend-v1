@@ -12,7 +12,7 @@ const NAV_LINKS = [
   },
   {
     name: "Docs",
-    url: " https://docs.across.to/bridge/",
+    url: "https://docs.across.to/bridge/",
   },
 ];
 const DISCORD_LINK = {
