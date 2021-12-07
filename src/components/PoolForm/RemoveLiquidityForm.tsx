@@ -1,4 +1,4 @@
-import { FC, Dispatch, SetStateAction, useState } from "react";
+import { FC, Dispatch, SetStateAction, useState, useEffect } from "react";
 import PoolFormSlider from "./PoolFormSlider";
 import { useConnection } from "state/hooks";
 import {
@@ -76,6 +76,9 @@ const RemoveLiqudityForm: FC<Props> = ({
     return "Remove liquidity";
   }
   const [errorMessage, setErrorMessage] = useState("");
+  useEffect(() => {
+    setErrorMessage("");
+  }, [removeAmount]);
 
   const handleButtonClick = async () => {
     if (!provider) {
