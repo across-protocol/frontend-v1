@@ -38,8 +38,6 @@ const Pool: FC = () => {
     ])
   );
 
-  console.log("poolClient", poolClient);
-
   const { isConnected, account, provider, error, chainId } = useConnection();
 
   const queries = useAppSelector((state) => state.api.queries);
@@ -103,6 +101,11 @@ const Pool: FC = () => {
               apy={
                 pool && pool.estimatedApy
                   ? `${Number(pool.estimatedApy) * 100}`
+                  : "0"
+              }
+              projectedApr={
+                pool && pool.projectedApr
+                  ? `${Number(pool.projectedApr) * 100}`
                   : "0"
               }
               position={
