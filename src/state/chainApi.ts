@@ -22,7 +22,7 @@ type AllowanceQueryArgs = {
 type BridgeFeesQueryArgs = {
   amount: ethers.BigNumber;
   tokenSymbol: string;
-  blockNumber: number;
+  blockTime?: number;
 };
 
 type BridgeFeesQueryResult = BridgeFees & {
@@ -102,14 +102,15 @@ const api = createApi({
     }),
     bridgeFees: build.query<BridgeFeesQueryResult, BridgeFeesQueryArgs>({
       // We want to re-run the fee query on each block change
-      queryFn: async ({ amount, tokenSymbol, blockNumber }) => {
+      queryFn: async ({ amount, tokenSymbol, blockTime }) => {
         try {
           const { instantRelayFee, slowRelayFee, isAmountTooLow } =
             await getRelayFees(tokenSymbol, amount);
 
           const { isLiquidityInsufficient, ...lpFee } = await getLpFee(
             tokenSymbol,
-            amount
+            amount,
+            blockTime
           );
 
           return {

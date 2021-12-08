@@ -156,7 +156,7 @@ const CoinSelection = () => {
     {
       amount,
       tokenSymbol: selectedItem!.symbol,
-      blockNumber: block?.blockNumber ?? 0,
+      blockTime: block?.timestamp,
     },
     { skip: amount.lte(0) || !block || !selectedItem?.symbol }
   );
