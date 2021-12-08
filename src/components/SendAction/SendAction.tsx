@@ -53,9 +53,9 @@ const SendAction: React.FC = () => {
     {
       amount,
       tokenSymbol: tokenInfo ? tokenInfo.symbol : "",
-      blockTime: block?.timestamp,
+      blockTime: block?.timestamp!,
     },
-    { skip: !tokenInfo || !block || !amount.gt(0) }
+    { skip: !tokenInfo || !block?.timestamp || !amount.gt(0) }
   );
 
   const depositBox = getDepositBox(

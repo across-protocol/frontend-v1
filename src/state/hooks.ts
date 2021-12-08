@@ -144,9 +144,9 @@ export function useSend() {
     {
       amount,
       tokenSymbol,
-      blockTime: block?.timestamp,
+      blockTime: block?.timestamp!,
     },
-    { skip: tokenSymbol === "" || amount.lte(0) || !block }
+    { skip: tokenSymbol === "" || amount.lte(0) || !block?.timestamp }
   );
 
   const canSend = useMemo(

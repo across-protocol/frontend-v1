@@ -22,7 +22,7 @@ type AllowanceQueryArgs = {
 type BridgeFeesQueryArgs = {
   amount: ethers.BigNumber;
   tokenSymbol: string;
-  blockTime?: number;
+  blockTime: number;
 };
 
 type BridgeFeesQueryResult = BridgeFees & {
