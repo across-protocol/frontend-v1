@@ -118,7 +118,7 @@ export function useSend() {
     tokenAddress: token,
   });
   const balance = BigNumber.from(balanceStr);
-  const { block } = useBlocks(currentlySelectedToChain.chainId);
+  const { block } = useBlocks(currentlySelectedFromChain.chainId);
 
   const depositBox = getDepositBox(currentlySelectedFromChain.chainId);
   const { data: allowance } = useAllowance(
@@ -144,9 +144,9 @@ export function useSend() {
     {
       amount,
       tokenSymbol,
-      blockNumber: block?.blockNumber ?? 0,
+      blockTime: block?.timestamp!,
     },
-    { skip: tokenSymbol === "" || amount.lte(0) || !block }
+    { skip: tokenSymbol === "" || amount.lte(0) || !block?.timestamp }
   );
 
   const canSend = useMemo(
@@ -202,12 +202,6 @@ export function useSend() {
         : token;
       const { instantRelayFee, slowRelayFee } = fees;
       let timestamp = block.timestamp;
-      // MAJOR HACK FOR OPTIMISM TESTING. DO NOT MERGE INTO PRODUCTION
-      // This is due to a bug in Optimism currently being 10-12 minutes behind Eth Mainnet.
-      if (currentlySelectedFromChain.chainId === ChainId.OPTIMISM) {
-        const TEN_MINUTES_IN_SECONDS = 600;
-        timestamp = block.timestamp - TEN_MINUTES_IN_SECONDS;
-      }
 
       const tx = await depositBox.deposit(
         toAddress,

@@ -32,7 +32,7 @@ const SendAction: React.FC = () => {
   const { account } = useConnection();
   const sendState = useAppSelector((state) => state.send);
 
-  const { block } = useBlocks(sendState.currentlySelectedToChain.chainId);
+  const { block } = useBlocks(sendState.currentlySelectedFromChain.chainId);
 
   const [isInfoModalOpen, setOpenInfoModal] = useState(false);
   const toggleInfoModal = () => setOpenInfoModal((oldOpen) => !oldOpen);
@@ -53,9 +53,9 @@ const SendAction: React.FC = () => {
     {
       amount,
       tokenSymbol: tokenInfo ? tokenInfo.symbol : "",
-      blockNumber: block?.blockNumber ?? 0,
+      blockTime: block?.timestamp!,
     },
-    { skip: !tokenInfo || !block || !amount.gt(0) }
+    { skip: !tokenInfo || !block?.timestamp || !amount.gt(0) }
   );
 
   const depositBox = getDepositBox(
