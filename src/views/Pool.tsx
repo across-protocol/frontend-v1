@@ -38,6 +38,8 @@ const Pool: FC = () => {
     ])
   );
 
+  console.log("poolClient", poolClient);
+
   const { isConnected, account, provider, error, chainId } = useConnection();
 
   const queries = useAppSelector((state) => state.api.queries);
