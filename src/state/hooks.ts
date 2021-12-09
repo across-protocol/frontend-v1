@@ -184,7 +184,7 @@ export function useSendAcross() {
     {
       amount,
       tokenSymbol,
-      blockNumber: block?.blockNumber ?? 0,
+      blockTime: block?.timestamp!,
     },
     { skip: tokenSymbol === "" || amount.lte(0) || !block?.timestamp }
   );
