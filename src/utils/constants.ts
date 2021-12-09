@@ -607,22 +607,20 @@ export const CHAINS_SELECTION: ChainsSelection = [
       decimals: 18,
     },
   },
-  // Stretch goal.
-  // Removing for now
-  // {
-  //   name: "Boba",
-  //   chainId: ChainId.BOBA,
-  //   logoURI: bobaLogo,
-  //   rpcUrl: "https://mainnet.boba.network",
-  //   explorerUrl: "https://blockexplorer.boba.network",
-  //   constructExplorerLink: (txHash: string) =>
-  //     `https://blockexplorer.boba.network/tx/${txHash}`,
-  //   nativeCurrency: {
-  //     name: "Boba",
-  //     symbol: "BOBA",
-  //     decimals: 18,
-  //   },
-  // },
+  {
+    name: "Boba",
+    chainId: ChainId.BOBA,
+    logoURI: bobaLogo,
+    rpcUrl: "https://mainnet.boba.network",
+    explorerUrl: "https://blockexplorer.boba.network",
+    constructExplorerLink: (txHash: string) =>
+      `https://blockexplorer.boba.network/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Boba",
+      symbol: "BOBA",
+      decimals: 18,
+    },
+  },
   {
     name: "Ethereum",
     chainId: ChainId.MAINNET,
