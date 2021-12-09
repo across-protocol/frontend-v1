@@ -199,10 +199,10 @@ export const getConfirmationDepositTime = (chainId: ChainId) => {
 
 // This will be moved inside the SDK in the near future
 export const optimismErc20Pairs = () => {
-  const usdcMainnet = TOKENS_LIST[ChainId.MAINNET].filter((token) => token.symbol = "USDC")[0];
-  const umaMainnet = TOKENS_LIST[ChainId.MAINNET].filter((token) => token.symbol = "UMA")[0];
-  const usdcOptimism = TOKENS_LIST[ChainId.OPTIMISM].filter((token) => token.symbol = "USDC")[0];
-  const umaOptimism = TOKENS_LIST[ChainId.OPTIMISM].filter((token) => token.symbol = "UMA")[0];
+  const usdcMainnet = TOKENS_LIST[ChainId.MAINNET].filter((token) => token.symbol === "USDC")[0];
+  const umaMainnet = TOKENS_LIST[ChainId.MAINNET].filter((token) => token.symbol === "UMA")[0];
+  const usdcOptimism = TOKENS_LIST[ChainId.OPTIMISM].filter((token) => token.symbol === "USDC")[0];
+  const umaOptimism = TOKENS_LIST[ChainId.OPTIMISM].filter((token) => token.symbol === "UMA")[0];
 
   return {
     [usdcMainnet.address]: usdcOptimism.address,
