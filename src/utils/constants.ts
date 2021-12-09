@@ -176,6 +176,14 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       bridgePool: getAddress("0x190978cC580f5A48D55A4A20D0A952FA1dA3C057"),
     },
     {
+      address: getAddress("0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828"),
+      name: "UMA Token",
+      symbol: "UMA",
+      decimals: 18,
+      logoURI: umaLogo,
+      bridgePool: getAddress("0xdfe0ec39291e3b60ACa122908f86809c9eE64E90"),
+    },
+    {
       address: ethers.constants.AddressZero,
       name: "Ether",
       symbol: "ETH",
