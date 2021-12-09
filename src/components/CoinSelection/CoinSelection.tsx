@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ethers, BigNumber } from "ethers";
 import { useSelect } from "downshift";
-import { max } from "utils";
+import { ChainId, max } from "utils";
 
 import { useSend, useBalances, useConnection } from "state/hooks";
 import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
@@ -24,10 +24,15 @@ import {
 const FEE_ESTIMATION = ".004";
 const CoinSelection = () => {
   const { account, isConnected } = useConnection();
-  const { setAmount, setToken, fromChain, amount, token, fees } = useSend();
+  const { setAmount, setToken, fromChain, amount, token, fees, toChain } = useSend();
 
   const [error, setError] = React.useState<Error>();
-  const tokenList = TOKENS_LIST[fromChain];
+  const tokenList = useMemo(() => {
+    if (fromChain === ChainId.MAINNET && toChain === ChainId.OPTIMISM) {
+      return TOKENS_LIST[fromChain].slice(1);
+    }
+    return TOKENS_LIST[fromChain];
+  }, [fromChain, toChain]);
   const { data: balances } = useBalances(
     {
       account: account!,
@@ -35,6 +40,15 @@ const CoinSelection = () => {
     },
     { skip: !account }
   );
+  const tokenBalanceMap = useMemo(() => {
+    return TOKENS_LIST[fromChain].reduce((acc, val, idx) => {
+      return {
+        ...acc,
+        [val.address]: balances ? balances[idx] : BigNumber.from(0),
+      };
+    }, {} as Record<string, BigNumber>);
+  }, [balances, fromChain])
+
 
   const {
     isOpen,
@@ -98,7 +112,7 @@ const CoinSelection = () => {
         const selectedIndex = tokenList.findIndex(
           ({ address }) => address === token
         );
-        const balance = balances[selectedIndex];
+        const balance = tokenBalanceMap[token];
         const isEth = tokenList[selectedIndex].symbol === "ETH";
         if (
           amount.gt(
@@ -111,7 +125,7 @@ const CoinSelection = () => {
         }
       }
     }
-  }, [balances, amount, token, tokenList, inputAmount]);
+  }, [balances, amount, token, tokenList, inputAmount, tokenBalanceMap]);
 
   const handleMaxClick = () => {
     if (balances && selectedItem) {
@@ -119,14 +133,10 @@ const CoinSelection = () => {
         ({ address }) => address === selectedItem.address
       );
       const isEth = tokenList[selectedIndex].symbol === "ETH";
-      const balance = isEth
-        ? max(
-            balances[selectedIndex].sub(
-              ethers.utils.parseEther(FEE_ESTIMATION)
-            ),
-            0
-          )
-        : balances[selectedIndex];
+      let balance = tokenBalanceMap[token];
+      if (isEth) {
+        balance = max(balance.sub(ethers.utils.parseEther(FEE_ESTIMATION)), 0)
+      }
       setAmount({ amount: balance });
       setInputAmount(formatUnits(balance, selectedItem.decimals));
     }
@@ -167,8 +177,8 @@ const CoinSelection = () => {
                   <Logo src={token.logoURI} alt={token.name} />
                   <div>{token.name}</div>
                   <div>
-                    {balances &&
-                      formatUnits(balances[index], tokenList[index].decimals)}
+                    {tokenBalanceMap &&
+                      formatUnits(tokenBalanceMap[token.address], tokenList[index].decimals)}
                   </div>
                 </Item>
               ))}

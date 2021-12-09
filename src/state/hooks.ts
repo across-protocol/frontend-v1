@@ -10,6 +10,7 @@ import {
   TransactionError,
   ChainId,
   MAX_APPROVAL_AMOUNT,
+  optimismErc20Pairs,
 } from "utils";
 import type { RootState, AppDispatch } from "./";
 import { update, disconnect, error as errorAction } from "./connection";
@@ -25,7 +26,10 @@ import chainApi, { useAllowance, useBridgeFees } from "./chainApi";
 import { add } from "./transactions";
 import { deposit as depositAction, toggle } from "./deposits";
 import { useERC20 } from "hooks";
-import { Bridge } from "arb-ts";
+import { across } from "@uma/sdk";
+
+const { clients } = across;
+const { OptimismBridgeClient } = clients.optimismBridge;
 
 const FEE_ESTIMATION = "0.004";
 
@@ -90,109 +94,6 @@ export function useBlocks(toChain: ChainId) {
   };
 }
 
-export function useSendArbitrum() {
-  const [bridge, setBridge] = useState<Bridge | undefined>();
-  const { isConnected, chainId, account, signer } = useConnection();
-  const { fromChain, toChain, toAddress, amount, token } = useAppSelector(
-    (state) => state.send
-  );
-
-  const { balance: balanceStr } = useBalance({
-    chainId: fromChain,
-    account,
-    tokenAddress: token,
-  });
-  const balance = BigNumber.from(balanceStr);
-  const [refetchAllowance, { data: allowance, error: allowanceError }] =
-    chainApi.endpoints.allowance.useLazyQuery();
-  console.log(allowance, allowanceError);
-  const canApprove = balance.gte(amount) && amount.gte(0);
-  const hasToApprove = allowance?.hasToApprove ?? true;
-  //TODO: Add fees
-  const [fees] = useState({
-    instantRelayFee: {
-      total: BigNumber.from("0"),
-      pct: BigNumber.from("0"),
-    },
-    slowRelayFee: {
-      total: BigNumber.from("0"),
-      pct: BigNumber.from("0"),
-    },
-    lpFee: {
-      total: BigNumber.from("0"),
-      pct: BigNumber.from("0"),
-    },
-    isAmountTooLow: false,
-    isLiquidityInsufficient: false,
-  });
-
-  useEffect(() => {
-    if (!signer || !account) return;
-    if (fromChain !== ChainId.MAINNET) return;
-    if (toChain !== ChainId.ARBITRUM) return;
-    if (!isConnected) return;
-    const provider = PROVIDERS[ChainId.ARBITRUM]();
-    console.log("setting bridge");
-    Bridge.init(signer, provider.getSigner(account))
-      .then(setBridge)
-      .catch(console.error);
-  }, [signer, account, fromChain, toChain, isConnected]);
-
-  const send = useCallback(async () => {
-    if (!bridge || !isConnected) return {};
-    if (token === ethers.constants.AddressZero) {
-      return {
-        tx: await bridge.depositETH(amount),
-        fees,
-      };
-    } else {
-      const depositParams = await bridge.getDepositTxParams({
-        erc20L1Address: token,
-        amount,
-        destinationAddress: toAddress,
-      });
-      console.log(depositParams);
-      return {
-        tx: await bridge.deposit(depositParams),
-        fees,
-      };
-    }
-  }, [bridge, amount, fees, token, isConnected, toAddress]);
-
-  const approve = useCallback(() => {
-    if (!bridge) return;
-    return bridge.approveToken(token, MAX_APPROVAL_AMOUNT);
-  }, [bridge, token]);
-
-  useEffect(() => {
-    if (!bridge || !account || !token || !chainId || !amount) return;
-
-    bridge.l1Bridge
-      .getGatewayAddress(token)
-      .then((spender) => {
-        return refetchAllowance({
-          owner: account,
-          spender,
-          chainId,
-          token,
-          amount,
-        });
-      })
-      .catch(console.error);
-  }, [bridge, amount, token, chainId, account, refetchAllowance]);
-
-  const canSend = true;
-  const hasToSwitchChain = false;
-  return {
-    canSend,
-    canApprove,
-    hasToApprove,
-    hasToSwitchChain,
-    send,
-    approve,
-    fees,
-  };
-}
 export function useSend() {
   const dispatch = useAppDispatch();
   const actions = bindActionCreators(
@@ -208,7 +109,7 @@ export function useSend() {
   );
   const send = useAppSelector((state) => state.send);
   const sendAcross = useSendAcross();
-  const sendArbitrum = useSendArbitrum();
+  const sendOptimism = useSendOptimism();
   const setSend = {
     setToken: actions.tokenAction,
     setAmount: actions.amountAction,
@@ -217,11 +118,12 @@ export function useSend() {
     setToAddress: actions.toAddressAction,
     setError: actions.sendErrorAction,
   };
-  if (send.fromChain === ChainId.MAINNET && send.toChain === ChainId.ARBITRUM) {
+
+  if (send.fromChain === ChainId.MAINNET && send.toChain === ChainId.OPTIMISM) {
     return {
       ...send,
       ...setSend,
-      ...sendArbitrum,
+      ...sendOptimism,
     };
   }
   return {
@@ -431,5 +333,89 @@ export function useBalance(params: {
   return {
     balance,
     refetch,
+  };
+}
+
+export function useSendOptimism() {
+  const [optimismBridge] = useState(new OptimismBridgeClient());
+  const { isConnected, chainId, account, signer } = useConnection();
+  const { fromChain, amount, token } = useAppSelector(
+    (state) => state.send
+  );
+  const { balance: balanceStr } = useBalance({
+    chainId: fromChain,
+    account,
+    tokenAddress: token,
+  });
+  const bridgeAddress = useMemo(() => {
+    try {
+      return optimismBridge.getL1BridgeAddress(chainId as number)
+    } catch (error) {
+      return '';
+    }
+  }, [optimismBridge, chainId]);
+  const balance = BigNumber.from(balanceStr);
+  const { data: allowance } = useAllowance(
+    {
+      chainId: fromChain,
+      token,
+      owner: account!,
+      spender: bridgeAddress,
+      amount,
+    },
+    { skip: !account || !isConnected || !chainId }
+  );
+  const canApprove = balance.gte(amount) && amount.gte(0);
+  const hasToApprove = allowance?.hasToApprove ?? true;
+  //TODO: Add fees
+  const [fees] = useState({
+    instantRelayFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    slowRelayFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    lpFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    isAmountTooLow: false,
+    isLiquidityInsufficient: false,
+  });
+
+  const send = useCallback(async () => {
+    if (!isConnected || !signer) return {};
+    if (token === ethers.constants.AddressZero) {
+      return {
+        tx: await optimismBridge.depositEth(signer, amount),
+        fees,
+      };
+    } else {
+      const pairToken = optimismErc20Pairs()[token];
+      if (!pairToken) return {};
+      return {
+        tx: await optimismBridge.depositERC20(signer, token, pairToken, amount),
+        fees,
+      };
+    }
+  }, [amount, fees, token, isConnected, optimismBridge, signer]);
+
+  const approve = useCallback(() => {
+    if (!signer) return;
+    return optimismBridge.approve(signer, token, MAX_APPROVAL_AMOUNT);
+  }, [optimismBridge, signer, token]);
+
+  const canSend = true;
+  const hasToSwitchChain = false;
+  return {
+    canSend,
+    canApprove,
+    hasToApprove,
+    hasToSwitchChain,
+    send,
+    approve,
+    fees,
   };
 }

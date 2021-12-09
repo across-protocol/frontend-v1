@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useConnection,
   useDeposits,
@@ -13,6 +13,8 @@ import {
   TOKENS_LIST,
   formatUnits,
   receiveAmount,
+  ChainId,
+  getEstimatedDepositTime,
 } from "utils";
 import { PrimaryButton } from "../Buttons";
 import { Wrapper, Info, AccentSection, InfoIcon } from "./SendAction.styles";
@@ -132,7 +134,7 @@ const SendAction: React.FC = () => {
           <>
             <Info>
               <div>Time to {CHAINS[toChain].name}</div>
-              <div>~1-3 minutes</div>
+              <div>{getEstimatedDepositTime(toChain)}</div>
             </Info>
             <Info>
               <div>Ethereum Gas Fee</div>
