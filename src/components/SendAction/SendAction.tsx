@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   useConnection,
   useDeposits,
@@ -13,7 +13,6 @@ import {
   TOKENS_LIST,
   formatUnits,
   receiveAmount,
-  ChainId,
   getEstimatedDepositTime,
 } from "utils";
 import { PrimaryButton } from "../Buttons";
