@@ -6,6 +6,7 @@ import { ChainId, max } from "utils";
 import { useSend, useBalances, useConnection } from "state/hooks";
 import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
 import { Section, SectionTitle } from "../Section";
+import { useAppSelector } from "state/hooks";
 
 import {
   RoundBox,
@@ -29,14 +30,15 @@ const CoinSelection = () => {
   const [error, setError] = React.useState<Error>();
   const tokenList = useMemo(() => {
     if (fromChain === ChainId.MAINNET && toChain === ChainId.OPTIMISM) {
-      return TOKENS_LIST[fromChain].slice(1);
+      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].slice(1);
     }
-    return TOKENS_LIST[fromChain];
+    return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId];
   }, [fromChain, toChain]);
+  const sendState = useAppSelector((state) => state.send);
   const { data: balances } = useBalances(
     {
       account: account!,
-      chainId: fromChain,
+      chainId: sendState.currentlySelectedFromChain.chainId,
     },
     { skip: !account }
   );
@@ -44,9 +46,9 @@ const CoinSelection = () => {
     return TOKENS_LIST[fromChain].reduce((acc, val, idx) => {
       return {
         ...acc,
-        [val.address]: balances ? balances[idx] : BigNumber.from(0),
+        [val.address]: balances ? balances[idx] : undefined,
       };
-    }, {} as Record<string, BigNumber>);
+    }, {} as Record<string, BigNumber | undefined>);
   }, [balances, fromChain])
 
 
@@ -114,7 +116,7 @@ const CoinSelection = () => {
         );
         const balance = tokenBalanceMap[token];
         const isEth = tokenList[selectedIndex].symbol === "ETH";
-        if (
+        if (balance &&
           amount.gt(
             isEth
               ? balance.sub(ethers.utils.parseEther(FEE_ESTIMATION))
@@ -134,11 +136,19 @@ const CoinSelection = () => {
       );
       const isEth = tokenList[selectedIndex].symbol === "ETH";
       let balance = tokenBalanceMap[token];
-      if (isEth) {
-        balance = max(balance.sub(ethers.utils.parseEther(FEE_ESTIMATION)), 0)
+
+      if (balance) {
+        if (isEth) {
+          balance = max(balance.sub(ethers.utils.parseEther(FEE_ESTIMATION)), 0)
+        }
+        setAmount({ amount: balance });
+        setInputAmount(formatUnits(balance, selectedItem.decimals));
+      } else {
+        setAmount({ amount: ethers.BigNumber.from("0") });
+        setInputAmount(
+          formatUnits(ethers.BigNumber.from("0"), selectedItem.decimals)
+        );
       }
-      setAmount({ amount: balance });
-      setInputAmount(formatUnits(balance, selectedItem.decimals));
     }
   };
 
@@ -178,7 +188,7 @@ const CoinSelection = () => {
                   <div>{token.name}</div>
                   <div>
                     {tokenBalanceMap &&
-                      formatUnits(tokenBalanceMap[token.address], tokenList[index].decimals)}
+                      formatUnits(tokenBalanceMap[token.address] || "0", tokenList[index].decimals)}
                   </div>
                 </Item>
               ))}

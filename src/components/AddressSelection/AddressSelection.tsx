@@ -139,7 +139,9 @@ const AddressSelection: React.FC = () => {
                 ChainId.MAINNET && (
                 <>
                   <ItemWarning>
-                    <p>Transaction between L2 chains not possible yet</p>
+                    <p>
+                      Transfers between L2 chains is not possible at this time
+                    </p>
                   </ItemWarning>
                   {CHAINS_SELECTION.map((t, index) => {
                     return (
@@ -151,7 +153,7 @@ const AddressSelection: React.FC = () => {
                         <Logo src={t.logoURI} alt={t.name} />
                         <div>{t.name}</div>
                         <span className="layer-type">
-                          {t.name !== "Ether" ? "L2" : "L1"}
+                          {index !== CHAINS_SELECTION.length - 1 ? "L2" : "L1"}
                         </span>
                       </Item>
                     );
