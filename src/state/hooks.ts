@@ -138,7 +138,9 @@ export function useSend() {
     isConnected && currentlySelectedFromChain.chainId !== chainId;
 
   const tokenSymbol =
-    TOKENS_LIST[fromChain].find((t) => t.address === token)?.symbol ?? "";
+    TOKENS_LIST[currentlySelectedFromChain.chainId].find(
+      (t) => t.address === token
+    )?.symbol ?? "";
 
   const { data: fees } = useBridgeFees(
     {
@@ -185,6 +187,7 @@ export function useSend() {
       balance,
     ]
   );
+
   const send = useCallback(async () => {
     if (!signer || !canSend || !fees || !toAddress || !block) {
       return {};
