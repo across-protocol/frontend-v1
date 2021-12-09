@@ -25,7 +25,6 @@ const CONFIRMATIONS = 1;
 const SendAction: React.FC = () => {
   const {
     amount,
-    fromChain,
     toChain,
     token,
     send,

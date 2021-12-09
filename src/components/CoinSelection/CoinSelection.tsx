@@ -28,13 +28,13 @@ const CoinSelection = () => {
   const { setAmount, setToken, fromChain, amount, token, fees, toChain } = useSend();
 
   const [error, setError] = React.useState<Error>();
+  const sendState = useAppSelector((state) => state.send);
   const tokenList = useMemo(() => {
     if (fromChain === ChainId.MAINNET && toChain === ChainId.OPTIMISM) {
       return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].slice(1);
     }
     return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId];
-  }, [fromChain, toChain]);
-  const sendState = useAppSelector((state) => state.send);
+  }, [fromChain, toChain, sendState.currentlySelectedFromChain.chainId]);
   const { data: balances } = useBalances(
     {
       account: account!,
