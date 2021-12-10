@@ -214,10 +214,6 @@ export function useSend() {
       const { instantRelayFee, slowRelayFee } = fees;
       let timestamp = block.timestamp;
 
-      console.log({
-        timestamp: new Date(timestamp * 1000).toISOString(),
-        block,
-      });
       const tx = await depositBox.deposit(
         toAddress,
         l2Token,
