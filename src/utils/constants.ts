@@ -290,10 +290,10 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
     },
     {
       address: ethers.constants.AddressZero,
-      name: "Boba",
-      symbol: "BOBA",
+      name: "Ether",
+      symbol: "ETH",
       decimals: 18,
-      logoURI: bobaLogo,
+      logoURI: ethereumLogo,
       bridgePool: "",
     },
   ],
@@ -422,8 +422,8 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
     constructExplorerLink: (txHash: string) =>
       `https://blockexplorer.boba.network/tx/${txHash}`,
     nativeCurrency: {
-      name: "Boba",
-      symbol: "BOBA",
+      name: "Ether",
+      symbol: "ETH",
       decimals: 18,
     },
   },
@@ -616,8 +616,8 @@ export const CHAINS_SELECTION: ChainsSelection = [
     constructExplorerLink: (txHash: string) =>
       `https://blockexplorer.boba.network/tx/${txHash}`,
     nativeCurrency: {
-      name: "Boba",
-      symbol: "BOBA",
+      name: "Ether",
+      symbol: "ETH",
       decimals: 18,
     },
   },
