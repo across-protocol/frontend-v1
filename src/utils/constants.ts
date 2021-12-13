@@ -440,7 +440,6 @@ export const ADDRESSES: Record<ChainId, { BRIDGE?: string }> = {
     BRIDGE: "0x3baD7AD0728f9917d1Bf08af5782dCbD516cDd96",
   },
   [ChainId.BOBA]: {
-    // Stubbed value. Does not work. TODO: Change this out when contract deployed.
     BRIDGE: "0xCD43CEa89DF8fE39031C03c24BC24480e942470B",
   },
   [ChainId.KOVAN_OPTIMISM]: {
