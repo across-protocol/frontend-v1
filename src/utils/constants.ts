@@ -278,7 +278,7 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       symbol: "WETH",
       decimals: 18,
       logoURI: wethLogo,
-      bridgePool: "",
+      bridgePool: getAddress("0x7355Efc63Ae731f584380a9838292c7046c1e433"),
     },
     {
       address: getAddress("0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc"),
