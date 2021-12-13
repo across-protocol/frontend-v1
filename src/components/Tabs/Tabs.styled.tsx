@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { QUERIES } from "../../utils";
 
 export const TabList = styled.ol`
   margin-top: 10px;
