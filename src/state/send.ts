@@ -76,13 +76,25 @@ const sendSlice = createSlice({
     },
   },
   extraReducers: (builder) =>
-    builder.addCase(update, (state, action) => {
-      // since this is hooked in from a connection update, we need to treat the address the same way. Onboard is all lowercase.
-      state.toAddress = action.payload.account
-        ? getAddress(action.payload.account)
-        : state.toAddress;
-      return state;
-    }),
+    builder
+      .addCase(update, (state, action) => {
+        // since this is hooked in from a connection update, we need to treat the address the same way. Onboard is all lowercase.
+        state.toAddress = action.payload.account
+          ? getAddress(action.payload.account)
+          : state.toAddress;
+        return state;
+      })
+      .addCase(toggleConfirmationScreen, (state, action) => {
+        // If the confirmation screen is closed, reset some values in the state.
+        if (action.payload.showConfirmationScreen === false) {
+          state = {
+            ...state,
+            amount: ethers.constants.Zero,
+            error: undefined,
+          };
+        }
+        return state;
+      }),
 });
 
 export const { actions, reducer } = sendSlice;

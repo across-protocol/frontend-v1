@@ -125,7 +125,9 @@ const Confirmation: React.FC = () => {
               </div>
             </Info>
           </div>
-          <Button onClick={() => toggle()}>Close</Button>
+          <Button onClick={() => toggle({ showConfirmationScreen: false })}>
+            Close
+          </Button>
         </InfoSection>
       </Wrapper>
     </Layout>
