@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, current } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { ChainId } from "utils";
 import type { BridgeFees } from "utils";
@@ -38,12 +38,8 @@ const connectionSlice = createSlice({
   name: "deposits",
   initialState,
   reducers: {
-    toggle: (
-      state,
-      action: PayloadAction<Pick<State, "showConfirmationScreen">>
-    ) => {
-      state.showConfirmationScreen = action.payload.showConfirmationScreen;
-      return state;
+    toggle: (state) => {
+      state.showConfirmationScreen = !state.showConfirmationScreen;
     },
     deposit: (state, action: DepositAction) => {
       const depositTx = action.payload.tx;
