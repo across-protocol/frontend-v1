@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useEffect, useState } from "react";
+import { useCallback, useMemo, useEffect, useState, useContext } from "react";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import useInterval from "@use-it/interval";
 import { ethers, BigNumber } from "ethers";
 import { bindActionCreators } from "redux";
 import {
@@ -13,6 +14,7 @@ import {
   optimismErc20Pairs,
 } from "utils";
 import type { RootState, AppDispatch } from "./";
+import { ErrorContext } from "context/ErrorContext";
 import { update, disconnect, error as errorAction } from "./connection";
 import {
   token as tokenAction,
@@ -30,6 +32,7 @@ import { across } from "@uma/sdk";
 
 const { clients } = across;
 const { OptimismBridgeClient } = clients.optimismBridge;
+
 
 const FEE_ESTIMATION = "0.004";
 
@@ -64,34 +67,50 @@ export function useConnection() {
 }
 
 // TODO: put this back into global state. Wasnt able to get it working.
-export function useBlocks(toChain: ChainId) {
-  const [state, setBlock] = useState<
-    (ethers.providers.Block & { blockNumber: number }) | undefined
+export function useL2Block() {
+  const { currentlySelectedFromChain } = useAppSelector((state) => state.send);
+  const [latestBlock, setBlock] = useState<
+    ethers.providers.Block | undefined
   >();
+
+  const { addError, removeError, error } = useContext(ErrorContext);
+
   useEffect(() => {
-    const provider = PROVIDERS[toChain]();
+    const provider = PROVIDERS[currentlySelectedFromChain.chainId]();
+    provider
+      .getBlock("latest")
+      .then((res) => {
+        if (error) removeError();
+        setBlock(res);
+      })
+      .catch(() => {
+        addError(new Error("Infura issue, please try again later."));
+        console.error("Error getting latest block");
+      });
+  }, [
+    currentlySelectedFromChain.chainId,
+    error,
+    removeError,
+    addError,
+  ]);
+
+  useInterval(() => {
+    const provider = PROVIDERS[currentlySelectedFromChain.chainId]();
     provider
       .getBlock("latest")
       .then((block) => {
-        setBlock({ ...block, blockNumber: block.number });
+        setBlock(block);
       })
-      .catch((error) => console.error("Error getting block", error))
-      .finally(() => {
-        provider.on("block", async (blockNumber: number) => {
-          const block = await provider.getBlock(blockNumber);
-          setBlock({ ...block, blockNumber });
-        });
+      .catch(() => {
+        console.error("Error getting latest block");
       });
 
     return () => {
       provider.removeAllListeners();
     };
-  }, [toChain]);
+  }, 30 * 1000);
 
-  return {
-    block: state,
-    setBlock: setBlock,
-  };
+  return { block: latestBlock };
 }
 
 export function useSend() {
@@ -150,7 +169,7 @@ export function useSendAcross() {
     tokenAddress: token,
   });
   const balance = BigNumber.from(balanceStr);
-  const { block } = useBlocks(currentlySelectedFromChain.chainId);
+  const { block } = useL2Block();
 
   const depositBox = getDepositBox(currentlySelectedFromChain.chainId);
   const { data: allowance } = useAllowance(
@@ -178,7 +197,9 @@ export function useSendAcross() {
     isConnected && currentlySelectedFromChain.chainId !== chainId;
 
   const tokenSymbol =
-    TOKENS_LIST[fromChain].find((t) => t.address === token)?.symbol ?? "";
+    TOKENS_LIST[currentlySelectedFromChain.chainId].find(
+      (t) => t.address === token
+    )?.symbol ?? "";
 
   const { data: fees } = useBridgeFees(
     {
@@ -225,6 +246,7 @@ export function useSendAcross() {
       balance,
     ]
   );
+
   const send = useCallback(async () => {
     if (!signer || !canSend || !fees || !toAddress || !block) {
       return {};

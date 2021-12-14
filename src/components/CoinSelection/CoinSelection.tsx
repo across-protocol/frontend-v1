@@ -3,7 +3,13 @@ import { ethers, BigNumber } from "ethers";
 import { useSelect } from "downshift";
 import { ChainId, max } from "utils";
 
-import { useSend, useBalances, useConnection } from "state/hooks";
+import {
+  useSend,
+  useBalances,
+  useConnection,
+  useBridgeFees,
+  useL2Block,
+} from "state/hooks";
 import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
 import { Section, SectionTitle } from "../Section";
 import { useAppSelector } from "state/hooks";

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 
 import { RoundBox as UnstyledBox, ErrorBox } from "../Box";
-import { SecondaryButton, PrimaryButton } from "../Buttons";
+import { PrimaryButton, SecondaryButtonWithoutShadow } from "../Buttons";
 
 export const RoundBox = styled(UnstyledBox)`
   --color: var(--color-white);
@@ -9,7 +9,7 @@ export const RoundBox = styled(UnstyledBox)`
   background-color: var(--color);
   font-size: ${16 / 16}rem;
   padding: 10px 15px;
-  margin-top: 16px;
+  margin-top: 4px;
   flex: 2;
   display: flex;
   &:not(:first-of-type):focus-within {
@@ -17,7 +17,7 @@ export const RoundBox = styled(UnstyledBox)`
   }
 `;
 
-export const MaxButton = styled(SecondaryButton)`
+export const MaxButton = styled(SecondaryButtonWithoutShadow)`
   text-transform: uppercase;
   padding: 10px 20px;
   font-size: ${14 / 16}rem;
@@ -49,7 +49,6 @@ export const FormButton = styled(PrimaryButton)`
   margin-right: auto;
   background: var(--color-primary);
   color: var(--color-gray);
-  font-weight: 700;
   font-size: ${18 / 16}rem;
   line-height: 1.1;
 `;
@@ -60,10 +59,9 @@ export const InputGroup = styled.div`
 `;
 
 export const FormHeader = styled.h2`
-  font-weight: 600;
-  font-size: ${20 / 16}rem;
-  line-height: 1.2;
+  font-weight: 700;
   margin-bottom: 16px;
+  font-size: ${20 / 16}rem;
 `;
 
 export const Balance = styled.div`

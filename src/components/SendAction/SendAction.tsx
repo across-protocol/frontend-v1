@@ -4,6 +4,7 @@ import {
   useDeposits,
   useSend,
   useTransactions,
+  useL2Block,
   useAllowance,
 } from "state/hooks";
 import { TransactionTypes } from "state/transactions";
@@ -17,7 +18,7 @@ import {
 } from "utils";
 import { PrimaryButton } from "../Buttons";
 import { Wrapper, Info, AccentSection, InfoIcon } from "./SendAction.styles";
-import api from "state/chainApi";
+import api, { useBridgeFees } from "state/chainApi";
 import InformationDialog from "components/InformationDialog";
 import { useAppSelector } from "state/hooks";
 
@@ -35,6 +36,8 @@ const SendAction: React.FC = () => {
     approve,
     fees,
   } = useSend();
+
+  const { block } = useL2Block();
 
   const { signer, account } = useConnection();
   const sendState = useAppSelector((state) => state.send);

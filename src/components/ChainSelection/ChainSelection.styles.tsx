@@ -6,6 +6,7 @@ import { ChevronDown } from "react-feather";
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  padding-top: 20px;
 `;
 
 export const RoundBox = styled(UnstyledBox)`

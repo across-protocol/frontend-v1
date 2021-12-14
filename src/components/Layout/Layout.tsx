@@ -8,11 +8,11 @@ import { ReactComponent as TwitterLogo } from "assets/icon-twitter.svg";
 const NAV_LINKS = [
   {
     name: "FAQ",
-    url: "https://across.gitbook.io/bridge/faq",
+    url: "https://docs.across.to/bridge/faq",
   },
   {
     name: "Docs",
-    url: "https://across.gitbook.io/bridge/",
+    url: "https://docs.across.to/bridge/",
   },
 ];
 const DISCORD_LINK = {
@@ -65,13 +65,10 @@ const Footer = styled.footer`
   bottom: 0;
   padding: 0 15px 15px;
   align-self: self-end;
-  &:last-of-type {
-    justify-self: self-end;
-  }
+  justify-self: center;
 
   &:first-of-type {
     display: flex;
-    justify-self: center;
     padding-bottom: 25px;
     & svg {
       width: 25px;
