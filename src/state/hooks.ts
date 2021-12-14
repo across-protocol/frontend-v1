@@ -81,7 +81,6 @@ export function useL2Block() {
       });
   }, [
     currentlySelectedFromChain.chainId,
-    latestBlock,
     error,
     removeError,
     addError,
