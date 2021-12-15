@@ -21,9 +21,17 @@ import BouncingDotsLoader from "components/BouncingDotsLoader";
 
 import { BounceType } from "components/BouncingDotsLoader/BouncingDotsLoader";
 
+export type ShowSuccess = {
+  type: "deposit" | "remove";
+  value: boolean;
+};
+
 const Pool: FC = () => {
   const [token, setToken] = useState<Token>(TOKENS_LIST[ChainId.MAINNET][2]);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [showSuccess, setShowSuccess] = useState<ShowSuccess>({
+    type: "deposit",
+    value: false,
+  });
   const [depositUrl, setDepositUrl] = useState("");
   const [loadingPoolState, setLoadingPoolState] = useState(false);
   const [defaultTab, setDefaultTab] = useState("Add");

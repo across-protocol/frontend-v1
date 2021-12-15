@@ -2,25 +2,29 @@ import { FC, useEffect } from "react";
 import styled from "@emotion/styled";
 import { PrimaryButton } from "../Buttons";
 import { Check, ArrowUpRight } from "react-feather";
+import type { ShowSuccess } from "views/Pool";
 
 interface Props {
   depositUrl: string;
-  setShowSuccess: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowSuccess: React.Dispatch<React.SetStateAction<ShowSuccess>>;
   setDepositUrl: React.Dispatch<React.SetStateAction<string>>;
+  isRemoval?: boolean;
 }
 const DepositSuccess: FC<Props> = ({
   depositUrl,
   setShowSuccess,
   setDepositUrl,
+  isRemoval = false,
 }) => {
   // Make sure we scroll to top when deposit screen mounts
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
+  const message = isRemoval ? "Withdrawal succeeded" : "Deposit succeeded";
   return (
     <div>
       <DepositTopWrapper>
-        <SuccessText>Deposit succeeded</SuccessText>
+        <SuccessText>{message}</SuccessText>
         <CheckMarkWrapper>
           <Check strokeWidth={5} />
         </CheckMarkWrapper>
@@ -33,7 +37,7 @@ const DepositSuccess: FC<Props> = ({
         </EtherscanUrl>
         <DepositButton
           onClick={() => {
-            setShowSuccess(false);
+            setShowSuccess((oldShow) => ({ ...oldShow, value: false }));
             setDepositUrl("");
           }}
         >
