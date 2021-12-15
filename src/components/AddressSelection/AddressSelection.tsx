@@ -121,7 +121,7 @@ const AddressSelection: React.FC = () => {
                 return (
                   <Item
                     className={
-                      t === sendState.currentlySelectedToChain ? "disabled" : ""
+                      t === sendState.currentlySelectedToChain || t.chainId !== ChainId.OPTIMISM ? "disabled" : ""
                     }
                     {...getItemProps({ item: t, index })}
                     key={t.chainId}
@@ -129,7 +129,7 @@ const AddressSelection: React.FC = () => {
                     <Logo src={t.logoURI} alt={t.name} />
                     <div>{t.name}</div>
                     <span className="layer-type">
-                      {t.name !== "Ether" ? "L2" : "L1"}
+                    {t.chainId !== ChainId.MAINNET ? "L2" : "L1"}
                     </span>
                   </Item>
                 );
