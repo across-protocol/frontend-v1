@@ -191,15 +191,6 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       logoURI: ethereumLogo,
       bridgePool: getAddress("0x7355Efc63Ae731f584380a9838292c7046c1e433"),
     },
-    {
-      address: getAddress("0xE7798f023fC62146e8Aa1b36Da45fb70855a77Ea"),
-      name: "UMA Token",
-      symbol: "UMA",
-      decimals: 18,
-      logoURI: umaLogo,
-      // TODO
-      bridgePool: "0x",
-    },
   ],
   [ChainId.KOVAN_OPTIMISM]: [
     {
