@@ -13,6 +13,7 @@ export const Wrapper = styled.div`
 export const Header = styled(Section)`
   display: grid;
   place-items: center;
+  border-bottom: none;
 `;
 
 export const Heading = styled(SectionTitle)`
@@ -68,11 +69,14 @@ export const Info = styled.article`
   margin: 0 calc(-1 * var(--horizontalPadding));
   padding: 15px 40px;
 
+  & > h3 {
+    line-height: 1;
+  }
+
   & > div {
     display: flex;
     align-items: center;
     margin-top: 10px;
-    margin-bottom: 10px;
   }
 `;
 
