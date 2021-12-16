@@ -42,7 +42,7 @@ interface Props {
   tokenAddress: string;
   ethBalance: QuerySubState<any> | null | undefined;
   erc20Balances: QuerySubState<any> | null | undefined;
-  setShowSuccess: React.Dispatch<React.SetStateAction<ShowSuccess>>;
+  setShowSuccess: React.Dispatch<React.SetStateAction<ShowSuccess | undefined>>;
   setDepositUrl: React.Dispatch<React.SetStateAction<string>>;
   balance: string;
   wrongNetwork?: boolean;

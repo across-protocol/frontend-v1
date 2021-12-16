@@ -6,21 +6,22 @@ import type { ShowSuccess } from "views/Pool";
 
 interface Props {
   depositUrl: string;
-  setShowSuccess: React.Dispatch<React.SetStateAction<ShowSuccess>>;
+  setShowSuccess: React.Dispatch<React.SetStateAction<ShowSuccess | undefined>>;
   setDepositUrl: React.Dispatch<React.SetStateAction<string>>;
-  isRemoval?: boolean;
+  showSuccess: ShowSuccess;
 }
 const DepositSuccess: FC<Props> = ({
   depositUrl,
   setShowSuccess,
   setDepositUrl,
-  isRemoval = false,
+  showSuccess,
 }) => {
   // Make sure we scroll to top when deposit screen mounts
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
-  const message = isRemoval ? "Withdrawal succeeded" : "Deposit succeeded";
+  const message =
+    showSuccess === "withdraw" ? "Withdrawal succeeded" : "Deposit succeeded";
   return (
     <div>
       <DepositTopWrapper>
@@ -37,7 +38,7 @@ const DepositSuccess: FC<Props> = ({
         </EtherscanUrl>
         <DepositButton
           onClick={() => {
-            setShowSuccess((oldShow) => ({ ...oldShow, value: false }));
+            setShowSuccess(undefined);
             setDepositUrl("");
           }}
         >

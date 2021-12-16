@@ -43,7 +43,7 @@ interface Props {
   lpTokens: ethers.BigNumber;
   decimals: number;
   symbol: string;
-  setShowSuccess: React.Dispatch<React.SetStateAction<ShowSuccess>>;
+  setShowSuccess: React.Dispatch<React.SetStateAction<ShowSuccess | undefined>>;
   setDepositUrl: React.Dispatch<React.SetStateAction<string>>;
   balance: string;
   position: ethers.BigNumber;
@@ -122,7 +122,7 @@ const RemoveLiqudityForm: FC<Props> = ({
           emitter.on("txConfirmed", (tx) => {
             if (transaction.hash) notify.unsubscribe(transaction.hash);
             const url = `https://etherscan.io/tx/${transaction.hash}`;
-            setShowSuccess({ type: "remove", value: true });
+            setShowSuccess("withdraw");
             setDepositUrl(url);
             setTxSubmitted(false);
             if (account)

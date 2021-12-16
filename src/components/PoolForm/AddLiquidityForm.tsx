@@ -34,7 +34,7 @@ interface Props {
   decimals: number;
   symbol: string;
   tokenAddress: string;
-  setShowSuccess: React.Dispatch<React.SetStateAction<ShowSuccess>>;
+  setShowSuccess: React.Dispatch<React.SetStateAction<ShowSuccess | undefined>>;
   setDepositUrl: React.Dispatch<React.SetStateAction<string>>;
   balance: string;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
@@ -150,7 +150,7 @@ const AddLiquidityForm: FC<Props> = ({
           emitter.on("all", addEtherscan);
           emitter.on("txConfirmed", (tx) => {
             if (transaction.hash) notify.unsubscribe(transaction.hash);
-            setShowSuccess({ type: "deposit", value: true });
+            setShowSuccess("deposit");
             setTxSubmitted(false);
             const url = `https://etherscan.io/tx/${transaction.hash}`;
             setDepositUrl(url);
