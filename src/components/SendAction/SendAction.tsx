@@ -120,7 +120,10 @@ const SendAction: React.FC = () => {
     if (hasToApprove) {
       setApprovalPending(true);
       handleApprove()
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          addError(new Error(`Error in approve call: ${err.message}`));
+          console.error(err);
+        })
         .finally(() => setApprovalPending(false));
       return;
     }
