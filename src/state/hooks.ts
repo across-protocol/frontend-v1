@@ -144,7 +144,7 @@ export function useSend() {
     },
     { skip: !account || !isConnected || !depositBox }
   );
-  console.log(balance, balance.toString())
+
   const canApprove = balance.gte(amount) && amount.gte(0);
   const hasToApprove = allowance?.hasToApprove ?? false;
 
