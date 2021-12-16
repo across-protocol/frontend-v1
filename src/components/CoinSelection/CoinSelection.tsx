@@ -7,8 +7,6 @@ import {
   useSend,
   useBalances,
   useConnection,
-  useBridgeFees,
-  useL2Block,
 } from "state/hooks";
 import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
 import { Section, SectionTitle } from "../Section";
@@ -157,7 +155,6 @@ const CoinSelection = () => {
       }
     }
   };
-
   const errorMsg = error
     ? error.message
     : fees?.isAmountTooLow
