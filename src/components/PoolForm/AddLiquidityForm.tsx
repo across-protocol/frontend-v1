@@ -1,4 +1,4 @@
-import { FC, useState, useCallback, useEffect } from "react";
+import { FC, useState, useCallback, useEffect, useContext } from "react";
 import { onboard } from "utils";
 import { useConnection } from "state/hooks";
 import {
@@ -21,6 +21,8 @@ import BouncingDotsLoader from "components/BouncingDotsLoader";
 import { DEFAULT_TO_CHAIN_ID, CHAINS, switchChain } from "utils";
 import api from "state/chainApi";
 import type { ShowSuccess } from "views/Pool";
+import { ErrorContext } from "context/ErrorContext";
+
 
 // max uint value is 2^256 - 1
 const MAX_UINT_VAL = ethers.constants.MaxUint256;
@@ -61,6 +63,8 @@ const AddLiquidityForm: FC<Props> = ({
   formError,
   onMaxClick,
 }) => {
+  const { addError } = useContext(ErrorContext);
+
   const { init } = onboard;
   const { isConnected, provider, signer, notify, account } = useConnection();
   const { approve } = useERC20(tokenAddress);
@@ -91,30 +95,35 @@ const AddLiquidityForm: FC<Props> = ({
   }, [isConnected, symbol, checkIfUserHasToApprove, wrongNetwork]);
 
   const handleApprove = async () => {
-    const tx = await approve({
-      amount: INFINITE_APPROVAL_AMOUNT,
-      spender: bridgeAddress,
-      signer,
-    });
-
-    if (tx) {
-      setTxSubmitted(true);
-      const { emitter } = notify.hash(tx.hash);
-      emitter.on("all", addEtherscan);
-
-      emitter.on("txConfirmed", () => {
-        notify.unsubscribe(tx.hash);
-        setTxSubmitted(false);
-        setUserNeedsToApprove(false);
-        if (account) {
-          setTimeout(() => updateEthBalance({ chainId: 1, account }), 15000);
-        }
+    try {
+      const tx = await approve({
+        amount: INFINITE_APPROVAL_AMOUNT,
+        spender: bridgeAddress,
+        signer,
       });
 
-      emitter.on("txFailed", () => {
-        notify.unsubscribe(tx.hash);
-        setTxSubmitted(false);
-      });
+      if (tx) {
+        setTxSubmitted(true);
+        const { emitter } = notify.hash(tx.hash);
+        emitter.on("all", addEtherscan);
+
+        emitter.on("txConfirmed", () => {
+          notify.unsubscribe(tx.hash);
+          setTxSubmitted(false);
+          setUserNeedsToApprove(false);
+          if (account) {
+            setTimeout(() => updateEthBalance({ chainId: 1, account }), 15000);
+          }
+        });
+
+        emitter.on("txFailed", () => {
+          notify.unsubscribe(tx.hash);
+          setTxSubmitted(false);
+        });
+      }
+    } catch (err: any) {
+      addError(new Error(`Error in approve call: ${err.message}`));
+      console.error(err);
     }
   };
 
@@ -167,7 +176,9 @@ const AddLiquidityForm: FC<Props> = ({
         }
 
         return transaction;
-      } catch (err) {
+      } catch (err: any) {
+        addError(new Error(`Error in add liquidity call: ${err.message}`));
+
         console.error("err in AddEthLiquidity call", err);
       }
     }
