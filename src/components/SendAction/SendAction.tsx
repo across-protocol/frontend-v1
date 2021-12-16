@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useConnection,
   useDeposits,
@@ -14,6 +14,7 @@ import {
   formatUnits,
   receiveAmount,
   getEstimatedDepositTime,
+  ChainId,
 } from "utils";
 import { PrimaryButton } from "../Buttons";
 import { Wrapper, Info, AccentSection, InfoIcon } from "./SendAction.styles";
@@ -127,9 +128,13 @@ const SendAction: React.FC = () => {
     if (hasToApprove) return "Approve";
     return "Send";
   };
-
-  const amountMinusFees = receiveAmount(amount, fees);
-
+  const amountMinusFees = useMemo(() => {
+    if (sendState.currentlySelectedFromChain.chainId === ChainId.MAINNET) {
+      return amount;
+    }
+    return receiveAmount(amount, fees);
+  }, [amount, fees, sendState.currentlySelectedFromChain.chainId])
+  console.log(amountMinusFees);
   const buttonDisabled =
     isSendPending ||
     isApprovalPending ||

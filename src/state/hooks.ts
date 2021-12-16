@@ -378,9 +378,10 @@ export function useBalance(params: {
 export function useSendOptimism() {
   const [optimismBridge] = useState(new OptimismBridgeClient());
   const { isConnected, chainId, account, signer } = useConnection();
-  const { fromChain, amount, token } = useAppSelector(
+  const { fromChain, amount, token, currentlySelectedFromChain, currentlySelectedToChain, toAddress, error } = useAppSelector(
     (state) => state.send
   );
+  const { block } = useL2Block();
   const { balance: balanceStr } = useBalance({
     chainId: fromChain,
     account,
@@ -446,8 +447,36 @@ export function useSendOptimism() {
     return optimismBridge.approve(signer, token, MAX_APPROVAL_AMOUNT);
   }, [optimismBridge, signer, token]);
 
-  const canSend = true;
-  const hasToSwitchChain = false;
+  const hasToSwitchChain = isConnected && currentlySelectedFromChain.chainId !== chainId;
+  const canSend = useMemo(
+    () =>
+      currentlySelectedFromChain.chainId &&
+      block &&
+      currentlySelectedToChain.chainId &&
+      amount &&
+      token &&
+      fees &&
+      toAddress &&
+      isValidAddress(toAddress) &&
+      !hasToApprove &&
+      !hasToSwitchChain &&
+      !error &&
+      balance.gte(amount),
+    [
+      currentlySelectedFromChain.chainId,
+      block,
+      currentlySelectedToChain.chainId,
+      amount,
+      token,
+      fees,
+      toAddress,
+      hasToApprove,
+      hasToSwitchChain,
+      error,
+      balance,
+    ]
+  );
+
   return {
     canSend,
     canApprove,
