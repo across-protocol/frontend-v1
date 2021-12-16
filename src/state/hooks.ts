@@ -79,12 +79,7 @@ export function useL2Block() {
         addError(new Error("Infura issue, please try again later."));
         console.error("Error getting latest block");
       });
-  }, [
-    currentlySelectedFromChain.chainId,
-    error,
-    removeError,
-    addError,
-  ]);
+  }, [currentlySelectedFromChain.chainId, error, removeError, addError]);
 
   useInterval(() => {
     const provider = PROVIDERS[currentlySelectedFromChain.chainId]();
@@ -130,12 +125,12 @@ export function useSend() {
     dispatch
   );
 
-  const { balance: balanceStr } = useBalance({
+  const { balance } = useBalance({
     chainId: currentlySelectedFromChain.chainId,
     account,
     tokenAddress: token,
   });
-  const balance = BigNumber.from(balanceStr);
+
   const { block } = useL2Block();
 
   const depositBox = getDepositBox(currentlySelectedFromChain.chainId);
@@ -149,6 +144,7 @@ export function useSend() {
     },
     { skip: !account || !isConnected || !depositBox }
   );
+  console.log(balance, balance.toString())
   const canApprove = balance.gte(amount) && amount.gte(0);
   const hasToApprove = allowance?.hasToApprove ?? false;
 
@@ -310,26 +306,29 @@ export {
   useBridgeFees,
 } from "./chainApi";
 
-export function useBalance(params: {
+type useBalanceParams = {
   chainId: ChainId;
   account?: string;
   tokenAddress: string;
-}) {
-  const { chainId, account, tokenAddress } = params;
-  // const { data: balances, ...rest } = useBalances({ chainId, account });
-  const [updateBalances, result] = chainApi.endpoints.balances.useLazyQuery();
-  function refetch() {
-    if (account) updateBalances({ chainId, account });
-  }
-  useEffect(refetch, [chainId, account, tokenAddress, updateBalances]);
-  const tokenList = TOKENS_LIST[chainId];
-  const selectedIndex = tokenList.findIndex(
-    ({ address }) => address === tokenAddress
+};
+export function useBalance({
+  chainId,
+  account,
+  tokenAddress,
+}: useBalanceParams) {
+  const { data: allBalances, refetch } = chainApi.endpoints.balances.useQuery(
+    {
+      account: account ?? "",
+      chainId,
+    },
+    { skip: !account }
   );
-  const balance =
-    result?.data && result.data[selectedIndex]
-      ? result.data[selectedIndex].toString()
-      : "0";
+  const selectedIndex = useMemo(
+    () =>
+      TOKENS_LIST[chainId].findIndex(({ address }) => address === tokenAddress),
+    [chainId, tokenAddress]
+  );
+  const balance = allBalances?.[selectedIndex] ?? ethers.BigNumber.from(0);
 
   return {
     balance,
