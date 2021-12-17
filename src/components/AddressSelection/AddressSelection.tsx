@@ -110,7 +110,6 @@ const AddressSelection: React.FC = () => {
                       ? "Mainnet"
                       : selectedItem?.name}
                   </ToggleChainName>
-
                   {toAddress && <Address>{shortenAddress(toAddress)}</Address>}
                 </div>
                 <ToggleIcon />
@@ -195,7 +194,6 @@ const AddressSelection: React.FC = () => {
             </ClearButton>
             {!isValid && <InputError>Not a valid address</InputError>}
           </InputWrapper>
-
           <ButtonGroup>
             <CancelButton onClick={toggle}>Cancel</CancelButton>
             <SecondaryButton
