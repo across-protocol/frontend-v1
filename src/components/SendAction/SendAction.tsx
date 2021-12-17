@@ -1,22 +1,20 @@
-import React, { useState } from "react";
-import { ethers } from "ethers";
+import React, { useMemo, useState } from "react";
 import {
-  useBridgeFees,
   useConnection,
   useDeposits,
   useSend,
   useTransactions,
-  useL2Block,
   useAllowance,
 } from "state/hooks";
 import { TransactionTypes } from "state/transactions";
-import { useERC20 } from "hooks";
 import {
   CHAINS,
   getDepositBox,
   TOKENS_LIST,
   formatUnits,
   receiveAmount,
+  getEstimatedDepositTime,
+  ChainId,
 } from "utils";
 import { PrimaryButton } from "../Buttons";
 import { Wrapper, Info, AccentSection, InfoIcon } from "./SendAction.styles";
@@ -25,38 +23,34 @@ import InformationDialog from "components/InformationDialog";
 import { useAppSelector } from "state/hooks";
 
 const CONFIRMATIONS = 1;
-const MAX_APPROVAL_AMOUNT = ethers.constants.MaxUint256;
 const SendAction: React.FC = () => {
-  const { amount, token, send, hasToApprove, canApprove, canSend, toAddress } =
-    useSend();
-  const { account } = useConnection();
+  const {
+    amount,
+    toChain,
+    token,
+    send,
+    hasToApprove,
+    canApprove,
+    canSend,
+    toAddress,
+    approve,
+    fees,
+  } = useSend();
+
+  const { signer, account } = useConnection();
   const sendState = useAppSelector((state) => state.send);
-
-  const { block } = useL2Block();
-
   const [isInfoModalOpen, setOpenInfoModal] = useState(false);
   const toggleInfoModal = () => setOpenInfoModal((oldOpen) => !oldOpen);
   const [isSendPending, setSendPending] = useState(false);
   const [isApprovalPending, setApprovalPending] = useState(false);
   const { addTransaction } = useTransactions();
   const { addDeposit } = useDeposits();
-  const { approve } = useERC20(token);
-  const { signer } = useConnection();
   const [updateEthBalance] = api.endpoints.ethBalance.useLazyQuery();
   // trigger balance update
   const [updateBalances] = api.endpoints.balances.useLazyQuery();
   const tokenInfo = TOKENS_LIST[
     sendState.currentlySelectedFromChain.chainId
   ].find((t) => t.address === token);
-
-  const { data: fees } = useBridgeFees(
-    {
-      amount,
-      tokenSymbol: tokenInfo ? tokenInfo.symbol : "",
-      blockTime: block?.timestamp!,
-    },
-    { skip: !tokenInfo || !block?.timestamp || !amount.gt(0) }
-  );
 
   const depositBox = getDepositBox(
     sendState.currentlySelectedFromChain.chainId
@@ -72,11 +66,7 @@ const SendAction: React.FC = () => {
     { skip: !account }
   );
   const handleApprove = async () => {
-    const tx = await approve({
-      amount: MAX_APPROVAL_AMOUNT,
-      spender: depositBox.address,
-      signer,
-    });
+    const tx = await approve();
     if (tx) {
       addTransaction({ ...tx, meta: { label: TransactionTypes.APPROVE } });
       await tx.wait(CONFIRMATIONS);
@@ -138,9 +128,13 @@ const SendAction: React.FC = () => {
     if (hasToApprove) return "Approve";
     return "Send";
   };
-
-  const amountMinusFees = receiveAmount(amount, fees);
-
+  const amountMinusFees = useMemo(() => {
+    if (sendState.currentlySelectedFromChain.chainId === ChainId.MAINNET) {
+      return amount;
+    }
+    return receiveAmount(amount, fees);
+  }, [amount, fees, sendState.currentlySelectedFromChain.chainId])
+  console.log(amountMinusFees);
   const buttonDisabled =
     isSendPending ||
     isApprovalPending ||
@@ -158,7 +152,7 @@ const SendAction: React.FC = () => {
                 Time to{" "}
                 {CHAINS[sendState.currentlySelectedToChain.chainId].name}
               </div>
-              <div>~1-3 minutes</div>
+              <div>{getEstimatedDepositTime(toChain)}</div>
             </Info>
             <Info>
               <div>Ethereum Gas Fee</div>

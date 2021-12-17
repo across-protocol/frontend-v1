@@ -1,14 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ethers, BigNumber } from "ethers";
 import { useSelect } from "downshift";
-import { max } from "utils";
+import { ChainId, max } from "utils";
 
 import {
   useSend,
   useBalances,
   useConnection,
-  useBridgeFees,
-  useL2Block,
 } from "state/hooks";
 import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
 import { Section, SectionTitle } from "../Section";
@@ -31,12 +29,16 @@ import {
 const FEE_ESTIMATION = ".004";
 const CoinSelection = () => {
   const { account, isConnected } = useConnection();
-  const { setAmount, setToken, amount, token } = useSend();
+  const { setAmount, setToken, fromChain, amount, token, fees, toChain } = useSend();
 
   const [error, setError] = React.useState<Error>();
   const sendState = useAppSelector((state) => state.send);
-
-  const tokenList = TOKENS_LIST[sendState.currentlySelectedFromChain.chainId];
+  const tokenList = useMemo(() => {
+    if (fromChain === ChainId.MAINNET && toChain === ChainId.OPTIMISM) {
+      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].slice(1);
+    }
+    return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId];
+  }, [fromChain, toChain, sendState.currentlySelectedFromChain.chainId]);
   const { data: balances } = useBalances(
     {
       account: account!,
@@ -44,6 +46,15 @@ const CoinSelection = () => {
     },
     { skip: !account }
   );
+  const tokenBalanceMap = useMemo(() => {
+    return TOKENS_LIST[fromChain].reduce((acc, val, idx) => {
+      return {
+        ...acc,
+        [val.address]: balances ? balances[idx] : undefined,
+      };
+    }, {} as Record<string, BigNumber | undefined>);
+  }, [balances, fromChain])
+
 
   const {
     isOpen,
@@ -107,38 +118,33 @@ const CoinSelection = () => {
         const selectedIndex = tokenList.findIndex(
           ({ address }) => address === token
         );
-        if (balances[selectedIndex]) {
-          const balance = balances[selectedIndex] || ethers.BigNumber.from("0");
-          const isEth = tokenList[selectedIndex].symbol === "ETH";
-          if (
-            amount.gt(
-              isEth
-                ? balance.sub(ethers.utils.parseEther(FEE_ESTIMATION))
-                : balance
-            )
-          ) {
-            setError(new Error("Insufficient balance."));
-          }
+        const balance = tokenBalanceMap[token];
+        const isEth = tokenList[selectedIndex].symbol === "ETH";
+        if (balance &&
+          amount.gt(
+            isEth
+              ? balance.sub(ethers.utils.parseEther(FEE_ESTIMATION))
+              : balance
+          )
+        ) {
+          setError(new Error("Insufficient balance."));
         }
       }
     }
-  }, [balances, amount, token, tokenList, inputAmount]);
+  }, [balances, amount, token, tokenList, inputAmount, tokenBalanceMap]);
 
   const handleMaxClick = () => {
     if (balances && selectedItem) {
       const selectedIndex = tokenList.findIndex(
         ({ address }) => address === selectedItem.address
       );
-      if (balances[selectedIndex]) {
-        const isEth = tokenList[selectedIndex].symbol === "ETH";
-        const balance = isEth
-          ? max(
-              balances[selectedIndex].sub(
-                ethers.utils.parseEther(FEE_ESTIMATION)
-              ),
-              0
-            )
-          : balances[selectedIndex];
+      const isEth = tokenList[selectedIndex].symbol === "ETH";
+      let balance = tokenBalanceMap[token];
+
+      if (balance) {
+        if (isEth) {
+          balance = max(balance.sub(ethers.utils.parseEther(FEE_ESTIMATION)), 0)
+        }
         setAmount({ amount: balance });
         setInputAmount(formatUnits(balance, selectedItem.decimals));
       } else {
@@ -149,18 +155,6 @@ const CoinSelection = () => {
       }
     }
   };
-
-  const { block } = useL2Block();
-
-  const { data: fees } = useBridgeFees(
-    {
-      amount,
-      tokenSymbol: selectedItem!.symbol,
-      blockTime: block?.timestamp!,
-    },
-    { skip: amount.lte(0) || !block?.timestamp || !selectedItem?.symbol }
-  );
-
   const errorMsg = error
     ? error.message
     : fees?.isAmountTooLow
@@ -196,8 +190,8 @@ const CoinSelection = () => {
                   <Logo src={token.logoURI} alt={token.name} />
                   <div>{token.name}</div>
                   <div>
-                    {balances &&
-                      formatUnits(balances[index], tokenList[index].decimals)}
+                    {tokenBalanceMap &&
+                      formatUnits(tokenBalanceMap[token.address] || "0", tokenList[index].decimals)}
                   </div>
                 </Item>
               ))}

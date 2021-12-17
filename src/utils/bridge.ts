@@ -172,3 +172,40 @@ export async function getLpFee(
   result.isLiquidityInsufficient = isLiquidityInsufficient;
   return result;
 }
+
+export const getEstimatedDepositTime = (chainId: ChainId) => {
+  switch (chainId) {
+    case ChainId.OPTIMISM:
+    case ChainId.BOBA:
+      return '~20 minutes';
+    case ChainId.ARBITRUM:
+      return '~10 minutes';
+    case ChainId.MAINNET:
+      return '~1-3 minutes';
+  }
+};
+
+export const getConfirmationDepositTime = (chainId: ChainId) => {
+  switch (chainId) {
+    case ChainId.OPTIMISM:
+    case ChainId.BOBA:
+      return '~20 minutes';
+    case ChainId.ARBITRUM:
+      return '~10 minutes';
+    case ChainId.MAINNET:
+      return '~2 minutes';
+  }
+};
+
+// This will be moved inside the SDK in the near future
+export const optimismErc20Pairs = () => {
+  const usdcMainnet = TOKENS_LIST[ChainId.MAINNET].filter((token) => token.symbol === "USDC")[0];
+  const umaMainnet = TOKENS_LIST[ChainId.MAINNET].filter((token) => token.symbol === "UMA")[0];
+  const usdcOptimism = TOKENS_LIST[ChainId.OPTIMISM].filter((token) => token.symbol === "USDC")[0];
+  const umaOptimism = TOKENS_LIST[ChainId.OPTIMISM].filter((token) => token.symbol === "UMA")[0];
+
+  return {
+    [usdcMainnet.address]: usdcOptimism.address,
+    [umaMainnet.address]: umaOptimism.address,
+  };
+};

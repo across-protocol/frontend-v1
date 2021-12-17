@@ -10,8 +10,11 @@ import {
   PROVIDERS,
   TransactionError,
   ChainId,
+  MAX_APPROVAL_AMOUNT,
+  optimismErc20Pairs,
 } from "utils";
 import type { RootState, AppDispatch } from "./";
+import { ErrorContext } from "context/ErrorContext";
 import { update, disconnect, error as errorAction } from "./connection";
 import {
   token as tokenAction,
@@ -24,7 +27,13 @@ import {
 import chainApi, { useAllowance, useBridgeFees } from "./chainApi";
 import { add } from "./transactions";
 import { deposit as depositAction, toggle } from "./deposits";
-import { ErrorContext } from "context/ErrorContext";
+import { useERC20 } from "hooks";
+import { across } from "@uma/sdk";
+
+const { clients } = across;
+const { OptimismBridgeClient } = clients.optimismBridge;
+
+
 
 const FEE_ESTIMATION = "0.004";
 
@@ -106,17 +115,6 @@ export function useL2Block() {
 }
 
 export function useSend() {
-  const { isConnected, chainId, account, signer } = useConnection();
-  const {
-    fromChain,
-    toChain,
-    toAddress,
-    amount,
-    token,
-    error,
-    currentlySelectedFromChain,
-    currentlySelectedToChain,
-  } = useAppSelector((state) => state.send);
   const dispatch = useAppDispatch();
   const actions = bindActionCreators(
     {
@@ -129,7 +127,43 @@ export function useSend() {
     },
     dispatch
   );
+  const send = useAppSelector((state) => state.send);
+  const sendAcross = useSendAcross();
+  const sendOptimism = useSendOptimism();
+  const setSend = {
+    setToken: actions.tokenAction,
+    setAmount: actions.amountAction,
+    setFromChain: actions.fromChainAction,
+    setToChain: actions.toChainAction,
+    setToAddress: actions.toAddressAction,
+    setError: actions.sendErrorAction,
+  };
 
+  if (send.fromChain === ChainId.MAINNET && send.toChain === ChainId.OPTIMISM) {
+    return {
+      ...send,
+      ...setSend,
+      ...sendOptimism,
+    };
+  }
+  return {
+    ...send,
+    ...setSend,
+    ...sendAcross,
+  };
+}
+export function useSendAcross() {
+  const { isConnected, chainId, account, signer } = useConnection();
+  const {
+    fromChain,
+    toChain,
+    toAddress,
+    amount,
+    token,
+    error,
+    currentlySelectedFromChain,
+    currentlySelectedToChain,
+  } = useAppSelector((state) => state.send);
   const { balance: balanceStr } = useBalance({
     chainId: currentlySelectedFromChain.chainId,
     account,
@@ -149,9 +183,17 @@ export function useSend() {
     },
     { skip: !account || !isConnected || !depositBox }
   );
+  const { approve: rawApprove } = useERC20(token);
   const canApprove = balance.gte(amount) && amount.gte(0);
   const hasToApprove = allowance?.hasToApprove ?? false;
 
+  async function approve() {
+    return rawApprove({
+      amount: MAX_APPROVAL_AMOUNT,
+      spender: depositBox.address,
+      signer,
+    });
+  }
   const hasToSwitchChain =
     isConnected && currentlySelectedFromChain.chainId !== chainId;
 
@@ -265,17 +307,13 @@ export function useSend() {
     amount,
     token,
     error,
-    setToken: actions.tokenAction,
-    setAmount: actions.amountAction,
-    setFromChain: actions.fromChainAction,
-    setToChain: actions.toChainAction,
-    setToAddress: actions.toAddressAction,
-    setError: actions.sendErrorAction,
     canSend,
     canApprove,
     hasToApprove,
     hasToSwitchChain,
     send,
+    approve,
+    fees,
   };
 }
 
@@ -334,5 +372,118 @@ export function useBalance(params: {
   return {
     balance,
     refetch,
+  };
+}
+
+export function useSendOptimism() {
+  const [optimismBridge] = useState(new OptimismBridgeClient());
+  const { isConnected, chainId, account, signer } = useConnection();
+  const { fromChain, amount, token, currentlySelectedFromChain, currentlySelectedToChain, toAddress, error } = useAppSelector(
+    (state) => state.send
+  );
+  const { block } = useL2Block();
+  const { balance: balanceStr } = useBalance({
+    chainId: fromChain,
+    account,
+    tokenAddress: token,
+  });
+  const bridgeAddress = useMemo(() => {
+    try {
+      return optimismBridge.getL1BridgeAddress(chainId as number)
+    } catch (error) {
+      return '';
+    }
+  }, [optimismBridge, chainId]);
+  const balance = BigNumber.from(balanceStr);
+  const { data: allowance } = useAllowance(
+    {
+      chainId: fromChain,
+      token,
+      owner: account!,
+      spender: bridgeAddress,
+      amount,
+    },
+    { skip: !account || !isConnected || !chainId }
+  );
+  const canApprove = balance.gte(amount) && amount.gte(0);
+  const hasToApprove = allowance?.hasToApprove ?? true;
+  //TODO: Add fees
+  const [fees] = useState({
+    instantRelayFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    slowRelayFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    lpFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    isAmountTooLow: false,
+    isLiquidityInsufficient: false,
+  });
+
+  const send = useCallback(async () => {
+    if (!isConnected || !signer) return {};
+    if (token === ethers.constants.AddressZero) {
+      return {
+        tx: await optimismBridge.depositEth(signer, amount),
+        fees,
+      };
+    } else {
+      const pairToken = optimismErc20Pairs()[token];
+      if (!pairToken) return {};
+      return {
+        tx: await optimismBridge.depositERC20(signer, token, pairToken, amount),
+        fees,
+      };
+    }
+  }, [amount, fees, token, isConnected, optimismBridge, signer]);
+
+  const approve = useCallback(() => {
+    if (!signer) return;
+    return optimismBridge.approve(signer, token, MAX_APPROVAL_AMOUNT);
+  }, [optimismBridge, signer, token]);
+
+  const hasToSwitchChain = isConnected && currentlySelectedFromChain.chainId !== chainId;
+  const canSend = useMemo(
+    () =>
+      currentlySelectedFromChain.chainId &&
+      block &&
+      currentlySelectedToChain.chainId &&
+      amount &&
+      token &&
+      fees &&
+      toAddress &&
+      isValidAddress(toAddress) &&
+      !hasToApprove &&
+      !hasToSwitchChain &&
+      !error &&
+      balance.gte(amount),
+    [
+      currentlySelectedFromChain.chainId,
+      block,
+      currentlySelectedToChain.chainId,
+      amount,
+      token,
+      fees,
+      toAddress,
+      hasToApprove,
+      hasToSwitchChain,
+      error,
+      balance,
+    ]
+  );
+
+  return {
+    canSend,
+    canApprove,
+    hasToApprove,
+    hasToSwitchChain,
+    send,
+    approve,
+    fees,
   };
 }
