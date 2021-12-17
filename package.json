@@ -17,7 +17,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.3.1",
-    "@uma/contracts-frontend": "^0.1.5",
+    "@uma/contracts-frontend": "^0.1.17",
     "@uma/sdk": "^0.16.1",
     "@uma/sdk-next": "npm:@uma/sdk@0.17.0",
     "@use-it/interval": "^1.0.0",
