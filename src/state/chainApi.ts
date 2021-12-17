@@ -1,6 +1,11 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ethers, BigNumber } from "ethers";
-import { PROVIDERS, getRelayFees, ChainId, TOKENS_LIST, getLpFee } from "utils";
+import { getRelayFees, getLpFee } from "utils";
+import {
+  PROVIDERS,
+  ChainId,
+  TOKENS_DEPLOYED_ON_L2CHAINS,
+} from "utils/chains/constants";
 import type { BridgeFees } from "utils";
 
 import { clients } from "@uma/sdk";
@@ -38,7 +43,7 @@ const api = createApi({
         try {
           const provider = PROVIDERS[chainId]();
           const balances = await Promise.all(
-            TOKENS_LIST[chainId].map(async (token) => {
+            TOKENS_DEPLOYED_ON_L2CHAINS[chainId].map(async (token) => {
               try {
                 // If it is ETH, use getBalance from the provider
                 if (token.address === ethers.constants.AddressZero) {

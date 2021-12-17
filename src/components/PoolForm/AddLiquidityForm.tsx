@@ -18,11 +18,11 @@ import { ethers } from "ethers";
 import { clients } from "@uma/sdk";
 import { addEtherscan } from "utils/notify";
 import BouncingDotsLoader from "components/BouncingDotsLoader";
-import { DEFAULT_TO_CHAIN_ID, CHAINS, switchChain } from "utils";
+import { switchChain } from "utils";
+import { DEFAULT_TO_CHAIN_ID, CHAINS_METADATA } from "utils/chains/constants";
 import api from "state/chainApi";
 import type { ShowSuccess } from "views/Pool";
 import { ErrorContext } from "context/ErrorContext";
-
 
 // max uint value is 2^256 - 1
 const MAX_UINT_VAL = ethers.constants.MaxUint256;
@@ -230,7 +230,7 @@ const AddLiquidityForm: FC<Props> = ({
       {formError && <LiquidityErrorBox>{formError}</LiquidityErrorBox>}
       {wrongNetwork && provider ? (
         <FormButton onClick={() => switchChain(provider, DEFAULT_TO_CHAIN_ID)}>
-          Switch to {CHAINS[DEFAULT_TO_CHAIN_ID].name}
+          Switch to {CHAINS_METADATA[DEFAULT_TO_CHAIN_ID].name}
         </FormButton>
       ) : (
         <FormButton

@@ -1,11 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
-import {
-  ChainId,
-  UnsupportedChainIdError,
-  isSupportedChainId,
-  getAddress,
-} from "utils";
+import { UnsupportedChainIdError, isSupportedChainId, getAddress } from "utils";
+import { ChainId } from "utils/chains/constants";
 import Notify, { API as NotifyAPI } from "bnc-notify";
 
 type State = {

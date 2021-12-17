@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Check, ArrowUpRight } from "react-feather";
 import {
-  TOKENS_LIST,
-  CHAINS,
   formatUnits,
   // receiveAmount
 } from "utils";
+import {
+  CHAINS_METADATA,
+  TOKENS_DEPLOYED_ON_L2CHAINS,
+} from "utils/chains/constants";
+
 import { useDeposits } from "state/hooks";
 import { Layout } from "components";
 import {
@@ -35,7 +38,7 @@ const Confirmation: React.FC = () => {
   if (!deposit) return null;
   // const amountMinusFees = receiveAmount(deposit.amount, deposit.fees);
 
-  const tokenInfo = TOKENS_LIST[deposit.fromChain].find(
+  const tokenInfo = TOKENS_DEPLOYED_ON_L2CHAINS[deposit.fromChain].find(
     (t) => t.address === deposit.token
   );
 
@@ -62,7 +65,7 @@ const Confirmation: React.FC = () => {
             <SuccessInfoBlock>
               <SuccessInfoText>Deposit succeeded</SuccessInfoText>
               <Link
-                href={CHAINS[deposit.fromChain].constructExplorerLink(
+                href={CHAINS_METADATA[deposit.fromChain].constructExplorerLink(
                   deposit.txHash
                 )}
                 target="_blank"
@@ -76,9 +79,9 @@ const Confirmation: React.FC = () => {
                 <>
                   <SuccessInfoText>Transfer succeeded</SuccessInfoText>
                   <Link
-                    href={CHAINS[deposit.fromChain].constructExplorerLink(
-                      deposit.txHash
-                    )}
+                    href={CHAINS_METADATA[
+                      deposit.fromChain
+                    ].constructExplorerLink(deposit.txHash)}
                     target="_blank"
                     rel="noopener norefferrer"
                   >
@@ -126,14 +129,14 @@ const Confirmation: React.FC = () => {
               <h3>From</h3>
               <div>
                 <Logo
-                  src={CHAINS[deposit.fromChain].logoURI}
-                  alt={`${CHAINS[deposit.fromChain].name} logo`}
+                  src={CHAINS_METADATA[deposit.fromChain].logoURI}
+                  alt={`${CHAINS_METADATA[deposit.fromChain].name} logo`}
                 />
                 <div>
                   <SecondaryLink
-                    href={`${CHAINS[deposit.fromChain].explorerUrl}/address/${
-                      deposit.from
-                    }`}
+                    href={`${
+                      CHAINS_METADATA[deposit.fromChain].explorerUrl
+                    }/address/${deposit.from}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -146,14 +149,14 @@ const Confirmation: React.FC = () => {
               <h3>To</h3>
               <div>
                 <Logo
-                  src={CHAINS[deposit.toChain].logoURI}
-                  alt={`${CHAINS[deposit.toChain].name} logo`}
+                  src={CHAINS_METADATA[deposit.toChain].logoURI}
+                  alt={`${CHAINS_METADATA[deposit.toChain].name} logo`}
                 />
                 <div>
                   <SecondaryLink
-                    href={`${CHAINS[deposit.toChain].explorerUrl}/address/${
-                      deposit.toAddress
-                    }`}
+                    href={`${
+                      CHAINS_METADATA[deposit.toChain].explorerUrl
+                    }/address/${deposit.toAddress}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

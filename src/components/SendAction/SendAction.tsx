@@ -11,13 +11,13 @@ import {
 } from "state/hooks";
 import { TransactionTypes } from "state/transactions";
 import { useERC20 } from "hooks";
+import { getDepositBox, formatUnits, receiveAmount } from "utils";
+
 import {
-  CHAINS,
-  getDepositBox,
-  TOKENS_LIST,
-  formatUnits,
-  receiveAmount,
-} from "utils";
+  CHAINS_METADATA,
+  TOKENS_DEPLOYED_ON_L2CHAINS,
+} from "utils/chains/constants";
+
 import { PrimaryButton } from "../Buttons";
 import { Wrapper, Info, AccentSection, InfoIcon } from "./SendAction.styles";
 import api from "state/chainApi";
@@ -46,7 +46,7 @@ const SendAction: React.FC = () => {
   const [updateEthBalance] = api.endpoints.ethBalance.useLazyQuery();
   // trigger balance update
   const [updateBalances] = api.endpoints.balances.useLazyQuery();
-  const tokenInfo = TOKENS_LIST[
+  const tokenInfo = TOKENS_DEPLOYED_ON_L2CHAINS[
     sendState.currentlySelectedFromChain.chainId
   ].find((t) => t.address === token);
   const { error, addError, removeError } = useContext(ErrorContext);
@@ -165,7 +165,10 @@ const SendAction: React.FC = () => {
             <Info>
               <div>
                 Time to{" "}
-                {CHAINS[sendState.currentlySelectedToChain.chainId].name}
+                {
+                  CHAINS_METADATA[sendState.currentlySelectedToChain.chainId]
+                    .name
+                }
               </div>
               <div>~1-3 minutes</div>
             </Info>

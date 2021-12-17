@@ -3,14 +3,13 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import useInterval from "@use-it/interval";
 import { ethers, BigNumber } from "ethers";
 import { bindActionCreators } from "redux";
+import { getDepositBox, isValidAddress, TransactionError } from "utils";
 import {
-  getDepositBox,
-  isValidAddress,
-  TOKENS_LIST,
+  TOKENS_DEPLOYED_ON_L2CHAINS,
   PROVIDERS,
-  TransactionError,
   ChainId,
-} from "utils";
+} from "utils/chains/constants";
+
 import type { RootState, AppDispatch } from "./";
 import { update, disconnect, error as errorAction } from "./connection";
 import {
@@ -43,10 +42,12 @@ export function useConnection() {
     [dispatch]
   );
 
+  const cid: ChainId | undefined = chainId;
+
   const isConnected = !!chainId && !!signer && !!account;
   return {
     account,
-    chainId,
+    chainId: cid,
     provider,
     signer,
     error,
@@ -79,12 +80,7 @@ export function useL2Block() {
         addError(new Error("Infura issue, please try again later."));
         console.error("Error getting latest block");
       });
-  }, [
-    currentlySelectedFromChain.chainId,
-    error,
-    removeError,
-    addError,
-  ]);
+  }, [currentlySelectedFromChain.chainId, error, removeError, addError]);
 
   useInterval(() => {
     const provider = PROVIDERS[currentlySelectedFromChain.chainId]();
@@ -156,7 +152,7 @@ export function useSend() {
     isConnected && currentlySelectedFromChain.chainId !== chainId;
 
   const tokenSymbol =
-    TOKENS_LIST[currentlySelectedFromChain.chainId].find(
+    TOKENS_DEPLOYED_ON_L2CHAINS[currentlySelectedFromChain.chainId].find(
       (t) => t.address === token
     )?.symbol ?? "";
 
@@ -219,7 +215,8 @@ export function useSend() {
       const isETH = token === ethers.constants.AddressZero;
       const value = isETH ? amount : ethers.constants.Zero;
       const l2Token = isETH
-        ? TOKENS_LIST[currentlySelectedFromChain.chainId][0].address
+        ? TOKENS_DEPLOYED_ON_L2CHAINS[currentlySelectedFromChain.chainId][0]
+            .address
         : token;
       const { instantRelayFee, slowRelayFee } = fees;
       let timestamp = block.timestamp;
@@ -322,7 +319,7 @@ export function useBalance(params: {
     if (account) updateBalances({ chainId, account });
   }
   useEffect(refetch, [chainId, account, tokenAddress, updateBalances]);
-  const tokenList = TOKENS_LIST[chainId];
+  const tokenList = TOKENS_DEPLOYED_ON_L2CHAINS[chainId];
   const selectedIndex = tokenList.findIndex(
     ({ address }) => address === tokenAddress
   );

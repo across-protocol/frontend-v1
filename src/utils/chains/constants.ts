@@ -50,7 +50,7 @@ export const PROVIDERS: Record<ChainId, GetProvider> = {
   ),
 };
 
-type Token = {
+export type Token = {
   address: string;
   name: string;
   symbol: string;
@@ -293,19 +293,6 @@ export const CONTRACT_ADDRESSES_BY_CHAIN: Record<ChainId, { BRIDGE?: string }> =
       BRIDGE: "0xD8c6dD978a3768F7DDfE3A9aAD2c3Fd75Fa9B6Fd",
     },
   };
-
-export function getChainName(chainId: ChainId): string {
-  switch (chainId) {
-    case ChainId.MAINNET:
-      return CHAINS_METADATA[ChainId.MAINNET].name;
-    case ChainId.OPTIMISM:
-      return CHAINS_METADATA[ChainId.OPTIMISM].name;
-    case ChainId.ARBITRUM:
-      return CHAINS_METADATA[ChainId.ARBITRUM].name;
-    default:
-      return "unknown";
-  }
-}
 
 export const DEFAULT_FROM_CHAIN_ID = ChainId.ARBITRUM;
 export const DEFAULT_TO_CHAIN_ID = ChainId.MAINNET;

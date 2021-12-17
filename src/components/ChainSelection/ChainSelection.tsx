@@ -1,7 +1,14 @@
 import React from "react";
 import { onboard } from "utils";
 import { useConnection } from "state/hooks";
-import { CHAINS, switchChain, ChainId, UnsupportedChainIdError } from "utils";
+import { switchChain, UnsupportedChainIdError } from "utils";
+
+import {
+  CHAINS_METADATA,
+  ChainId,
+  CHAINS_SELECTION_DROPDOWN,
+} from "utils/chains/constants";
+
 import { Section, SectionTitle } from "../Section";
 import {
   Wrapper,
@@ -16,12 +23,14 @@ import {
   ToggleChainName,
 } from "./ChainSelection.styles";
 import { useSelect } from "downshift";
-import { CHAINS_SELECTION } from "utils/constants";
 import { actions } from "state/send";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 
 // Remove eth from this list.
-const filteredChains = CHAINS_SELECTION.slice(0, CHAINS_SELECTION.length - 1);
+const filteredChains = CHAINS_SELECTION_DROPDOWN.slice(
+  0,
+  CHAINS_SELECTION_DROPDOWN.length - 1
+);
 
 const ChainSelection: React.FC = () => {
   const { init } = onboard;
@@ -37,7 +46,9 @@ const ChainSelection: React.FC = () => {
       chainId !== sendState.currentlySelectedFromChain.chainId);
 
   const buttonText = wrongNetworkSend
-    ? `Switch to ${CHAINS[sendState.currentlySelectedFromChain.chainId].name}`
+    ? `Switch to ${
+        CHAINS_METADATA[sendState.currentlySelectedFromChain.chainId].name
+      }`
     : !isConnected
     ? "Connect Wallet"
     : null;
@@ -70,7 +81,7 @@ const ChainSelection: React.FC = () => {
         if (selectedItem.chainId === ChainId.MAINNET) {
           nsToChain.toChain = ChainId.OPTIMISM;
           dispatch(actions.toChain(nsToChain));
-          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[0]));
+          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION_DROPDOWN[0]));
         }
         if (
           selectedItem.chainId !== ChainId.MAINNET &&
@@ -78,7 +89,7 @@ const ChainSelection: React.FC = () => {
         ) {
           dispatch(
             actions.updateSelectedToChain(
-              CHAINS_SELECTION[CHAINS_SELECTION.length - 1]
+              CHAINS_SELECTION_DROPDOWN[CHAINS_SELECTION_DROPDOWN.length - 1]
             )
           );
         }
@@ -114,7 +125,9 @@ const ChainSelection: React.FC = () => {
                     <Logo src={t.logoURI} alt={t.name} />
                     <div>{t.name}</div>
                     <span className="layer-type">
-                      {index !== CHAINS_SELECTION.length - 1 ? "L2" : "L1"}
+                      {index !== CHAINS_SELECTION_DROPDOWN.length - 1
+                        ? "L2"
+                        : "L1"}
                     </span>
                   </Item>
                 );

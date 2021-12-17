@@ -3,12 +3,8 @@ import { Switch, Route, useLocation } from "react-router-dom";
 import { Send, Confirmation, Pool, About } from "views";
 import { Header, SuperHeader } from "components";
 import { useConnection, useDeposits } from "state/hooks";
-import {
-  DEFAULT_TO_CHAIN_ID,
-  CHAINS,
-  UnsupportedChainIdError,
-  switchChain,
-} from "utils";
+import { UnsupportedChainIdError, switchChain } from "utils";
+import { DEFAULT_TO_CHAIN_ID, CHAINS_METADATA } from "utils/chains/constants";
 
 import { useAppSelector } from "state/hooks";
 import { ErrorContext } from "context/ErrorContext";
@@ -55,7 +51,10 @@ const Routes: FC<Props> = () => {
               }
             >
               switch to{" "}
-              {CHAINS[sendState.currentlySelectedFromChain.chainId].name}
+              {
+                CHAINS_METADATA[sendState.currentlySelectedFromChain.chainId]
+                  .name
+              }
             </button>
           </div>
         </SuperHeader>
@@ -66,7 +65,7 @@ const Routes: FC<Props> = () => {
           <div>
             You are on an incorrect network. Please{" "}
             <button onClick={() => switchChain(provider, DEFAULT_TO_CHAIN_ID)}>
-              switch to {CHAINS[DEFAULT_TO_CHAIN_ID].name}
+              switch to {CHAINS_METADATA[DEFAULT_TO_CHAIN_ID].name}
             </button>
           </div>
         </SuperHeader>

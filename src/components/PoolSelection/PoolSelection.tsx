@@ -3,7 +3,13 @@ import { FC, Dispatch, SetStateAction } from "react";
 import { useSelect } from "downshift";
 
 import { useBalances, useConnection } from "state/hooks";
-import { formatUnits, TOKENS_LIST, ChainId, Token } from "utils";
+import { formatUnits } from "utils";
+import {
+  TOKENS_DEPLOYED_ON_L2CHAINS,
+  ChainId,
+  Token,
+} from "utils/chains/constants";
+
 import { SectionTitle } from "../Section";
 
 import {
@@ -42,7 +48,7 @@ const PoolSelection: FC<Props> = ({ token, setToken }) => {
     getItemProps,
     getMenuProps,
   } = useSelect({
-    items: TOKENS_LIST[ChainId.MAINNET],
+    items: TOKENS_DEPLOYED_ON_L2CHAINS[ChainId.MAINNET],
     defaultSelectedItem: token,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
@@ -64,7 +70,7 @@ const PoolSelection: FC<Props> = ({ token, setToken }) => {
         </RoundBox>
         <Menu {...getMenuProps()}>
           {isOpen &&
-            TOKENS_LIST[ChainId.MAINNET].map((t, index) => {
+            TOKENS_DEPLOYED_ON_L2CHAINS[ChainId.MAINNET].map((t, index) => {
               return (
                 <Item {...getItemProps({ item: t, index })} key={t.address}>
                   <Logo src={t.logoURI} alt={t.name} />

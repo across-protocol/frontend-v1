@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { XOctagon } from "react-feather";
 import { useConnection, useSend } from "state/hooks";
-import { CHAINS, shortenAddress, isValidAddress, ChainId } from "utils";
+import { shortenAddress, isValidAddress } from "utils";
+import {
+  CHAINS_METADATA,
+  ChainId,
+  CHAINS_SELECTION_DROPDOWN,
+} from "utils/chains/constants";
+
 import { SectionTitle } from "../Section";
 import Dialog from "../Dialog";
 import { SecondaryButton } from "../Buttons";
@@ -28,7 +34,6 @@ import {
   ItemWarning,
 } from "./AddressSelection.styles";
 import { useSelect } from "downshift";
-import { CHAINS_SELECTION } from "utils/constants";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 import { actions } from "state/send";
 
@@ -49,7 +54,7 @@ const AddressSelection: React.FC = () => {
     getItemProps,
     getMenuProps,
   } = useSelect({
-    items: CHAINS_SELECTION,
+    items: CHAINS_SELECTION_DROPDOWN,
     defaultSelectedItem: sendState.currentlySelectedToChain,
     selectedItem: sendState.currentlySelectedToChain,
     onSelectedItemChange: ({ selectedItem }) => {
@@ -61,7 +66,9 @@ const AddressSelection: React.FC = () => {
         if (selectedItem.chainId === ChainId.MAINNET) {
           nsToChain.fromChain = ChainId.OPTIMISM;
           dispatch(actions.fromChain(nsToChain));
-          dispatch(actions.updateSelectedFromChain(CHAINS_SELECTION[0]));
+          dispatch(
+            actions.updateSelectedFromChain(CHAINS_SELECTION_DROPDOWN[0])
+          );
         }
       }
     },
@@ -117,7 +124,7 @@ const AddressSelection: React.FC = () => {
           <Menu isOpen={isOpen} {...getMenuProps()}>
             {isOpen &&
               sendState.currentlySelectedToChain.chainId !== ChainId.MAINNET &&
-              CHAINS_SELECTION.map((t, index) => {
+              CHAINS_SELECTION_DROPDOWN.map((t, index) => {
                 return (
                   <Item
                     className={
@@ -143,7 +150,7 @@ const AddressSelection: React.FC = () => {
                       Transfers between L2 chains is not possible at this time
                     </p>
                   </ItemWarning>
-                  {CHAINS_SELECTION.map((t, index) => {
+                  {CHAINS_SELECTION_DROPDOWN.map((t, index) => {
                     return (
                       <Item
                         className={"disabled"}
@@ -153,7 +160,9 @@ const AddressSelection: React.FC = () => {
                         <Logo src={t.logoURI} alt={t.name} />
                         <div>{t.name}</div>
                         <span className="layer-type">
-                          {index !== CHAINS_SELECTION.length - 1 ? "L2" : "L1"}
+                          {index !== CHAINS_SELECTION_DROPDOWN.length - 1
+                            ? "L2"
+                            : "L1"}
                         </span>
                       </Item>
                     );
@@ -170,7 +179,7 @@ const AddressSelection: React.FC = () => {
       </Wrapper>
       <Dialog isOpen={open} onClose={toggle}>
         <h3>Send To</h3>
-        <div>Address on {CHAINS[toChain].name}</div>
+        <div>Address on {CHAINS_METADATA[toChain].name}</div>
         <InputWrapper>
           <Input onChange={handleChange} value={address} />
           <ClearButton onClick={clearInput}>

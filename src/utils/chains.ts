@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { CHAINS, ChainId } from "./constants";
+import { CHAINS_METADATA, ChainId } from "./chains/constants";
 
 export async function switchChain(
   provider: ethers.providers.JsonRpcProvider,
@@ -17,17 +17,17 @@ export async function switchChain(
         await provider.send("wallet_addEthereumChain", [
           {
             chainId: ethers.utils.hexValue(chainId),
-            chainName: CHAINS[chainId].name,
-            rpcUrls: [CHAINS[chainId].rpcUrl],
-            blockExplorerUrls: [CHAINS[chainId].explorerUrl],
-            nativeCurrency: CHAINS[chainId].nativeCurrency,
+            chainName: CHAINS_METADATA[chainId].name,
+            rpcUrls: [CHAINS_METADATA[chainId].rpcUrl],
+            blockExplorerUrls: [CHAINS_METADATA[chainId].explorerUrl],
+            nativeCurrency: CHAINS_METADATA[chainId].nativeCurrency,
           },
         ]);
       } catch (addError) {
-        console.error(`Failed to add ${CHAINS[chainId].name}`);
+        console.error(`Failed to add ${CHAINS_METADATA[chainId].name}`);
       }
     } else {
-      console.error(`Failed to switch to ${CHAINS[chainId].name}`);
+      console.error(`Failed to switch to ${CHAINS_METADATA[chainId].name}`);
     }
   }
 }

@@ -4,15 +4,15 @@ import Layout from "components/Layout";
 import PoolSelection from "components/PoolSelection";
 import PoolForm from "components/PoolForm";
 import DepositSuccess from "components/PoolForm/DepositSuccess";
+import { UnsupportedChainIdError, COLORS, max } from "utils";
+
 import {
   DEFAULT_TO_CHAIN_ID,
-  TOKENS_LIST,
   ChainId,
   Token,
-  UnsupportedChainIdError,
-  COLORS,
-  max,
-} from "utils";
+  TOKENS_DEPLOYED_ON_L2CHAINS,
+} from "utils/chains/constants";
+
 import { useAppSelector, useConnection, useBalance } from "state/hooks";
 import get from "lodash/get";
 import { poolClient } from "state/poolsApi";
@@ -24,7 +24,9 @@ import { BounceType } from "components/BouncingDotsLoader/BouncingDotsLoader";
 export type ShowSuccess = "deposit" | "withdraw";
 
 const Pool: FC = () => {
-  const [token, setToken] = useState<Token>(TOKENS_LIST[ChainId.MAINNET][2]);
+  const [token, setToken] = useState<Token>(
+    TOKENS_DEPLOYED_ON_L2CHAINS[ChainId.MAINNET][2]
+  );
   const [showSuccess, setShowSuccess] = useState<ShowSuccess | undefined>();
   const [depositUrl, setDepositUrl] = useState("");
   const [loadingPoolState, setLoadingPoolState] = useState(false);

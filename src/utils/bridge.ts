@@ -3,12 +3,12 @@ import { BridgePoolEthers__factory } from "@uma/contracts-frontend";
 import { ethers, BigNumber } from "ethers";
 
 import {
-  ADDRESSES,
-  CHAINS,
+  CONTRACT_ADDRESSES_BY_CHAIN,
+  CHAINS_METADATA,
   ChainId,
   PROVIDERS,
-  TOKENS_LIST,
-} from "./constants";
+  TOKENS_DEPLOYED_ON_L2CHAINS,
+} from "./chains/constants";
 
 import { isValidString, parseEther } from "./format";
 
@@ -20,10 +20,10 @@ export function getDepositBox(
   chainId: ChainId,
   signer?: ethers.Signer
 ): clients.bridgeDepositBox.Instance {
-  const maybeAddress = ADDRESSES[chainId].BRIDGE;
+  const maybeAddress = CONTRACT_ADDRESSES_BY_CHAIN[chainId].BRIDGE;
   if (!isValidString(maybeAddress)) {
     throw new Error(
-      `Deposit Box not supported on ${CHAINS[chainId].name} with chainId: ${chainId}`
+      `Deposit Box not supported on ${CHAINS_METADATA[chainId].name} with chainId: ${chainId}`
     );
   }
   return clients.bridgeDepositBox.connect(
@@ -64,7 +64,7 @@ export async function getRelayFees(
   token: string,
   amount: ethers.BigNumber
 ): Promise<RelayFees & { isAmountTooLow: boolean }> {
-  const l1Equivalent = TOKENS_LIST[ChainId.MAINNET].find(
+  const l1Equivalent = TOKENS_DEPLOYED_ON_L2CHAINS[ChainId.MAINNET].find(
     (t) => t.symbol === token
   )?.address;
   if (!l1Equivalent) {
@@ -131,7 +131,7 @@ export async function getLpFee(
   // TODO: add address 0 to sdk rate model ( duplicate weth)
   if (tokenSymbol === "ETH") tokenSymbol = "WETH";
 
-  const l1EqInfo = TOKENS_LIST[ChainId.MAINNET].find(
+  const l1EqInfo = TOKENS_DEPLOYED_ON_L2CHAINS[ChainId.MAINNET].find(
     (t) => t.symbol === tokenSymbol
   );
 

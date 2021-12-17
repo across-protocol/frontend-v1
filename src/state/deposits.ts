@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
-import { ChainId } from "utils";
+import { ChainId } from "utils/chains/constants";
 import type { BridgeFees } from "utils";
 
 type Deposit = {

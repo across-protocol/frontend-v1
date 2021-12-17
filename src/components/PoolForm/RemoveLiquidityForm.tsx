@@ -24,10 +24,9 @@ import {
   addEtherscan,
   max,
   onboard,
-  DEFAULT_TO_CHAIN_ID,
-  CHAINS,
   switchChain,
 } from "utils";
+import { DEFAULT_TO_CHAIN_ID, CHAINS_METADATA } from "utils/chains/constants";
 import BouncingDotsLoader from "components/BouncingDotsLoader";
 import api from "state/chainApi";
 import { ShowSuccess } from "views/Pool";
@@ -234,7 +233,7 @@ const RemoveLiqudityForm: FC<Props> = ({
           <RemoveFormButton
             onClick={() => switchChain(provider, DEFAULT_TO_CHAIN_ID)}
           >
-            Switch to {CHAINS[DEFAULT_TO_CHAIN_ID].name}
+            Switch to {CHAINS_METADATA[DEFAULT_TO_CHAIN_ID].name}
           </RemoveFormButton>
         ) : (
           <RemoveFormButton

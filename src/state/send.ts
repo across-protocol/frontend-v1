@@ -2,14 +2,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { update } from "./connection";
 import { toggle as toggleConfirmationScreen } from "./deposits";
-import { IChainSelection, CHAINS_SELECTION } from "utils";
 
+import { getAddress } from "utils";
 import {
   ChainId,
   DEFAULT_FROM_CHAIN_ID,
   DEFAULT_TO_CHAIN_ID,
-  getAddress,
-} from "utils";
+  CHAINS_SELECTION_DROPDOWN,
+  ChainMetadata,
+} from "utils/chains/constants";
 
 type State = {
   token: string;
@@ -18,8 +19,8 @@ type State = {
   fromChain: ChainId;
   toAddress?: string;
   error?: Error;
-  currentlySelectedToChain: IChainSelection;
-  currentlySelectedFromChain: IChainSelection;
+  currentlySelectedToChain: ChainMetadata;
+  currentlySelectedFromChain: ChainMetadata;
 };
 
 const initialState: State = {
@@ -28,8 +29,9 @@ const initialState: State = {
   toChain: DEFAULT_TO_CHAIN_ID,
   fromChain: DEFAULT_FROM_CHAIN_ID,
   // Default to ethereum, which should be end of this array.
-  currentlySelectedToChain: CHAINS_SELECTION[CHAINS_SELECTION.length - 1],
-  currentlySelectedFromChain: CHAINS_SELECTION[0],
+  currentlySelectedToChain:
+    CHAINS_SELECTION_DROPDOWN[CHAINS_SELECTION_DROPDOWN.length - 1],
+  currentlySelectedFromChain: CHAINS_SELECTION_DROPDOWN[0],
 };
 
 const sendSlice = createSlice({
@@ -52,14 +54,11 @@ const sendSlice = createSlice({
       state.fromChain = action.payload.fromChain;
       return state;
     },
-    updateSelectedToChain: (state, action: PayloadAction<IChainSelection>) => {
+    updateSelectedToChain: (state, action: PayloadAction<ChainMetadata>) => {
       state.currentlySelectedToChain = action.payload;
       return state;
     },
-    updateSelectedFromChain: (
-      state,
-      action: PayloadAction<IChainSelection>
-    ) => {
+    updateSelectedFromChain: (state, action: PayloadAction<ChainMetadata>) => {
       state.currentlySelectedFromChain = action.payload;
       return state;
     },

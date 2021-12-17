@@ -10,7 +10,9 @@ import {
   useBridgeFees,
   useL2Block,
 } from "state/hooks";
-import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
+import { parseUnits, formatUnits, ParsingError } from "utils";
+import { TOKENS_DEPLOYED_ON_L2CHAINS } from "utils/chains/constants";
+
 import { Section, SectionTitle } from "../Section";
 import { useAppSelector } from "state/hooks";
 
@@ -36,7 +38,8 @@ const CoinSelection = () => {
   const [error, setError] = React.useState<Error>();
   const sendState = useAppSelector((state) => state.send);
 
-  const tokenList = TOKENS_LIST[sendState.currentlySelectedFromChain.chainId];
+  const tokenList =
+    TOKENS_DEPLOYED_ON_L2CHAINS[sendState.currentlySelectedFromChain.chainId];
   const { data: balances } = useBalances(
     {
       account: account!,
