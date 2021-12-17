@@ -206,6 +206,7 @@ export const TOKENS_DEPLOYED_ON_L2CHAINS: Record<ChainId, Tokens> = {
 };
 
 // List of Chain Metadata
+// Fill out for relevant data to chain.
 export type ChainMetadata = {
   name: string;
   chainId: ChainId;
