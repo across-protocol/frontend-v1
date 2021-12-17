@@ -522,7 +522,7 @@ export function getChainName(chainId: ChainId): string {
     case ChainId.ARBITRUM_RINKEBY:
       return CHAINS[ChainId.ARBITRUM_RINKEBY].name;
     default:
-      return "unkwown";
+      return "unknown";
   }
 }
 

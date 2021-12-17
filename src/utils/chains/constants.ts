@@ -9,7 +9,8 @@ import wethLogo from "assets/weth-logo.svg";
 import arbitrumLogo from "assets/arbitrum-logo.svg";
 import umaLogo from "assets/UMA-round.svg";
 import bobaLogo from "assets/Across-Boba-Color30x30.svg";
-import { getAddress } from "./address";
+import { getAddress } from "../address";
+import { defaultConstructExplorerLink } from "./functions";
 
 // Add the ChainId of the chain.
 enum ChainId {
@@ -78,6 +79,14 @@ export const PROVIDERS: Record<ChainId, GetProvider> = {
 };
 
 // enforce weth to be first so we can use it as a guarantee in other parts of the app
+type Token = {
+  address: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  logoURI: string;
+  bridgePool: string;
+};
 type TokenList = [
   {
     address: string;
@@ -308,3 +317,268 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
     },
   ],
 };
+
+export const CHAINS: Record<ChainId, ChainInfo> = {
+  [ChainId.MAINNET]: {
+    name: "Ethereum Mainnet",
+    chainId: ChainId.MAINNET,
+    logoURI: ethereumLogo,
+    explorerUrl: "https://etherscan.io",
+    constructExplorerLink: defaultConstructExplorerLink("https://etherscan.io"),
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+    },
+  },
+  [ChainId.RINKEBY]: {
+    name: "Rinkeby Testnet",
+    chainId: ChainId.RINKEBY,
+    logoURI: ethereumLogo,
+    explorerUrl: "https://rinkeby.etherscan.io",
+    constructExplorerLink: defaultConstructExplorerLink(
+      "https://rinkeby.etherscan.io"
+    ),
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+    },
+  },
+  [ChainId.KOVAN]: {
+    name: "Ethereum Testnet Kovan",
+    chainId: ChainId.KOVAN,
+    logoURI: ethereumLogo,
+    explorerUrl: "https://kovan.etherscan.io",
+    constructExplorerLink: defaultConstructExplorerLink(
+      "https://kovan.etherscan.io"
+    ),
+    nativeCurrency: {
+      name: "Kovan Ethereum",
+      symbol: "KOV",
+      decimals: 18,
+    },
+  },
+  [ChainId.OPTIMISM]: {
+    name: "Optimism",
+    chainId: ChainId.OPTIMISM,
+    logoURI: optimismLogo,
+    rpcUrl: "https://mainnet.optimism.io",
+    explorerUrl: "https://optimistic.etherscan.io",
+    constructExplorerLink: (txHash: string) =>
+      `https://optimistic.etherscan.io/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "OETH",
+      decimals: 18,
+    },
+  },
+  [ChainId.KOVAN_OPTIMISM]: {
+    name: "Optimism Testnet Kovan",
+    chainId: ChainId.KOVAN_OPTIMISM,
+    logoURI: optimismLogo,
+    rpcUrl: "https://kovan.optimism.io",
+    explorerUrl: "https://kovan-optimistic.etherscan.io",
+    constructExplorerLink: (txHash: string) =>
+      `https://kovan-optimistic.etherscan.io/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "KOR",
+      decimals: 18,
+    },
+  },
+  [ChainId.ARBITRUM]: {
+    name: "Arbitrum One",
+    chainId: ChainId.ARBITRUM,
+    logoURI: arbitrumLogo,
+    rpcUrl: "https://arb1.arbitrum.io/rpc",
+    explorerUrl: "https://arbiscan.io",
+    constructExplorerLink: (txHash: string) =>
+      `https://arbiscan.io/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "AETH",
+      decimals: 18,
+    },
+  },
+  [ChainId.ARBITRUM_RINKEBY]: {
+    name: "Arbitrum Testnet Rinkeby",
+    chainId: ChainId.ARBITRUM_RINKEBY,
+    logoURI: arbitrumLogo,
+    explorerUrl: "https://rinkeby-explorer.arbitrum.io",
+    constructExplorerLink: (txHash: string) =>
+      `https://rinkeby-explorer.arbitrum.io/tx/${txHash}`,
+    rpcUrl: "https://rinkeby.arbitrum.io/rpc",
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ARETH",
+      decimals: 18,
+    },
+  },
+  [ChainId.BOBA]: {
+    name: "Boba",
+    chainId: ChainId.BOBA,
+    logoURI: bobaLogo,
+    rpcUrl: "https://mainnet.boba.network",
+    explorerUrl: "https://blockexplorer.boba.network",
+    constructExplorerLink: (txHash: string) =>
+      `https://blockexplorer.boba.network/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+    },
+  },
+};
+
+export const ADDRESSES: Record<ChainId, { BRIDGE?: string }> = {
+  [ChainId.MAINNET]: {
+    // Stubbed value. Does not work. TODO: Change this out when contract deployed.
+    BRIDGE: "0x2271a5E74eA8A29764ab10523575b41AA52455f0",
+  },
+  [ChainId.RINKEBY]: {},
+  [ChainId.KOVAN]: {},
+  [ChainId.OPTIMISM]: {
+    BRIDGE: "0x3baD7AD0728f9917d1Bf08af5782dCbD516cDd96",
+  },
+  [ChainId.BOBA]: {
+    BRIDGE: "0xCD43CEa89DF8fE39031C03c24BC24480e942470B",
+  },
+  [ChainId.KOVAN_OPTIMISM]: {
+    BRIDGE: "0x2271a5E74eA8A29764ab10523575b41AA52455f0",
+  },
+  [ChainId.ARBITRUM]: {
+    BRIDGE: "0xD8c6dD978a3768F7DDfE3A9aAD2c3Fd75Fa9B6Fd",
+  },
+  [ChainId.ARBITRUM_RINKEBY]: {
+    BRIDGE: "0x6999526e507Cc3b03b180BbE05E1Ff938259A874",
+  },
+};
+
+export function getChainName(chainId: ChainId): string {
+  switch (chainId) {
+    case ChainId.MAINNET:
+      return CHAINS[ChainId.MAINNET].name;
+    case ChainId.RINKEBY:
+      return CHAINS[ChainId.RINKEBY].name;
+    case ChainId.KOVAN:
+      return CHAINS[ChainId.KOVAN].name;
+    case ChainId.OPTIMISM:
+      return CHAINS[ChainId.OPTIMISM].name;
+    case ChainId.KOVAN_OPTIMISM:
+      return CHAINS[ChainId.KOVAN_OPTIMISM].name;
+    case ChainId.ARBITRUM:
+      return CHAINS[ChainId.ARBITRUM].name;
+    case ChainId.ARBITRUM_RINKEBY:
+      return CHAINS[ChainId.ARBITRUM_RINKEBY].name;
+    default:
+      return "unknown";
+  }
+}
+
+export const DEFAULT_FROM_CHAIN_ID = ChainId.ARBITRUM;
+export const DEFAULT_TO_CHAIN_ID = ChainId.MAINNET;
+
+export interface IChainSelection {
+  name: string;
+  chainId: ChainId;
+  logoURI: string;
+  rpcUrl: string;
+  explorerUrl: string;
+  constructExplorerLink: (txHash: string) => string;
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
+}
+
+type ChainInfo = {
+  name: string;
+  chainId: ChainId;
+  logoURI: string;
+  rpcUrl?: string;
+  explorerUrl: string;
+  constructExplorerLink: (txHash: string) => string;
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
+};
+
+interface EthChainInfo {
+  name: "Ethereum";
+  chainId: 1;
+  logoURI: string;
+  rpcUrl: string;
+  explorerUrl: string;
+  constructExplorerLink: (txHash: string) => string;
+  nativeCurrency: {
+    name: "Ether";
+    symbol: "ETH";
+    decimals: 18;
+  };
+}
+
+type ChainsSelection = [...IChainSelection[], EthChainInfo];
+export const CHAINS_SELECTION: ChainsSelection = [
+  {
+    name: "Optimism",
+    chainId: ChainId.OPTIMISM,
+    logoURI: optimismLogo,
+    rpcUrl: "https://mainnet.optimism.io",
+    explorerUrl: "https://optimistic.etherscan.io",
+    constructExplorerLink: defaultConstructExplorerLink(
+      "https://optimistic.etherscan.io"
+    ),
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "OETH",
+      decimals: 18,
+    },
+  },
+  {
+    name: "Arbitrum",
+    chainId: ChainId.ARBITRUM,
+    logoURI: arbitrumLogo,
+    rpcUrl: "https://arb1.arbitrum.io/rpc",
+    explorerUrl: "https://arbiscan.io",
+    constructExplorerLink: (txHash: string) =>
+      `https://arbiscan.io/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "AETH",
+      decimals: 18,
+    },
+  },
+  {
+    name: "Boba",
+    chainId: ChainId.BOBA,
+    logoURI: bobaLogo,
+    rpcUrl: "https://mainnet.boba.network",
+    explorerUrl: "https://blockexplorer.boba.network",
+    constructExplorerLink: (txHash: string) =>
+      `https://blockexplorer.boba.network/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+    },
+  },
+  {
+    name: "Ethereum",
+    chainId: ChainId.MAINNET,
+    logoURI: ethereumLogo,
+    // Doesn't have an RPC on Infura. Need to know how to handle this
+    rpcUrl: "https://mainnet.infura.io/v3/",
+    explorerUrl: "https://etherscan.io",
+    constructExplorerLink: (txHash: string) =>
+      `https://etherscan.io/tx/${txHash}`,
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+    },
+  },
+];
