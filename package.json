@@ -48,8 +48,7 @@
     "eject": "react-scripts eject",
     "lint": "prettier --write ./src",
     "predeploy": "yarn sitemap",
-    "sitemap": "babel-node src/sitemap-generator.js",
-    "start": "node_modules/next/dist/bin/next start -p $PORT"
+    "sitemap": "babel-node src/sitemap-generator.js"
   },
   "eslintConfig": {
     "extends": [
@@ -71,13 +70,11 @@
   },
   "devDependencies": {
     "@types/react-slider": "^1.3.1",
-    "@vercel/node": "^1.12.1",
     "babel-cli": "^6.26.0",
     "babel-node": "^0.0.1-security",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
-    "prettier": "^2.4.1",
-    "vercel": "^23.1.2"
+    "prettier": "^2.4.1"
   }
 }
