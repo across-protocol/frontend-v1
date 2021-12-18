@@ -1,14 +1,9 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import sdk from "@uma/sdk-next";
-import { BridgeAdminEthers__factory } from "@uma/contracts-frontend";
-import ethers from "ethers";
 
-interface Response {
-  slowFeePct: string;
-  fastFeePct: string;
-}
+const sdk = require("@uma/sdk-next");
+const { BridgeAdminEthers__factory } = require("@uma/contracts-node");
+const ethers = require("ethers");
 
-const handler = async (request: VercelRequest, response: VercelResponse) => {
+const handler = async (request, response) => {
   const { REACT_APP_PUBLIC_INFURA_ID } = process.env;
   const provider = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${REACT_APP_PUBLIC_INFURA_ID}`);
 
@@ -20,7 +15,7 @@ const handler = async (request: VercelRequest, response: VercelResponse) => {
   const depositFeeDetails = await sdk.across.gasFeeCalculator.getDepositFeesDetails(provider, amount, l1Token === sdk.across.constants.ADDRESSES.WETH ? sdk.across.constants.ADDRESSES.ETH : l1Token);
   
 
-  const responseJson: Response = {
+  const responseJson = {
     slowFeePct: depositFeeDetails.slow.pct,
     fastFeePct: depositFeeDetails.instant.pct
   };
@@ -28,12 +23,8 @@ const handler = async (request: VercelRequest, response: VercelResponse) => {
   response.status(200).json(responseJson);
 };
 
-interface TokenDetails {
-  bridgePool: string;
-  l1Token: string;
-}
 
-const getTokenDetails = async (provider: ethers.providers.Provider, l2Token: string, chainId: string): Promise<TokenDetails> => {
+const getTokenDetails = async (provider, l2Token, chainId) => {
   const bridgeAdmin = BridgeAdminEthers__factory.connect("0x30B44C676A05F1264d1dE9cC31dB5F2A945186b6", provider);
 
   // 2 queries: treating the token as the l1Token or treating the token as the L2 token.
@@ -56,6 +47,6 @@ const getTokenDetails = async (provider: ethers.providers.Provider, l2Token: str
   return event.args;
 }
 
-const isString = <T>(input: T | string): input is string => typeof input === "string";
+const isString = (input) => typeof input === "string";
 
-export default handler;
+module.exports = handler;
