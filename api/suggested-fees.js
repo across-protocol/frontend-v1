@@ -5,9 +5,14 @@
 const sdk = require("@uma/sdk-next");
 const { BridgeAdminEthers__factory } = require("@uma/contracts-node");
 const ethers = require("ethers");
+const fs = require("fs");
 
 const handler = async (request, response) => {
   try {
+    let count = Number(fs.readFileSync("count.txt").toString());
+    if (!Number.isInteger(count)) count = 0;
+    fs.writeFileSync("count.txt", (count + 1).toString());
+    console.log("count", count);
     const { REACT_APP_PUBLIC_INFURA_ID } = process.env;
     const provider = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${REACT_APP_PUBLIC_INFURA_ID}`);
 
