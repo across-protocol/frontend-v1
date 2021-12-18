@@ -9,7 +9,8 @@ const fs = require("fs");
 
 const handler = async (request, response) => {
   try {
-    let count = Number(fs.readFileSync("count.txt").toString());
+    let count = 0;
+    try { count = Number(fs.readFileSync("count.txt").toString()) } catch (error) {}
     if (!Number.isInteger(count)) count = 0;
     fs.writeFileSync("count.txt", (count + 1).toString());
     console.log("count", count);
