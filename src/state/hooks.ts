@@ -534,6 +534,7 @@ export function useSendArbitrum() {
 
   useEffect(() => {
     initBridgeClient();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signer, account, fromChain, toChain, isConnected]);
 
   const initBridgeClient = async () => {
