@@ -81,8 +81,6 @@ export const Info = styled.article`
 `;
 
 export const Button = styled(PrimaryButton)`
-  font-size: ${22 / 16}rem;
-  font-weight: bold;
   width: 100%;
   margin-top: 24px;
 `;
