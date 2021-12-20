@@ -33,7 +33,6 @@ import { Bridge } from "arb-ts";
 
 const { clients } = across;
 const { OptimismBridgeClient } = clients.optimismBridge;
-
 const FEE_ESTIMATION = "0.004";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`

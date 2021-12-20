@@ -123,7 +123,8 @@ const AddressSelection: React.FC = () => {
                   return (
                     <Item
                       className={
-                        t === sendState.currentlySelectedToChain
+                        t === sendState.currentlySelectedToChain ||
+                        t.chainId === ChainId.MAINNET
                           ? "disabled"
                           : ""
                       }

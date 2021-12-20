@@ -187,6 +187,9 @@ const CoinSelection = () => {
                 tokenList.map((token, index) => (
                   <Item
                     {...getItemProps({ item: token, index })}
+                    initial={{ y: -10 }}
+                    animate={{ y: 0 }}
+                    exit={{ y: -10 }}
                     key={token.address}
                   >
                     <Logo src={token.logoURI} alt={token.name} />

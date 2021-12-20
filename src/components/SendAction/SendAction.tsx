@@ -37,7 +37,6 @@ const SendAction: React.FC = () => {
     approve,
     fees,
   } = useSend();
-
   const { signer, account } = useConnection();
   const sendState = useAppSelector((state) => state.send);
   const [isInfoModalOpen, setOpenInfoModal] = useState(false);
