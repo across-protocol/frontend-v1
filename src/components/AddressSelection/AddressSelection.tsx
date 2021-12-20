@@ -31,6 +31,7 @@ import { useSelect } from "downshift";
 import { CHAINS_SELECTION } from "utils/constants";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 import { actions } from "state/send";
+import { AnimatePresence } from "framer-motion";
 
 const AddressSelection: React.FC = () => {
   const { isConnected } = useConnection();
@@ -95,20 +96,20 @@ const AddressSelection: React.FC = () => {
   };
 
   return (
-    <LastSection>
-      <Wrapper>
-        <SectionTitle>To</SectionTitle>
-        <InputGroup>
-          <RoundBox as="label" {...getLabelProps()}>
-            <ToggleButton type="button" {...getToggleButtonProps()}>
-              <Logo src={selectedItem?.logoURI} alt={selectedItem?.name} />
-              <div>
-                <ToggleChainName>
-                  {selectedItem?.name === "Ether"
-                    ? "Mainnet"
-                    : selectedItem?.name}
-                </ToggleChainName>
-
+    <AnimatePresence>
+      <LastSection>
+        <Wrapper>
+          <SectionTitle>To</SectionTitle>
+          <InputGroup>
+            <RoundBox as="label" {...getLabelProps()}>
+              <ToggleButton type="button" {...getToggleButtonProps()}>
+                <Logo src={selectedItem?.logoURI} alt={selectedItem?.name} />
+                <div>
+                  <ToggleChainName>
+                    {selectedItem?.name === "Ether"
+                      ? "Mainnet"
+                      : selectedItem?.name}
+                  </ToggleChainName>
                 {toAddress && <Address>{shortenAddress(toAddress)}</Address>}
               </div>
               <ToggleIcon />
@@ -129,7 +130,7 @@ const AddressSelection: React.FC = () => {
                     <Logo src={t.logoURI} alt={t.name} />
                     <div>{t.name}</div>
                     <span className="layer-type">
-                    {t.chainId !== ChainId.MAINNET ? "L2" : "L1"}
+                      {t.chainId !== ChainId.MAINNET ? "L2" : "L1"}
                     </span>
                   </Item>
                 );
@@ -138,7 +139,11 @@ const AddressSelection: React.FC = () => {
               sendState.currentlySelectedToChain.chainId ===
                 ChainId.MAINNET && (
                 <>
-                  <ItemWarning>
+                  <ItemWarning
+                    initial={{ y: -10 }}
+                    animate={{ y: 0 }}
+                    exit={{ y: -10 }}
+                  >
                     <p>
                       Transfers between L2 chains is not possible at this time
                     </p>
@@ -149,6 +154,9 @@ const AddressSelection: React.FC = () => {
                         className={"disabled"}
                         {...getItemProps({ item: t, index })}
                         key={t.chainId}
+                        initial={{ y: -10 }}
+                        animate={{ y: 0 }}
+                        exit={{ y: -10 }}
                       >
                         <Logo src={t.logoURI} alt={t.name} />
                         <div>{t.name}</div>
@@ -182,17 +190,18 @@ const AddressSelection: React.FC = () => {
           {!isValid && <InputError>Not a valid address</InputError>}
         </InputWrapper>
 
-        <ButtonGroup>
-          <CancelButton onClick={toggle}>Cancel</CancelButton>
-          <SecondaryButton
-            onClick={handleSubmit}
-            disabled={!isValid || !address}
-          >
-            Save Changes
-          </SecondaryButton>
-        </ButtonGroup>
-      </Dialog>
-    </LastSection>
+          <ButtonGroup>
+            <CancelButton onClick={toggle}>Cancel</CancelButton>
+            <SecondaryButton
+              onClick={handleSubmit}
+              disabled={!isValid || !address}
+            >
+              Save Changes
+            </SecondaryButton>
+          </ButtonGroup>
+        </Dialog>
+      </LastSection>
+    </AnimatePresence>
   );
 };
 
