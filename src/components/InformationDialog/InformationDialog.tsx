@@ -12,7 +12,7 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
     <Dialog isOpen={isOpen} onClose={onClose}>
       <Title>Information</Title>
       <Info>
-        <ArticleTitle>Time to Ethereum Mainnet</ArticleTitle>
+        <ArticleTitle>Time to Destination</ArticleTitle>
         <Text>
           The estimated amount of time expected to receive your funds on
           Ethereum Mainnet. If you do not receive your funds within the
@@ -28,7 +28,7 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
         </Text>
       </Info>
       <Info>
-        <ArticleTitle>Bridge Fee</ArticleTitle>
+        <ArticleTitle>Native Bridge Fee</ArticleTitle>
         <Text>
           Assets are transferred near instantly by utilizing funds from a
           liquidity pool. The bridge fee is comprised of a liquidity provider
@@ -38,11 +38,10 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
       <Info>
         <ArticleTitle>Gas Fee</ArticleTitle>
         <Text>
-          Across sends funds by default via an instant relay. If an instant
-          relay is unavailable, a slow relay will occur. Instant and slow
-          relayers charge a fee for performing the relay. These fees are
-          dependent on Ethereum Gas fees. View here to learn more about Ethereum
-          gas fees.
+          For transfers from L2 to L1, assets are sent near instantly by
+          utilizing funds from a liquidity pool. The fee is for rewarding
+          liquidity providers on Across. Transfers from L1 to L2 rely on the
+          L2's canonical bridge whereby fees are free for transferring assets.
         </Text>
       </Info>
 
