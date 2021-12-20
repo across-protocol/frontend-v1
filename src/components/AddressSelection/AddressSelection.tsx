@@ -133,7 +133,7 @@ const AddressSelection: React.FC = () => {
                       <Logo src={t.logoURI} alt={t.name} />
                       <div>{t.name}</div>
                       <span className="layer-type">
-                        {t.name !== "Ether" ? "L2" : "L1"}
+                        {t.chainId !== ChainId.MAINNET ? "L2" : "L1"}
                       </span>
                     </Item>
                   );
