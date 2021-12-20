@@ -9,7 +9,7 @@ const ethers = require("ethers");
 const handler = async (request, response) => {
   try {
     const { REACT_APP_PUBLIC_INFURA_ID } = process.env;
-    const provider = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${REACT_APP_PUBLIC_INFURA_ID}`);
+    const provider = new ethers.providers.StaticJsonRpcProvider(`https://mainnet.infura.io/v3/${REACT_APP_PUBLIC_INFURA_ID}`);
 
     let { amount, l2Token, chainId } = request.query;
     if (!isString(amount) || !isString(l2Token) || !isString(chainId)) throw new InputError("Must provide amount and token as query params");
