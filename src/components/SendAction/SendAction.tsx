@@ -9,7 +9,6 @@ import {
 import { TransactionTypes } from "state/transactions";
 import {
   CHAINS,
-  getDepositBox,
   TOKENS_LIST,
   formatUnits,
   receiveAmount,
