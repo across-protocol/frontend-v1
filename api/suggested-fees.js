@@ -2,7 +2,7 @@
 // However, when written in ts, the imports seem to fail, so this is in js for now.
 
 
-const sdk = require("@uma/sdk-next");
+const sdk = require("@uma/sdk");
 const { BridgeAdminEthers__factory } = require("@uma/contracts-node");
 const ethers = require("ethers");
 
@@ -20,7 +20,7 @@ const handler = async (request, response) => {
     
     const responseJson = {
       slowFeePct: depositFeeDetails.slow.pct,
-      fastFeePct: depositFeeDetails.instant.pct
+      instantFeePct: depositFeeDetails.instant.pct
     };
 
     response.status(200).json(responseJson);
