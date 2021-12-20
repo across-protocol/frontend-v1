@@ -134,7 +134,7 @@ const SendAction: React.FC = () => {
     }
     return receiveAmount(amount, fees);
   }, [amount, fees, sendState.currentlySelectedFromChain.chainId])
-  console.log(amountMinusFees);
+
   const buttonDisabled =
     isSendPending ||
     isApprovalPending ||

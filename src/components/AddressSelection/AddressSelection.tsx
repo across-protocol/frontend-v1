@@ -121,7 +121,7 @@ const AddressSelection: React.FC = () => {
                 return (
                   <Item
                     className={
-                      t === sendState.currentlySelectedToChain || t.chainId !== ChainId.OPTIMISM ? "disabled" : ""
+                      t === sendState.currentlySelectedToChain || t.chainId === ChainId.MAINNET ? "disabled" : ""
                     }
                     {...getItemProps({ item: t, index })}
                     key={t.chainId}
