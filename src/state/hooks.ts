@@ -12,6 +12,7 @@ import {
   ChainId,
   MAX_APPROVAL_AMOUNT,
   optimismErc20Pairs,
+  bobaErc20Pairs,
 } from "utils";
 import type { RootState, AppDispatch } from "./";
 import { ErrorContext } from "context/ErrorContext";
@@ -33,6 +34,7 @@ import { Bridge } from "arb-ts";
 
 const { clients } = across;
 const { OptimismBridgeClient } = clients.optimismBridge;
+const { BobaBridgeClient } = clients.bobaBridge;
 const FEE_ESTIMATION = "0.004";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
@@ -129,6 +131,7 @@ export function useSend() {
   const sendAcross = useSendAcross();
   const sendOptimism = useSendOptimism();
   const sendArbitrum = useSendArbitrum();
+  const sendBoba = useSendBoba();
   const setSend = {
     setToken: actions.tokenAction,
     setAmount: actions.amountAction,
@@ -151,6 +154,14 @@ export function useSend() {
       ...send,
       ...setSend,
       ...sendArbitrum,
+    };
+  }
+
+  if (send.fromChain === ChainId.MAINNET && send.toChain === ChainId.BOBA) {
+    return {
+      ...send,
+      ...setSend,
+      ...sendBoba,
     };
   }
 
@@ -322,6 +333,7 @@ export function useSendAcross() {
     send,
     approve,
     fees,
+    spender: depositBox.address,
   };
 }
 
@@ -496,11 +508,13 @@ export function useSendOptimism() {
     send,
     approve,
     fees,
+    spender: bridgeAddress,
   };
 }
 
 export function useSendArbitrum() {
   const [bridge, setBridge] = useState<Bridge | undefined>();
+  const [bridgeAddress, setBridgeAddress] = useState("");
   const { isConnected, chainId, account, signer } = useConnection();
   const { fromChain, toChain, toAddress, amount, token, currentlySelectedFromChain, currentlySelectedToChain, error } = useAppSelector((state) => state.send);
   const { block } = useL2Block();
@@ -584,6 +598,7 @@ export function useSendArbitrum() {
     bridge.l1Bridge
       .getGatewayAddress(token)
       .then((spender) => {
+        setBridgeAddress(spender);
         return refetchAllowance({
           owner: account,
           spender,
@@ -633,5 +648,122 @@ export function useSendArbitrum() {
     send,
     approve,
     fees,
+    spender: bridgeAddress,
+  };
+}
+
+export function useSendBoba() {
+  const [bobaBridge] = useState(new BobaBridgeClient());
+  const [bridgeAddress, setBridgeAddress] = useState("");
+  const { isConnected, chainId, account, signer } = useConnection();
+  const { fromChain, amount, token, currentlySelectedFromChain, currentlySelectedToChain, toAddress, error } = useAppSelector(
+    (state) => state.send
+  );
+  const { block } = useL2Block();
+  const { balance: balanceStr } = useBalance({
+    chainId: fromChain,
+    account,
+    tokenAddress: token,
+  });
+  const balance = BigNumber.from(balanceStr);
+  const { data: allowance } = useAllowance(
+    {
+      chainId: fromChain,
+      token,
+      owner: account!,
+      spender: bridgeAddress,
+      amount,
+    },
+    { skip: !account || !isConnected || !chainId }
+  );
+  const canApprove = balance.gte(amount) && amount.gte(0);
+  const hasToApprove = allowance?.hasToApprove ?? true;
+  //TODO: Add fees
+  const [fees] = useState({
+    instantRelayFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    slowRelayFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    lpFee: {
+      total: BigNumber.from("0"),
+      pct: BigNumber.from("0"),
+    },
+    isAmountTooLow: false,
+    isLiquidityInsufficient: false,
+  });
+
+  useEffect(() => {
+    if (!bobaBridge) return;
+    bobaBridge
+      .getL1BridgeAddress(chainId as number, PROVIDERS[ChainId.MAINNET]())
+      .then((address) => { setBridgeAddress(address) })
+      .catch(() => { setBridgeAddress("") });
+  }, [bobaBridge, chainId]);
+
+  const send = useCallback(async () => {
+    if (!isConnected || !signer) return {};
+    if (token === ethers.constants.AddressZero) {
+      return {
+        tx: await bobaBridge.depositEth(signer, amount),
+        fees,
+      };
+    } else {
+      const pairToken = bobaErc20Pairs()[token];
+      if (!pairToken) return {};
+      return {
+        tx: await bobaBridge.depositERC20(signer, token, pairToken, amount),
+        fees,
+      };
+    }
+  }, [amount, fees, token, isConnected, bobaBridge, signer]);
+
+  const approve = useCallback(() => {
+    if (!signer) return;
+    return bobaBridge.approve(signer, token, MAX_APPROVAL_AMOUNT);
+  }, [bobaBridge, signer, token]);
+
+  const hasToSwitchChain = isConnected && currentlySelectedFromChain.chainId !== chainId;
+  const canSend = useMemo(
+    () =>
+      currentlySelectedFromChain.chainId &&
+      block &&
+      currentlySelectedToChain.chainId &&
+      amount &&
+      token &&
+      fees &&
+      toAddress &&
+      isValidAddress(toAddress) &&
+      !hasToApprove &&
+      !hasToSwitchChain &&
+      !error &&
+      balance.gte(amount),
+    [
+      currentlySelectedFromChain.chainId,
+      block,
+      currentlySelectedToChain.chainId,
+      amount,
+      token,
+      fees,
+      toAddress,
+      hasToApprove,
+      hasToSwitchChain,
+      error,
+      balance,
+    ]
+  );
+
+  return {
+    canSend,
+    canApprove,
+    hasToApprove,
+    hasToSwitchChain,
+    send,
+    approve,
+    fees,
+    spender: bridgeAddress,
   };
 }

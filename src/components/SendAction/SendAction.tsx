@@ -36,6 +36,7 @@ const SendAction: React.FC = () => {
     toAddress,
     approve,
     fees,
+    spender
   } = useSend();
   const { signer, account } = useConnection();
   const sendState = useAppSelector((state) => state.send);
@@ -52,14 +53,10 @@ const SendAction: React.FC = () => {
     sendState.currentlySelectedFromChain.chainId
   ].find((t) => t.address === token);
   const { error, addError, removeError } = useContext(ErrorContext);
-
-  const depositBox = getDepositBox(
-    sendState.currentlySelectedFromChain.chainId
-  );
   const { refetch } = useAllowance(
     {
       owner: account!,
-      spender: depositBox.address,
+      spender,
       chainId: sendState.currentlySelectedFromChain.chainId,
       token,
       amount,
