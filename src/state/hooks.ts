@@ -33,9 +33,6 @@ import { Bridge } from "arb-ts";
 
 const { clients } = across;
 const { OptimismBridgeClient } = clients.optimismBridge;
-
-
-
 const FEE_ESTIMATION = "0.004";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
@@ -359,26 +356,29 @@ export {
   useBridgeFees,
 } from "./chainApi";
 
-export function useBalance(params: {
+type useBalanceParams = {
   chainId: ChainId;
   account?: string;
   tokenAddress: string;
-}) {
-  const { chainId, account, tokenAddress } = params;
-  // const { data: balances, ...rest } = useBalances({ chainId, account });
-  const [updateBalances, result] = chainApi.endpoints.balances.useLazyQuery();
-  function refetch() {
-    if (account) updateBalances({ chainId, account });
-  }
-  useEffect(refetch, [chainId, account, tokenAddress, updateBalances]);
-  const tokenList = TOKENS_LIST[chainId];
-  const selectedIndex = tokenList.findIndex(
-    ({ address }) => address === tokenAddress
+};
+export function useBalance({
+  chainId,
+  account,
+  tokenAddress,
+}: useBalanceParams) {
+  const { data: allBalances, refetch } = chainApi.endpoints.balances.useQuery(
+    {
+      account: account ?? "",
+      chainId,
+    },
+    { skip: !account }
   );
-  const balance =
-    result?.data && result.data[selectedIndex]
-      ? result.data[selectedIndex].toString()
-      : "0";
+  const selectedIndex = useMemo(
+    () =>
+      TOKENS_LIST[chainId].findIndex(({ address }) => address === tokenAddress),
+    [chainId, tokenAddress]
+  );
+  const balance = allBalances?.[selectedIndex] ?? ethers.BigNumber.from(0);
 
   return {
     balance,
