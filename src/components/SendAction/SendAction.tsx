@@ -141,7 +141,7 @@ const SendAction: React.FC = () => {
       return amount;
     }
     return receiveAmount(amount, fees);
-  }, [amount, fees, sendState.currentlySelectedFromChain.chainId])
+  }, [amount, fees, sendState.currentlySelectedFromChain.chainId]);
 
   const buttonDisabled =
     isSendPending ||
@@ -165,18 +165,24 @@ const SendAction: React.FC = () => {
             <Info>
               <div>Ethereum Gas Fee</div>
               <div>
-                {formatUnits(
-                  fees.instantRelayFee.total.add(fees.slowRelayFee.total),
-                  tokenInfo.decimals
-                )}{" "}
-                {tokenInfo.symbol}
+                {sendState.currentlySelectedFromChain.chainId ===
+                ChainId.MAINNET
+                  ? "Free"
+                  : `${formatUnits(
+                      fees.instantRelayFee.total.add(fees.slowRelayFee.total),
+                      tokenInfo.decimals
+                    )}
+                  ${tokenInfo.symbol}`}
               </div>
             </Info>
             <Info>
               <div>Bridge Fee</div>
               <div>
-                {formatUnits(fees.lpFee.total, tokenInfo.decimals)}{" "}
-                {tokenInfo.symbol}
+                {sendState.currentlySelectedFromChain.chainId ===
+                ChainId.MAINNET
+                  ? "Free"
+                  : `${formatUnits(fees.lpFee.total, tokenInfo.decimals)}
+                  ${tokenInfo.symbol}`}
               </div>
             </Info>
             <Info>
