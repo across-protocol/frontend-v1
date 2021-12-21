@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ethers, BigNumber } from "ethers";
 import { useSelect } from "downshift";
 import { ChainId, max } from "utils";
@@ -58,6 +58,15 @@ const CoinSelection = () => {
     }, {} as Record<string, BigNumber | undefined>);
   }, [balances, fromChain]);
 
+  const [dropdownItem, setDropdownItem] = useState(() =>
+    tokenList.find((t) => t.address === token)
+  );
+
+  // Adjust coin dropdown when chain id changes, as some tokens don't exist on all chains.
+  useEffect(() => {
+    setDropdownItem(() => tokenList.find((t) => t.symbol === "ETH"));
+  }, [sendState.currentlySelectedFromChain.chainId, tokenList]);
+
   const {
     isOpen,
     selectedItem,
@@ -68,6 +77,7 @@ const CoinSelection = () => {
   } = useSelect({
     items: tokenList,
     defaultSelectedItem: tokenList.find((t) => t.address === token),
+    selectedItem: dropdownItem,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
         setInputAmount("");
@@ -75,6 +85,7 @@ const CoinSelection = () => {
         setError(undefined);
         setAmount({ amount: BigNumber.from("0") });
         setToken({ token: selectedItem.address });
+        setDropdownItem(selectedItem);
       }
     },
   });
