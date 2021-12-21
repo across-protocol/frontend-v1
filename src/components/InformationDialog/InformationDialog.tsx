@@ -30,18 +30,20 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
       <Info>
         <ArticleTitle>Native Bridge Fee</ArticleTitle>
         <Text>
-          Assets are transferred near instantly by utilizing funds from a
-          liquidity pool. The bridge fee is comprised of a liquidity provider
-          fee that rewards liquidity providers on Across.
+          For transfers from L2 to L1, assets are sent near instantly by
+          utilizing funds from a liquidity pool. The fee is for rewarding
+          liquidity providers on Across. Transfers from L1 to L2 rely on the
+          L2's canonical bridge whereby fees are free for transferring assets
         </Text>
       </Info>
       <Info>
         <ArticleTitle>Gas Fee</ArticleTitle>
         <Text>
-          For transfers from L2 to L1, assets are sent near instantly by
-          utilizing funds from a liquidity pool. The fee is for rewarding
-          liquidity providers on Across. Transfers from L1 to L2 rely on the
-          L2's canonical bridge whereby fees are free for transferring assets.
+          Across sends funds by default via an instant relay. If an instant
+          relay is unavailable, a slow relay will occur. Instant and slow
+          relayers charge a fee for performing the relay. These fees are
+          dependent on Ethereum Gas fees. View here to learn more about Ethereum
+          gas fees.
         </Text>
       </Info>
 
