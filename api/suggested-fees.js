@@ -17,6 +17,7 @@ const handler = async (request, response) => {
     let { l1Token } = await getTokenDetails(provider, l2Token, chainId);
     if (l1Token === sdk.across.constants.ADDRESSES.WETH) l1Token = sdk.across.constants.ADDRESSES.WETH;
     const depositFeeDetails = await sdk.across.gasFeeCalculator.getDepositFeesDetails(provider, amount, l1Token === sdk.across.constants.ADDRESSES.WETH ? sdk.across.constants.ADDRESSES.ETH : l1Token);
+    if (depositFeeDetails.isAmountTooLow) throw new InputError("Sent amount is too low relative to fees");
     
     const responseJson = {
       slowFeePct: depositFeeDetails.slow.pct,
@@ -25,15 +26,13 @@ const handler = async (request, response) => {
 
     response.status(200).json(responseJson);
   } catch (error) {
+    let status;
     if (error instanceof InputError) {
-      response.status(400).json({
-        error: error.message
-      });
+      status = 400;
     } else {
-      response.status(500).json({
-        error: error.message
-      });
+      status = 500;
     }
+    response.status(status).send(error.message);
   }
 };
 
