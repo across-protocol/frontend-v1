@@ -175,7 +175,7 @@ const SendAction: React.FC = () => {
               </Info>
             )}
             <Info>
-              <div>Bridge Fee</div>
+              <div>Native Bridge Fee</div>
               <div>
                 {sendState.currentlySelectedFromChain.chainId ===
                 ChainId.MAINNET
