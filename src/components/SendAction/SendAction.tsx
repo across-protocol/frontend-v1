@@ -162,19 +162,18 @@ const SendAction: React.FC = () => {
               </div>
               <div>{getEstimatedDepositTime(toChain)}</div>
             </Info>
-            <Info>
-              <div>Ethereum Gas Fee</div>
-              <div>
-                {sendState.currentlySelectedFromChain.chainId ===
-                ChainId.MAINNET
-                  ? "Free"
-                  : `${formatUnits(
-                      fees.instantRelayFee.total.add(fees.slowRelayFee.total),
-                      tokenInfo.decimals
-                    )}
-                  ${tokenInfo.symbol}`}
-              </div>
-            </Info>
+            {sendState.currentlySelectedFromChain.chainId !==
+              ChainId.MAINNET && (
+              <Info>
+                <div>Ethereum Gas Fee</div>
+                <div>
+                  {formatUnits(
+                    fees.instantRelayFee.total.add(fees.slowRelayFee.total),
+                    tokenInfo.decimals
+                  )}
+                </div>
+              </Info>
+            )}
             <Info>
               <div>Bridge Fee</div>
               <div>
