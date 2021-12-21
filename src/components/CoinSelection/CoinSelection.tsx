@@ -132,7 +132,7 @@ const CoinSelection = () => {
           ({ address }) => address === token
         );
         const balance = tokenBalanceMap[token];
-        const isEth = tokenList[selectedIndex].symbol === "ETH";
+        const isEth = tokenList[selectedIndex]?.symbol === "ETH";
         if (
           balance &&
           amount.gt(
