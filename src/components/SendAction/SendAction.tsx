@@ -16,7 +16,13 @@ import {
   ChainId,
 } from "utils";
 import { PrimaryButton } from "../Buttons";
-import { Wrapper, Info, AccentSection, InfoIcon } from "./SendAction.styles";
+import {
+  Wrapper,
+  Info,
+  AccentSection,
+  InfoIcon,
+  L1Info,
+} from "./SendAction.styles";
 import api from "state/chainApi";
 import InformationDialog from "components/InformationDialog";
 import { useAppSelector } from "state/hooks";
@@ -194,6 +200,11 @@ const SendAction: React.FC = () => {
         <PrimaryButton onClick={handleClick} disabled={buttonDisabled}>
           {buttonMsg()}
         </PrimaryButton>
+        {sendState.currentlySelectedFromChain.chainId === ChainId.MAINNET && (
+          <L1Info>
+            <div>L1 to L2 transfers use the destination’s canonical bridge</div>
+          </L1Info>
+        )}
       </Wrapper>
       <InformationDialog isOpen={isInfoModalOpen} onClose={toggleInfoModal} />
     </AccentSection>

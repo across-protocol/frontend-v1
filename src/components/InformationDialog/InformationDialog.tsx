@@ -14,10 +14,9 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
       <Info>
         <ArticleTitle>Time to Destination</ArticleTitle>
         <Text>
-          The estimated amount of time expected to receive your funds on
-          Ethereum Mainnet. If you do not receive your funds within the
-          estimated amount of time, please visit the ‘across-support’ channel
-          within the{" "}
+          The estimated amount of time expected to receive your funds. If you do
+          not receive your funds within the estimated amount of time, please
+          visit the ‘across-support’ channel within the{" "}
           <Link
             href="https://discord.gg/across"
             target="_blank"
@@ -33,7 +32,7 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
           For transfers from L2 to L1, assets are sent near instantly by
           utilizing funds from a liquidity pool. The fee is for rewarding
           liquidity providers on Across. Transfers from L1 to L2 rely on the
-          L2's canonical bridge whereby fees are free for transferring assets
+          L2's canonical bridge whereby fees are free for transferring assets.
         </Text>
       </Info>
       <Info>
