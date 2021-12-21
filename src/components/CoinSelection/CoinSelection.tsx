@@ -35,6 +35,11 @@ const CoinSelection = () => {
     if (fromChain === ChainId.MAINNET && toChain === ChainId.OPTIMISM) {
       return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].slice(1);
     }
+    if (fromChain === ChainId.MAINNET && toChain === ChainId.BOBA) {
+      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].filter(
+        (token) => ["USDC", "ETH"].includes(token.symbol)
+      );
+    }
     return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId];
   }, [fromChain, toChain, sendState.currentlySelectedFromChain.chainId]);
   const { data: balances } = useBalances(

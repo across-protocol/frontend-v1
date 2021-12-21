@@ -178,3 +178,17 @@ export const optimismErc20Pairs = () => {
     [umaMainnet.address]: umaOptimism.address,
   };
 };
+
+// This will be moved inside the SDK in the near future
+export const bobaErc20Pairs = () => {
+  const usdcMainnet = TOKENS_LIST[ChainId.MAINNET].filter(
+    (token) => token.symbol === "USDC"
+  )[0];
+  const usdcBoba = TOKENS_LIST[ChainId.BOBA].filter(
+    (token) => token.symbol === "USDC"
+  )[0];
+
+  return {
+    [usdcMainnet.address]: usdcBoba.address,
+  };
+};
