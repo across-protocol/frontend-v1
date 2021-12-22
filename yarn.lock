@@ -3295,7 +3295,7 @@
     "@typescript-eslint/types" "4.33.0"
     eslint-visitor-keys "^2.0.0"
 
-"@uma/contracts-frontend@^0.1.17", "@uma/contracts-frontend@^0.1.5":
+"@uma/contracts-frontend@^0.1.17":
   version "0.1.17"
   resolved "https://registry.yarnpkg.com/@uma/contracts-frontend/-/contracts-frontend-0.1.17.tgz#141760bf6d783ddfbe94ce5cfeff410d2e73311a"
   integrity sha512-sRWCFEC56DyBd+QcCPGoJghG9lAE8VQvcYpW9CSvyOLmSz+eugy1pxbOBg6v6qkGqexO1vCp608TkG71vaQqUg==
