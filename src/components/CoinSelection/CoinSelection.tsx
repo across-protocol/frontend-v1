@@ -50,13 +50,13 @@ const CoinSelection = () => {
     { skip: !account }
   );
   const tokenBalanceMap = useMemo(() => {
-    return TOKENS_LIST[fromChain].reduce((acc, val, idx) => {
+    return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].reduce((acc, val, idx) => {
       return {
         ...acc,
         [val.address]: balances ? balances[idx] : undefined,
       };
     }, {} as Record<string, BigNumber | undefined>);
-  }, [balances, fromChain]);
+  }, [balances, sendState.currentlySelectedFromChain.chainId]);
 
   const [dropdownItem, setDropdownItem] = useState(() =>
     tokenList.find((t) => t.address === token)
