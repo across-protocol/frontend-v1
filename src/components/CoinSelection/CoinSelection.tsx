@@ -64,7 +64,10 @@ const CoinSelection = () => {
 
   // Adjust coin dropdown when chain id changes, as some tokens don't exist on all chains.
   useEffect(() => {
-    setDropdownItem(() => tokenList.find((t) => t.symbol === "ETH"));
+    const newToken = tokenList.find((t) => t.symbol === "ETH");
+    setDropdownItem(() => newToken);
+    setToken({ token: newToken?.address || "" });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendState.currentlySelectedFromChain.chainId, tokenList]);
 
   const {
@@ -148,6 +151,7 @@ const CoinSelection = () => {
   }, [balances, amount, token, tokenList, inputAmount, tokenBalanceMap]);
 
   const handleMaxClick = () => {
+    debugger;
     if (balances && selectedItem) {
       const selectedIndex = tokenList.findIndex(
         ({ address }) => address === selectedItem.address
