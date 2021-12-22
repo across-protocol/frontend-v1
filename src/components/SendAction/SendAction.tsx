@@ -172,7 +172,8 @@ const SendAction: React.FC = () => {
                   {formatUnits(
                     fees.instantRelayFee.total.add(fees.slowRelayFee.total),
                     tokenInfo.decimals
-                  )}
+                  )}{" "}
+                  {tokenInfo.symbol}
                 </div>
               </Info>
             )}
