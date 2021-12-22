@@ -65,6 +65,10 @@ const CoinSelection = () => {
   // Adjust coin dropdown when chain id changes, as some tokens don't exist on all chains.
   useEffect(() => {
     const newToken = tokenList.find((t) => t.address === ethers.constants.AddressZero);
+    setInputAmount("");
+    // since we are resetting input to 0, reset any errors
+    setError(undefined);
+    setAmount({ amount: BigNumber.from("0") });
     setDropdownItem(() => newToken);
     setToken({ token: newToken?.address || "" });
   // eslint-disable-next-line react-hooks/exhaustive-deps
