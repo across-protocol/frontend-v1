@@ -54,15 +54,15 @@ const SendAction: React.FC = () => {
   const [updateEthBalance] = api.endpoints.ethBalance.useLazyQuery();
   // trigger balance update
   const [updateBalances] = api.endpoints.balances.useLazyQuery();
-  const tokenInfo = TOKENS_LIST[
-    sendState.currentlySelectedFromChain.chainId
-  ].find((t) => t.address === token);
+  const tokenInfo = TOKENS_LIST[sendState.fromChain].find(
+    (t) => t.address === token
+  );
   const { error, addError, removeError } = useContext(ErrorContext);
   const { refetch } = useAllowance(
     {
       owner: account!,
       spender,
-      chainId: sendState.currentlySelectedFromChain.chainId,
+      chainId: sendState.fromChain,
       token,
       amount,
     },
@@ -84,8 +84,8 @@ const SendAction: React.FC = () => {
       const receipt = await tx.wait(CONFIRMATIONS);
       addDeposit({
         tx: receipt,
-        toChain: sendState.currentlySelectedToChain.chainId,
-        fromChain: sendState.currentlySelectedFromChain.chainId,
+        toChain: sendState.toChain,
+        fromChain: sendState.fromChain,
         amount,
         token,
         toAddress,
@@ -94,11 +94,11 @@ const SendAction: React.FC = () => {
       // update balances after tx
       if (account) {
         updateEthBalance({
-          chainId: sendState.currentlySelectedFromChain.chainId,
+          chainId: sendState.fromChain,
           account,
         });
         updateBalances({
-          chainId: sendState.currentlySelectedFromChain.chainId,
+          chainId: sendState.fromChain,
           account,
         });
       }
@@ -139,11 +139,11 @@ const SendAction: React.FC = () => {
     return "Send";
   };
   const amountMinusFees = useMemo(() => {
-    if (sendState.currentlySelectedFromChain.chainId === ChainId.MAINNET) {
+    if (sendState.fromChain === ChainId.MAINNET) {
       return amount;
     }
     return receiveAmount(amount, fees);
-  }, [amount, fees, sendState.currentlySelectedFromChain.chainId]);
+  }, [amount, fees, sendState.fromChain]);
 
   const buttonDisabled =
     isSendPending ||
@@ -158,14 +158,10 @@ const SendAction: React.FC = () => {
         {amount.gt(0) && fees && tokenInfo && (
           <>
             <Info>
-              <div>
-                Time to{" "}
-                {CHAINS[sendState.currentlySelectedToChain.chainId].name}
-              </div>
+              <div>Time to {CHAINS[sendState.toChain].name}</div>
               <div>{getEstimatedDepositTime(toChain)}</div>
             </Info>
-            {sendState.currentlySelectedFromChain.chainId !==
-              ChainId.MAINNET && (
+            {sendState.fromChain !== ChainId.MAINNET && (
               <Info>
                 <div>Ethereum Gas Fee</div>
                 <div>
@@ -180,8 +176,7 @@ const SendAction: React.FC = () => {
             <Info>
               <div>Native Bridge Fee</div>
               <div>
-                {sendState.currentlySelectedFromChain.chainId ===
-                ChainId.MAINNET
+                {sendState.fromChain === ChainId.MAINNET
                   ? "Free"
                   : `${formatUnits(fees.lpFee.total, tokenInfo.decimals)}
                   ${tokenInfo.symbol}`}
@@ -201,7 +196,7 @@ const SendAction: React.FC = () => {
         <PrimaryButton onClick={handleClick} disabled={buttonDisabled}>
           {buttonMsg()}
         </PrimaryButton>
-        {sendState.currentlySelectedFromChain.chainId === ChainId.MAINNET && (
+        {sendState.fromChain === ChainId.MAINNET && (
           <L1Info>
             <div>L1 to L2 transfers use the destination’s canonical bridge</div>
           </L1Info>

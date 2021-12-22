@@ -40,3 +40,11 @@ export class InsufficientLiquidityError extends Error {
     this.message = `Insufficient liquidity for ${token}.`;
   }
 }
+
+export class UnreachableChainError extends Error {
+  public constructor(unreachableChainId: number, fromChainId: ChainId) {
+    super();
+    this.name = this.constructor.name;
+    this.message = `Unreachable chain ${unreachableChainId} from chain: ${fromChainId}.`;
+  }
+}

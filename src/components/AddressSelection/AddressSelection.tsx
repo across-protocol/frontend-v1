@@ -29,44 +29,39 @@ import {
 } from "./AddressSelection.styles";
 import { useSelect } from "downshift";
 import { CHAINS_SELECTION } from "utils/constants";
-import { useAppDispatch, useAppSelector } from "state/hooks";
+import { useAppDispatch } from "state/hooks";
 import { actions } from "state/send";
 import { AnimatePresence } from "framer-motion";
 
 const AddressSelection: React.FC = () => {
   const { isConnected } = useConnection();
-  const { toChain, toAddress, setToAddress } = useSend();
+  const { toChain, fromChain, toAddress, setToAddress } = useSend();
   const [address, setAddress] = useState("");
   const [open, setOpen] = useState(false);
-  const dispatch = useAppDispatch();
 
-  const sendState = useAppSelector((state) => state.send);
+  const dispatch = useAppDispatch();
 
   const {
     isOpen,
-    selectedItem,
     getLabelProps,
     getToggleButtonProps,
     getItemProps,
     getMenuProps,
+    selectItem,
+    selectedItem,
   } = useSelect({
-    items: CHAINS_SELECTION,
-    defaultSelectedItem: sendState.currentlySelectedToChain,
-    selectedItem: sendState.currentlySelectedToChain,
+    items: Object.values(CHAINS_SELECTION),
+    defaultSelectedItem: CHAINS_SELECTION[toChain],
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-        const nextState = { ...sendState, toChain: selectedItem.chainId };
-        dispatch(actions.toChain(nextState));
-        dispatch(actions.updateSelectedToChain(selectedItem));
-        const nsToChain = { ...sendState };
-        if (selectedItem.chainId === ChainId.MAINNET) {
-          nsToChain.fromChain = ChainId.OPTIMISM;
-          dispatch(actions.fromChain(nsToChain));
-          dispatch(actions.updateSelectedFromChain(CHAINS_SELECTION[0]));
-        }
+        dispatch(actions.toChain({ toChain: selectedItem.chainId }));
       }
     },
   });
+
+  useEffect(() => {
+    selectItem(CHAINS_SELECTION[toChain]);
+  }, [selectItem, toChain]);
 
   useEffect(() => {
     if (toAddress) {
@@ -94,6 +89,8 @@ const AddressSelection: React.FC = () => {
       toggle();
     }
   };
+  // TODO: make generic to support testnets
+  const isL1ToL2 = toChain === ChainId.MAINNET;
 
   return (
     <AnimatePresence>
@@ -116,33 +113,9 @@ const AddressSelection: React.FC = () => {
               </ToggleButton>
             </RoundBox>
             <Menu isOpen={isOpen} {...getMenuProps()}>
-              {isOpen &&
-                sendState.currentlySelectedToChain.chainId !==
-                  ChainId.MAINNET &&
-                CHAINS_SELECTION.map((t, index) => {
-                  return (
-                    <Item
-                      className={
-                        t === sendState.currentlySelectedToChain ||
-                        t.chainId === ChainId.MAINNET
-                          ? "disabled"
-                          : ""
-                      }
-                      {...getItemProps({ item: t, index })}
-                      key={t.chainId}
-                    >
-                      <Logo src={t.logoURI} alt={t.name} />
-                      <div>{t.name}</div>
-                      <span className="layer-type">
-                        {t.chainId !== ChainId.MAINNET ? "L2" : "L1"}
-                      </span>
-                    </Item>
-                  );
-                })}
-              {isOpen &&
-                sendState.currentlySelectedToChain.chainId ===
-                  ChainId.MAINNET && (
-                  <>
+              {isOpen && (
+                <>
+                  {isL1ToL2 && (
                     <ItemWarning
                       initial={{ y: -10 }}
                       animate={{ y: 0 }}
@@ -152,28 +125,30 @@ const AddressSelection: React.FC = () => {
                         Transfers between L2 chains is not possible at this time
                       </p>
                     </ItemWarning>
-                    {CHAINS_SELECTION.map((t, index) => {
-                      return (
-                        <Item
-                          className={"disabled"}
-                          {...getItemProps({ item: t, index })}
-                          key={t.chainId}
-                          initial={{ y: -10 }}
-                          animate={{ y: 0 }}
-                          exit={{ y: -10 }}
-                        >
-                          <Logo src={t.logoURI} alt={t.name} />
-                          <div>{t.name}</div>
-                          <span className="layer-type">
-                            {index !== CHAINS_SELECTION.length - 1
-                              ? "L2"
-                              : "L1"}
-                          </span>
-                        </Item>
-                      );
-                    })}
-                  </>
-                )}
+                  )}
+                  {Object.values(CHAINS_SELECTION).map((chain, index) => {
+                    const isReachable = CHAINS_SELECTION[
+                      fromChain
+                    ].reachableChains.includes(chain.chainId);
+                    return (
+                      <Item
+                        className={isReachable ? "" : "disabled"}
+                        {...getItemProps({ item: chain, index })}
+                        key={chain.chainId}
+                        initial={{ y: -10 }}
+                        animate={{ y: 0 }}
+                        exit={{ y: -10 }}
+                      >
+                        <Logo src={chain.logoURI} alt={chain.name} />
+                        <div>{chain.name}</div>
+                        <span className="layer-type">
+                          {chain.chainId === ChainId.MAINNET ? "L1" : "L2"}
+                        </span>
+                      </Item>
+                    );
+                  })}
+                </>
+              )}
             </Menu>
           </InputGroup>
           <ChangeWrapper onClick={toggle}>

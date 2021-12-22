@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ethers, BigNumber } from "ethers";
 import { useSelect } from "downshift";
 import { ChainId, max } from "utils";
@@ -6,7 +6,6 @@ import { ChainId, max } from "utils";
 import { useSend, useBalances, useConnection } from "state/hooks";
 import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
 import { Section, SectionTitle } from "../Section";
-import { useAppSelector } from "state/hooks";
 
 import {
   RoundBox,
@@ -30,22 +29,22 @@ const CoinSelection = () => {
     useSend();
 
   const [error, setError] = React.useState<Error>();
-  const sendState = useAppSelector((state) => state.send);
+
   const tokenList = useMemo(() => {
     if (fromChain === ChainId.MAINNET && toChain === ChainId.OPTIMISM) {
-      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].slice(1);
+      return TOKENS_LIST[fromChain].slice(1);
     }
     if (fromChain === ChainId.MAINNET && toChain === ChainId.BOBA) {
-      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].filter(
-        (token) => ["USDC", "ETH"].includes(token.symbol)
+      return TOKENS_LIST[fromChain].filter((token) =>
+        ["USDC", "ETH"].includes(token.symbol)
       );
     }
-    return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId];
-  }, [fromChain, toChain, sendState.currentlySelectedFromChain.chainId]);
+    return TOKENS_LIST[fromChain];
+  }, [fromChain, toChain]);
   const { data: balances } = useBalances(
     {
       account: account!,
-      chainId: sendState.currentlySelectedFromChain.chainId,
+      chainId: fromChain,
     },
     { skip: !account }
   );
@@ -58,15 +57,6 @@ const CoinSelection = () => {
     }, {} as Record<string, BigNumber | undefined>);
   }, [balances, fromChain]);
 
-  const [dropdownItem, setDropdownItem] = useState(() =>
-    tokenList.find((t) => t.address === token)
-  );
-
-  // Adjust coin dropdown when chain id changes, as some tokens don't exist on all chains.
-  useEffect(() => {
-    setDropdownItem(() => tokenList.find((t) => t.symbol === "ETH"));
-  }, [sendState.currentlySelectedFromChain.chainId, tokenList]);
-
   const {
     isOpen,
     selectedItem,
@@ -77,7 +67,6 @@ const CoinSelection = () => {
   } = useSelect({
     items: tokenList,
     defaultSelectedItem: tokenList.find((t) => t.address === token),
-    selectedItem: dropdownItem,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
         setInputAmount("");
@@ -85,7 +74,6 @@ const CoinSelection = () => {
         setError(undefined);
         setAmount({ amount: BigNumber.from("0") });
         setToken({ token: selectedItem.address });
-        setDropdownItem(selectedItem);
       }
     },
   });

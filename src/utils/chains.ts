@@ -5,6 +5,7 @@ export async function switchChain(
   provider: ethers.providers.JsonRpcProvider,
   chainId: ChainId
 ) {
+  console.log({ chainId, chain: CHAINS[chainId], chains: CHAINS });
   try {
     await provider.send("wallet_switchEthereumChain", [
       {

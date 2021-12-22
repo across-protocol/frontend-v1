@@ -301,8 +301,7 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
     },
   ],
 };
-
-type ChainInfo = {
+export interface IChain {
   name: string;
   chainId: ChainId;
   logoURI: string;
@@ -314,14 +313,30 @@ type ChainInfo = {
     symbol: string;
     decimals: number;
   };
-};
+  reachableChains: ChainId[];
+  isTestnet?: boolean;
+}
 
+interface IEthereumChain extends IChain {
+  name: "Ethereum";
+  chainId: ChainId.MAINNET;
+  nativeCurrency: {
+    name: "Ether";
+    symbol: "ETH";
+    decimals: 18;
+  };
+}
+
+type ChainList = { [ChainId.MAINNET]: IEthereumChain } & Record<
+  ChainId,
+  IChain
+>;
 const defaultConstructExplorerLink =
   (explorerUrl: string) => (txHash: string) =>
     `${explorerUrl}/tx/${txHash}`;
-export const CHAINS: Record<ChainId, ChainInfo> = {
+export const CHAINS: ChainList = {
   [ChainId.MAINNET]: {
-    name: "Ethereum Mainnet",
+    name: "Ethereum",
     chainId: ChainId.MAINNET,
     logoURI: ethereumLogo,
     explorerUrl: "https://etherscan.io",
@@ -331,6 +346,7 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
       symbol: "ETH",
       decimals: 18,
     },
+    reachableChains: [ChainId.ARBITRUM, ChainId.BOBA, ChainId.OPTIMISM],
   },
   [ChainId.RINKEBY]: {
     name: "Rinkeby Testnet",
@@ -345,6 +361,8 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
       symbol: "ETH",
       decimals: 18,
     },
+    reachableChains: [ChainId.ARBITRUM_RINKEBY],
+    isTestnet: true,
   },
   [ChainId.KOVAN]: {
     name: "Ethereum Testnet Kovan",
@@ -359,6 +377,8 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
       symbol: "KOV",
       decimals: 18,
     },
+    reachableChains: [ChainId.KOVAN_OPTIMISM],
+    isTestnet: true,
   },
   [ChainId.OPTIMISM]: {
     name: "Optimism",
@@ -373,6 +393,7 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
       symbol: "OETH",
       decimals: 18,
     },
+    reachableChains: [ChainId.MAINNET],
   },
   [ChainId.KOVAN_OPTIMISM]: {
     name: "Optimism Testnet Kovan",
@@ -387,9 +408,11 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
       symbol: "KOR",
       decimals: 18,
     },
+    reachableChains: [ChainId.KOVAN],
+    isTestnet: true,
   },
   [ChainId.ARBITRUM]: {
-    name: "Arbitrum One",
+    name: "Arbitrum",
     chainId: ChainId.ARBITRUM,
     logoURI: arbitrumLogo,
     rpcUrl: "https://arb1.arbitrum.io/rpc",
@@ -401,6 +424,7 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
       symbol: "AETH",
       decimals: 18,
     },
+    reachableChains: [ChainId.MAINNET],
   },
   [ChainId.ARBITRUM_RINKEBY]: {
     name: "Arbitrum Testnet Rinkeby",
@@ -415,6 +439,8 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
       symbol: "ARETH",
       decimals: 18,
     },
+    reachableChains: [ChainId.RINKEBY],
+    isTestnet: true,
   },
   [ChainId.BOBA]: {
     name: "Boba",
@@ -429,8 +455,21 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
       symbol: "ETH",
       decimals: 18,
     },
+    reachableChains: [ChainId.MAINNET],
   },
 };
+
+export const CHAINS_SELECTION = process.env.REACT_APP_PUBLIC_SHOW_TESTNETS
+  ? CHAINS
+  : Object.entries(CHAINS).reduce((accChainList, [chainId, chain]) => {
+      if (chain.isTestnet) {
+        return accChainList;
+      }
+      return {
+        ...accChainList,
+        [chainId]: chain,
+      };
+    }, {} as ChainList);
 
 export const ADDRESSES: Record<ChainId, { BRIDGE?: string }> = {
   [ChainId.MAINNET]: {
@@ -528,7 +567,7 @@ export function getChainName(chainId: ChainId): string {
   }
 }
 
-export const DEFAULT_FROM_CHAIN_ID = ChainId.ARBITRUM;
+export const DEFAULT_FROM_CHAIN_ID = ChainId.OPTIMISM;
 export const DEFAULT_TO_CHAIN_ID = ChainId.MAINNET;
 
 /* Onboard config */
@@ -550,94 +589,70 @@ export function onboardBaseConfig(): Initialization {
 
 // this client requires multicall2 be accessible on the chain. This is the address for mainnet.
 export const multicallTwoAddress = "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696";
-export interface IChainSelection {
-  name: string;
-  chainId: ChainId;
-  logoURI: string;
-  rpcUrl: string;
-  explorerUrl: string;
-  constructExplorerLink: (txHash: string) => string;
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-}
 
-interface EthChainInfo {
-  name: "Ethereum";
-  chainId: 1;
-  logoURI: string;
-  rpcUrl: string;
-  explorerUrl: string;
-  constructExplorerLink: (txHash: string) => string;
-  nativeCurrency: {
-    name: "Ether";
-    symbol: "ETH";
-    decimals: 18;
-  };
-}
-
-type ChainsSelection = [...IChainSelection[], EthChainInfo];
-export const CHAINS_SELECTION: ChainsSelection = [
-  {
-    name: "Optimism",
-    chainId: ChainId.OPTIMISM,
-    logoURI: optimismLogo,
-    rpcUrl: "https://mainnet.optimism.io",
-    explorerUrl: "https://optimistic.etherscan.io",
-    constructExplorerLink: defaultConstructExplorerLink(
-      "https://optimistic.etherscan.io"
-    ),
-    nativeCurrency: {
-      name: "Ether",
-      symbol: "OETH",
-      decimals: 18,
-    },
-  },
-  {
-    name: "Arbitrum",
-    chainId: ChainId.ARBITRUM,
-    logoURI: arbitrumLogo,
-    rpcUrl: "https://arb1.arbitrum.io/rpc",
-    explorerUrl: "https://arbiscan.io",
-    constructExplorerLink: (txHash: string) =>
-      `https://arbiscan.io/tx/${txHash}`,
-    nativeCurrency: {
-      name: "Ether",
-      symbol: "AETH",
-      decimals: 18,
-    },
-  },
-  {
-    name: "Boba",
-    chainId: ChainId.BOBA,
-    logoURI: bobaLogo,
-    rpcUrl: "https://mainnet.boba.network",
-    explorerUrl: "https://blockexplorer.boba.network",
-    constructExplorerLink: (txHash: string) =>
-      `https://blockexplorer.boba.network/tx/${txHash}`,
-    nativeCurrency: {
-      name: "Ether",
-      symbol: "ETH",
-      decimals: 18,
-    },
-  },
-  {
-    name: "Ethereum",
-    chainId: ChainId.MAINNET,
-    logoURI: ethereumLogo,
-    // Doesn't have an RPC on Infura. Need to know how to handle this
-    rpcUrl: "https://mainnet.infura.io/v3/",
-    explorerUrl: "https://etherscan.io",
-    constructExplorerLink: (txHash: string) =>
-      `https://etherscan.io/tx/${txHash}`,
-    nativeCurrency: {
-      name: "Ether",
-      symbol: "ETH",
-      decimals: 18,
-    },
-  },
-];
+// export const CHAINS_SELECTION: ChainsSelection = [
+//   {
+//     name: "Optimism",
+//     chainId: ChainId.OPTIMISM,
+//     logoURI: optimismLogo,
+//     rpcUrl: "https://mainnet.optimism.io",
+//     explorerUrl: "https://optimistic.etherscan.io",
+//     constructExplorerLink: defaultConstructExplorerLink(
+//       "https://optimistic.etherscan.io"
+//     ),
+//     nativeCurrency: {
+//       name: "Ether",
+//       symbol: "OETH",
+//       decimals: 18,
+//     },
+//     reachableChains: [ChainId.MAINNET],
+//   },
+//   {
+//     name: "Arbitrum",
+//     chainId: ChainId.ARBITRUM,
+//     logoURI: arbitrumLogo,
+//     rpcUrl: "https://arb1.arbitrum.io/rpc",
+//     explorerUrl: "https://arbiscan.io",
+//     constructExplorerLink: (txHash: string) =>
+//       `https://arbiscan.io/tx/${txHash}`,
+//     nativeCurrency: {
+//       name: "Ether",
+//       symbol: "AETH",
+//       decimals: 18,
+//     },
+//     reachableChains: [ChainId.MAINNET],
+//   },
+//   {
+//     name: "Boba",
+//     chainId: ChainId.BOBA,
+//     logoURI: bobaLogo,
+//     rpcUrl: "https://mainnet.boba.network",
+//     explorerUrl: "https://blockexplorer.boba.network",
+//     constructExplorerLink: (txHash: string) =>
+//       `https://blockexplorer.boba.network/tx/${txHash}`,
+//     nativeCurrency: {
+//       name: "Ether",
+//       symbol: "ETH",
+//       decimals: 18,
+//     },
+//     reachableChains: [ChainId.MAINNET],
+//   },
+//   {
+//     name: "Ethereum",
+//     chainId: ChainId.MAINNET,
+//     logoURI: ethereumLogo,
+//     // Doesn't have an RPC on Infura. Need to know how to handle this
+//     rpcUrl: "https://mainnet.infura.io/v3/",
+//     explorerUrl: "https://etherscan.io",
+//     constructExplorerLink: (txHash: string) =>
+//       `https://etherscan.io/tx/${txHash}`,
+//     nativeCurrency: {
+//       name: "Ether",
+//       symbol: "ETH",
+//       decimals: 18,
+//     },
+//     reachableChains: [ChainId.OPTIMISM, ChainId.BOBA, ChainId.ARBITRUM],
+//   },
+// ];
 
 export const MAX_APPROVAL_AMOUNT = ethers.constants.MaxUint256;

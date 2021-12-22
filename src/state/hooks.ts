@@ -24,6 +24,7 @@ import {
   toChain as toChainAction,
   toAddress as toAddressAction,
   error as sendErrorAction,
+  toChain,
 } from "./send";
 import chainApi, { useAllowance, useBridgeFees } from "./chainApi";
 import { add } from "./transactions";
@@ -69,7 +70,7 @@ export function useConnection() {
 
 // TODO: put this back into global state. Wasnt able to get it working.
 export function useL2Block() {
-  const { currentlySelectedFromChain } = useAppSelector((state) => state.send);
+  const { fromChain } = useAppSelector((state) => state.send);
   const [latestBlock, setBlock] = useState<
     ethers.providers.Block | undefined
   >();
@@ -77,7 +78,7 @@ export function useL2Block() {
   const { addError, removeError, error } = useContext(ErrorContext);
 
   useEffect(() => {
-    const provider = PROVIDERS[currentlySelectedFromChain.chainId]();
+    const provider = PROVIDERS[fromChain]();
     provider
       .getBlock("latest")
       .then((res) => {
@@ -88,10 +89,10 @@ export function useL2Block() {
         addError(new Error("Infura issue, please try again later."));
         console.error("Error getting latest block");
       });
-  }, [currentlySelectedFromChain.chainId, error, removeError, addError]);
+  }, [error, removeError, addError, fromChain]);
 
   useInterval(() => {
-    const provider = PROVIDERS[currentlySelectedFromChain.chainId]();
+    const provider = PROVIDERS[fromChain]();
     provider
       .getBlock("latest")
       .then((block) => {
@@ -168,27 +169,19 @@ export function useSend() {
 }
 export function useSendAcross() {
   const { isConnected, chainId, account, signer } = useConnection();
-  const {
-    fromChain,
-    toChain,
-    toAddress,
-    amount,
-    token,
-    error,
-    currentlySelectedFromChain,
-    currentlySelectedToChain,
-  } = useAppSelector((state) => state.send);
+  const { fromChain, toChain, toAddress, amount, token, error } =
+    useAppSelector((state) => state.send);
   const { balance } = useBalance({
-    chainId: currentlySelectedFromChain.chainId,
+    chainId: fromChain,
     account,
     tokenAddress: token,
   });
   const { block } = useL2Block();
 
-  const depositBox = getDepositBox(currentlySelectedFromChain.chainId);
+  const depositBox = getDepositBox(fromChain);
   const { data: allowance } = useAllowance(
     {
-      chainId: currentlySelectedFromChain.chainId,
+      chainId: fromChain,
       token,
       owner: account!,
       spender: depositBox.address,
@@ -207,13 +200,10 @@ export function useSendAcross() {
       signer,
     });
   }
-  const hasToSwitchChain =
-    isConnected && currentlySelectedFromChain.chainId !== chainId;
+  const hasToSwitchChain = isConnected && fromChain !== chainId;
 
   const tokenSymbol =
-    TOKENS_LIST[currentlySelectedFromChain.chainId].find(
-      (t) => t.address === token
-    )?.symbol ?? "";
+    TOKENS_LIST[fromChain].find((t) => t.address === token)?.symbol ?? "";
 
   const { data: fees } = useBridgeFees(
     {
@@ -226,9 +216,9 @@ export function useSendAcross() {
 
   const canSend = useMemo(
     () =>
-      currentlySelectedFromChain.chainId &&
+      fromChain &&
       block &&
-      currentlySelectedToChain.chainId &&
+      toChain &&
       amount &&
       token &&
       fees &&
@@ -247,9 +237,9 @@ export function useSendAcross() {
         )
         .gte(amount),
     [
-      currentlySelectedFromChain.chainId,
+      fromChain,
       block,
-      currentlySelectedToChain.chainId,
+      toChain,
       amount,
       token,
       fees,
@@ -267,15 +257,10 @@ export function useSendAcross() {
     }
 
     try {
-      const depositBox = getDepositBox(
-        currentlySelectedFromChain.chainId,
-        signer
-      );
+      const depositBox = getDepositBox(fromChain, signer);
       const isETH = token === ethers.constants.AddressZero;
       const value = isETH ? amount : ethers.constants.Zero;
-      const l2Token = isETH
-        ? TOKENS_LIST[currentlySelectedFromChain.chainId][0].address
-        : token;
+      const l2Token = isETH ? TOKENS_LIST[fromChain][0].address : token;
       const { instantRelayFee, slowRelayFee } = fees;
       let timestamp = block.timestamp;
 
@@ -302,15 +287,15 @@ export function useSendAcross() {
       );
     }
   }, [
-    amount,
-    block,
-    canSend,
-    depositBox.address,
-    fees,
-    currentlySelectedFromChain.chainId,
     signer,
+    canSend,
+    fees,
     toAddress,
+    block,
+    fromChain,
     token,
+    amount,
+    depositBox.address,
   ]);
 
   return {
@@ -395,17 +380,11 @@ export function useBalance({
 export function useSendOptimism() {
   const [optimismBridge] = useState(new OptimismBridgeClient());
   const { isConnected, chainId, account, signer } = useConnection();
-  const {
-    fromChain,
-    amount,
-    token,
-    currentlySelectedFromChain,
-    currentlySelectedToChain,
-    toAddress,
-    error,
-  } = useAppSelector((state) => state.send);
+  const { fromChain, amount, token, toAddress, error } = useAppSelector(
+    (state) => state.send
+  );
   const { block } = useL2Block();
-  const { balance: balanceStr } = useBalance({
+  const { balance } = useBalance({
     chainId: fromChain,
     account,
     tokenAddress: token,
@@ -417,7 +396,7 @@ export function useSendOptimism() {
       return "";
     }
   }, [optimismBridge, chainId]);
-  const balance = BigNumber.from(balanceStr);
+
   const { data: allowance } = useAllowance(
     {
       chainId: fromChain,
@@ -470,13 +449,12 @@ export function useSendOptimism() {
     return optimismBridge.approve(signer, token, MAX_APPROVAL_AMOUNT);
   }, [optimismBridge, signer, token]);
 
-  const hasToSwitchChain =
-    isConnected && currentlySelectedFromChain.chainId !== chainId;
+  const hasToSwitchChain = isConnected && fromChain !== chainId;
   const canSend = useMemo(
     () =>
-      currentlySelectedFromChain.chainId &&
+      fromChain &&
       block &&
-      currentlySelectedToChain.chainId &&
+      toChain &&
       amount &&
       token &&
       fees &&
@@ -487,9 +465,8 @@ export function useSendOptimism() {
       !error &&
       balance.gte(amount),
     [
-      currentlySelectedFromChain.chainId,
+      fromChain,
       block,
-      currentlySelectedToChain.chainId,
       amount,
       token,
       fees,
@@ -517,16 +494,8 @@ export function useSendArbitrum() {
   const [bridge, setBridge] = useState<Bridge | undefined>();
   const [bridgeAddress, setBridgeAddress] = useState("");
   const { isConnected, chainId, account, signer } = useConnection();
-  const {
-    fromChain,
-    toChain,
-    toAddress,
-    amount,
-    token,
-    currentlySelectedFromChain,
-    currentlySelectedToChain,
-    error,
-  } = useAppSelector((state) => state.send);
+  const { fromChain, toChain, toAddress, amount, token, error } =
+    useAppSelector((state) => state.send);
   const { block } = useL2Block();
   const { balance: balanceStr } = useBalance({
     chainId: fromChain,
@@ -619,13 +588,12 @@ export function useSendArbitrum() {
       .catch(console.error);
   }, [bridge, amount, token, chainId, account, refetchAllowance]);
 
-  const hasToSwitchChain =
-    isConnected && currentlySelectedFromChain.chainId !== chainId;
+  const hasToSwitchChain = isConnected && fromChain !== chainId;
   const canSend = useMemo(
     () =>
-      currentlySelectedFromChain.chainId &&
+      fromChain &&
       block &&
-      currentlySelectedToChain.chainId &&
+      toChain &&
       amount &&
       token &&
       fees &&
@@ -636,9 +604,9 @@ export function useSendArbitrum() {
       !error &&
       balance.gte(amount),
     [
-      currentlySelectedFromChain.chainId,
+      fromChain,
       block,
-      currentlySelectedToChain.chainId,
+      toChain,
       amount,
       token,
       fees,
@@ -666,15 +634,9 @@ export function useSendBoba() {
   const [bobaBridge] = useState(new BobaBridgeClient());
   const [bridgeAddress, setBridgeAddress] = useState("");
   const { isConnected, chainId, account, signer } = useConnection();
-  const {
-    fromChain,
-    amount,
-    token,
-    currentlySelectedFromChain,
-    currentlySelectedToChain,
-    toAddress,
-    error,
-  } = useAppSelector((state) => state.send);
+  const { fromChain, amount, token, toAddress, error } = useAppSelector(
+    (state) => state.send
+  );
   const { block } = useL2Block();
   const { balance: balanceStr } = useBalance({
     chainId: fromChain,
@@ -746,13 +708,12 @@ export function useSendBoba() {
     return bobaBridge.approve(signer, token, MAX_APPROVAL_AMOUNT);
   }, [bobaBridge, signer, token]);
 
-  const hasToSwitchChain =
-    isConnected && currentlySelectedFromChain.chainId !== chainId;
+  const hasToSwitchChain = isConnected && fromChain !== chainId;
   const canSend = useMemo(
     () =>
-      currentlySelectedFromChain.chainId &&
+      fromChain &&
       block &&
-      currentlySelectedToChain.chainId &&
+      toChain &&
       amount &&
       token &&
       fees &&
@@ -763,9 +724,8 @@ export function useSendBoba() {
       !error &&
       balance.gte(amount),
     [
-      currentlySelectedFromChain.chainId,
+      fromChain,
       block,
-      currentlySelectedToChain.chainId,
       amount,
       token,
       fees,

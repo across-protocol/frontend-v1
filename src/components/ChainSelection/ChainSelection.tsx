@@ -1,7 +1,14 @@
 import React from "react";
 import { onboard } from "utils";
-import { useConnection } from "state/hooks";
-import { CHAINS, switchChain, ChainId, UnsupportedChainIdError } from "utils";
+import { useConnection, useSend } from "state/hooks";
+import {
+  CHAINS,
+  switchChain,
+  ChainId,
+  UnsupportedChainIdError,
+  CHAINS_SELECTION,
+} from "utils";
+
 import { Section, SectionTitle } from "../Section";
 import {
   Wrapper,
@@ -16,25 +23,22 @@ import {
   ToggleChainName,
 } from "./ChainSelection.styles";
 import { useSelect } from "downshift";
-import { CHAINS_SELECTION } from "utils/constants";
 import { actions } from "state/send";
-import { useAppDispatch, useAppSelector } from "state/hooks";
+import { useAppDispatch } from "state/hooks";
 
 const ChainSelection: React.FC = () => {
   const { init } = onboard;
   const { isConnected, provider, chainId, error } = useConnection();
-  const sendState = useAppSelector((state) => state.send);
-
+  const { fromChain } = useSend();
   const dispatch = useAppDispatch();
 
   const wrongNetworkSend =
     provider &&
     chainId &&
-    (error instanceof UnsupportedChainIdError ||
-      chainId !== sendState.currentlySelectedFromChain.chainId);
+    (error instanceof UnsupportedChainIdError || chainId !== fromChain);
 
   const buttonText = wrongNetworkSend
-    ? `Switch to ${CHAINS[sendState.currentlySelectedFromChain.chainId].name}`
+    ? `Switch to ${CHAINS[fromChain].name}`
     : !isConnected
     ? "Connect Wallet"
     : null;
@@ -43,7 +47,7 @@ const ChainSelection: React.FC = () => {
     if (!provider) {
       init();
     } else if (wrongNetworkSend) {
-      switchChain(provider, sendState.currentlySelectedFromChain.chainId);
+      switchChain(provider, fromChain);
     }
   };
 
@@ -55,30 +59,11 @@ const ChainSelection: React.FC = () => {
     getItemProps,
     getMenuProps,
   } = useSelect({
-    items: CHAINS_SELECTION,
-    defaultSelectedItem: sendState.currentlySelectedFromChain,
-    selectedItem: sendState.currentlySelectedFromChain,
+    items: Object.values(CHAINS_SELECTION),
+    defaultSelectedItem: CHAINS_SELECTION[fromChain],
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-        const nextState = { ...sendState, fromChain: selectedItem.chainId };
-        dispatch(actions.fromChain(nextState));
-        dispatch(actions.updateSelectedFromChain(selectedItem));
-        const nsToChain = { ...sendState, toChain: ChainId.MAINNET };
-        if (selectedItem.chainId === ChainId.MAINNET) {
-          nsToChain.toChain = ChainId.OPTIMISM;
-          dispatch(actions.toChain(nsToChain));
-          dispatch(actions.updateSelectedToChain(CHAINS_SELECTION[0]));
-        }
-        if (
-          selectedItem.chainId !== ChainId.MAINNET &&
-          sendState.currentlySelectedToChain.chainId !== ChainId.MAINNET
-        ) {
-          dispatch(
-            actions.updateSelectedToChain(
-              CHAINS_SELECTION[CHAINS_SELECTION.length - 1]
-            )
-          );
-        }
+        dispatch(actions.fromChain({ fromChain: selectedItem.chainId }));
       }
     },
   });
@@ -97,14 +82,9 @@ const ChainSelection: React.FC = () => {
           </RoundBox>
           <Menu isOpen={isOpen} {...getMenuProps()}>
             {isOpen &&
-              CHAINS_SELECTION.map((t, index) => {
+              Object.values(CHAINS_SELECTION).map((t, index) => {
                 return (
                   <Item
-                    className={
-                      t === sendState.currentlySelectedFromChain
-                        ? "disabled"
-                        : ""
-                    }
                     {...getItemProps({ item: t, index })}
                     initial={{ y: -10 }}
                     animate={{ y: 0 }}
@@ -114,7 +94,7 @@ const ChainSelection: React.FC = () => {
                     <Logo src={t.logoURI} alt={t.name} />
                     <div>{t.name}</div>
                     <span className="layer-type">
-                      {index !== CHAINS_SELECTION.length - 1 ? "L2" : "L1"}
+                      {t.chainId !== ChainId.MAINNET ? "L2" : "L1"}
                     </span>
                   </Item>
                 );

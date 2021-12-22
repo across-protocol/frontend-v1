@@ -2,13 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { update } from "./connection";
 import { toggle as toggleConfirmationScreen } from "./deposits";
-import { IChainSelection, CHAINS_SELECTION } from "utils";
 
 import {
   ChainId,
+  CHAINS_SELECTION,
   DEFAULT_FROM_CHAIN_ID,
   DEFAULT_TO_CHAIN_ID,
   getAddress,
+  UnreachableChainError,
 } from "utils";
 
 type State = {
@@ -18,8 +19,6 @@ type State = {
   fromChain: ChainId;
   toAddress?: string;
   error?: Error;
-  currentlySelectedToChain: IChainSelection;
-  currentlySelectedFromChain: IChainSelection;
 };
 
 const initialState: State = {
@@ -27,9 +26,6 @@ const initialState: State = {
   amount: ethers.constants.Zero,
   toChain: DEFAULT_TO_CHAIN_ID,
   fromChain: DEFAULT_FROM_CHAIN_ID,
-  // Default to ethereum, which should be end of this array.
-  currentlySelectedToChain: CHAINS_SELECTION[CHAINS_SELECTION.length - 1],
-  currentlySelectedFromChain: CHAINS_SELECTION[0],
 };
 
 const sendSlice = createSlice({
@@ -45,22 +41,29 @@ const sendSlice = createSlice({
       return state;
     },
     toChain: (state, action: PayloadAction<Pick<State, "toChain">>) => {
+      const { reachableChains } = CHAINS_SELECTION[state.fromChain];
+      if (!reachableChains.includes(action.payload.toChain)) {
+        console.log({
+          state,
+          reachableChains,
+          toChain: action.payload.toChain,
+          fromChain: state.fromChain,
+          CHAINS_SELECTION,
+        });
+        throw new UnreachableChainError(
+          action.payload.toChain,
+          state.fromChain
+        );
+      }
       state.toChain = action.payload.toChain;
       return state;
     },
     fromChain: (state, action: PayloadAction<Pick<State, "fromChain">>) => {
       state.fromChain = action.payload.fromChain;
-      return state;
-    },
-    updateSelectedToChain: (state, action: PayloadAction<IChainSelection>) => {
-      state.currentlySelectedToChain = action.payload;
-      return state;
-    },
-    updateSelectedFromChain: (
-      state,
-      action: PayloadAction<IChainSelection>
-    ) => {
-      state.currentlySelectedFromChain = action.payload;
+      const { reachableChains } = CHAINS_SELECTION[state.fromChain];
+      if (!reachableChains.includes(state.toChain)) {
+        state.toChain = reachableChains[0];
+      }
       return state;
     },
     toAddress: (

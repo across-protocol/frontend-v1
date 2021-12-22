@@ -28,7 +28,7 @@ const Routes: FC<Props> = () => {
     provider &&
     chainId &&
     (error instanceof UnsupportedChainIdError ||
-      chainId !== sendState.currentlySelectedFromChain.chainId);
+      chainId !== sendState.fromChain);
   const wrongNetworkPool =
     provider &&
     (error instanceof UnsupportedChainIdError ||
@@ -46,16 +46,8 @@ const Routes: FC<Props> = () => {
         <SuperHeader>
           <div>
             You are on an incorrect network. Please{" "}
-            <button
-              onClick={() =>
-                switchChain(
-                  provider,
-                  sendState.currentlySelectedFromChain.chainId
-                )
-              }
-            >
-              switch to{" "}
-              {CHAINS[sendState.currentlySelectedFromChain.chainId].name}
+            <button onClick={() => switchChain(provider, sendState.fromChain)}>
+              switch to {CHAINS[sendState.fromChain].name}
             </button>
           </div>
         </SuperHeader>
