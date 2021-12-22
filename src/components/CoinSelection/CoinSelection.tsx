@@ -151,7 +151,6 @@ const CoinSelection = () => {
   }, [balances, amount, token, tokenList, inputAmount, tokenBalanceMap]);
 
   const handleMaxClick = () => {
-    debugger;
     if (balances && selectedItem) {
       const selectedIndex = tokenList.findIndex(
         ({ address }) => address === selectedItem.address
