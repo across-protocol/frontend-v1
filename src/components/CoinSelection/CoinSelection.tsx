@@ -1,10 +1,14 @@
 import React, { useEffect, useMemo } from "react";
 import { ethers, BigNumber } from "ethers";
 import { useSelect } from "downshift";
-import { ChainId, max } from "utils";
-
 import { useSend, useBalances, useConnection } from "state/hooks";
-import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
+import {
+  parseUnits,
+  formatUnits,
+  ParsingError,
+  getBridgeableTokens,
+  max,
+} from "utils";
 import { Section, SectionTitle } from "../Section";
 
 import {
@@ -30,17 +34,10 @@ const CoinSelection = () => {
 
   const [error, setError] = React.useState<Error>();
 
-  const tokenList = useMemo(() => {
-    if (fromChain === ChainId.MAINNET && toChain === ChainId.OPTIMISM) {
-      return TOKENS_LIST[fromChain].slice(1);
-    }
-    if (fromChain === ChainId.MAINNET && toChain === ChainId.BOBA) {
-      return TOKENS_LIST[fromChain].filter((token) =>
-        ["USDC", "ETH"].includes(token.symbol)
-      );
-    }
-    return TOKENS_LIST[fromChain];
-  }, [fromChain, toChain]);
+  const tokenList = useMemo(
+    () => getBridgeableTokens(fromChain, toChain),
+    [fromChain, toChain]
+  );
   const { data: balances } = useBalances(
     {
       account: account!,
@@ -48,18 +45,11 @@ const CoinSelection = () => {
     },
     { skip: !account }
   );
-  const tokenBalanceMap = useMemo(() => {
-    return TOKENS_LIST[fromChain].reduce((acc, val, idx) => {
-      return {
-        ...acc,
-        [val.address]: balances ? balances[idx] : undefined,
-      };
-    }, {} as Record<string, BigNumber | undefined>);
-  }, [balances, fromChain]);
 
   const {
     isOpen,
     selectedItem,
+    selectItem,
     getLabelProps,
     getToggleButtonProps,
     getItemProps,
@@ -77,6 +67,11 @@ const CoinSelection = () => {
       }
     },
   });
+
+  useEffect(() => {
+    selectItem(tokenList.find((t) => t.address === token) ?? tokenList[0]);
+  }, [selectItem, token, tokenList]);
+
   const [inputAmount, setInputAmount] = React.useState<string>(
     selectedItem && amount.gt("0")
       ? formatUnits(amount, selectedItem.decimals)
@@ -119,7 +114,7 @@ const CoinSelection = () => {
         const selectedIndex = tokenList.findIndex(
           ({ address }) => address === token
         );
-        const balance = tokenBalanceMap[token];
+        const balance = balances[selectedIndex];
         const isEth = tokenList[selectedIndex]?.symbol === "ETH";
         if (
           balance &&
@@ -133,7 +128,7 @@ const CoinSelection = () => {
         }
       }
     }
-  }, [balances, amount, token, tokenList, inputAmount, tokenBalanceMap]);
+  }, [balances, amount, token, tokenList, inputAmount]);
 
   const handleMaxClick = () => {
     if (balances && selectedItem) {
@@ -141,7 +136,7 @@ const CoinSelection = () => {
         ({ address }) => address === selectedItem.address
       );
       const isEth = tokenList[selectedIndex].symbol === "ETH";
-      let balance = tokenBalanceMap[token];
+      let balance = balances[selectedIndex];
 
       if (balance) {
         if (isEth) {
@@ -199,9 +194,9 @@ const CoinSelection = () => {
                     <Logo src={token.logoURI} alt={token.name} />
                     <div>{token.name}</div>
                     <div>
-                      {tokenBalanceMap &&
+                      {balances &&
                         formatUnits(
-                          tokenBalanceMap[token.address] || "0",
+                          balances[index] ?? "0",
                           tokenList[index].decimals
                         )}
                     </div>

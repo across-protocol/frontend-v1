@@ -192,3 +192,17 @@ export const bobaErc20Pairs = () => {
     [usdcMainnet.address]: usdcBoba.address,
   };
 };
+
+export function getBridgeableTokens(fromChain: ChainId, toChain: ChainId) {
+  if (fromChain === ChainId.MAINNET) {
+    if (toChain === ChainId.OPTIMISM) {
+      return TOKENS_LIST[fromChain].slice(1);
+    }
+    if (toChain === ChainId.BOBA) {
+      return TOKENS_LIST[fromChain].filter((token) =>
+        ["USDC", "ETH"].includes(token.symbol)
+      );
+    }
+  }
+  return TOKENS_LIST[fromChain];
+}

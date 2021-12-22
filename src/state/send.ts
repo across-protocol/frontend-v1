@@ -9,6 +9,7 @@ import {
   DEFAULT_FROM_CHAIN_ID,
   DEFAULT_TO_CHAIN_ID,
   getAddress,
+  getBridgeableTokens,
   UnreachableChainError,
 } from "utils";
 
@@ -43,19 +44,20 @@ const sendSlice = createSlice({
     toChain: (state, action: PayloadAction<Pick<State, "toChain">>) => {
       const { reachableChains } = CHAINS_SELECTION[state.fromChain];
       if (!reachableChains.includes(action.payload.toChain)) {
-        console.log({
-          state,
-          reachableChains,
-          toChain: action.payload.toChain,
-          fromChain: state.fromChain,
-          CHAINS_SELECTION,
-        });
         throw new UnreachableChainError(
           action.payload.toChain,
           state.fromChain
         );
       }
       state.toChain = action.payload.toChain;
+      const bridgeableTokens = getBridgeableTokens(
+        state.fromChain,
+        state.toChain
+      );
+      // If the token currently selected is not bridgeable for this chain, set it to the first bridgeable token
+      if (!bridgeableTokens.some((t) => t.address === state.token)) {
+        state.token = bridgeableTokens[0].address;
+      }
       return state;
     },
     fromChain: (state, action: PayloadAction<Pick<State, "fromChain">>) => {
@@ -63,6 +65,14 @@ const sendSlice = createSlice({
       const { reachableChains } = CHAINS_SELECTION[state.fromChain];
       if (!reachableChains.includes(state.toChain)) {
         state.toChain = reachableChains[0];
+      }
+      const bridgeableTokens = getBridgeableTokens(
+        state.fromChain,
+        state.toChain
+      );
+      // If the token currently selected is not bridgeable for this chain, set it to the first bridgeable token
+      if (!bridgeableTokens.some((t) => t.address === state.token)) {
+        state.token = bridgeableTokens[0].address;
       }
       return state;
     },
