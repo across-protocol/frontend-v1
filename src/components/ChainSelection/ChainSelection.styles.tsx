@@ -14,19 +14,13 @@ export const RoundBox = styled(UnstyledBox)`
   --color: var(--color-white);
   --outline-color: var(--color-primary);
   background-color: var(--color);
-  font-size: ${16 / 16}rem;
+  display: block;
   padding: 10px 15px;
   margin-top: 16px;
   margin-right: auto;
   margin-left: auto;
-  flex: 2;
-  display: flex;
   &:not(:first-of-type):focus-within {
     outline: var(--outline-color) solid 1px;
-  }
-  &:first-of-type {
-    /* margin-right: 16px; */
-    flex: 1;
   }
 `;
 
@@ -109,11 +103,12 @@ export const Item = motion(styled.li`
 `);
 
 export const ToggleIcon = styled(ChevronDown)`
-  margin-left: 250px;
+  margin-left: auto;
 `;
 
 export const ToggleButton = styled.button`
   --radius: 30px;
+  width: 100%;
   padding: 0;
   margin: 0;
   font-size: inherit;
@@ -126,7 +121,6 @@ export const ToggleButton = styled.button`
 
 export const InputGroup = styled.div`
   position: relative;
-  display: flex;
   width: 100%;
 `;
 
