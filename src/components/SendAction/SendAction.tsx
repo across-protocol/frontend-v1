@@ -161,7 +161,9 @@ const SendAction: React.FC = () => {
                 Time to{" "}
                 {CHAINS[sendState.currentlySelectedToChain.chainId].name}
               </div>
-              <div>{getEstimatedDepositTime(toChain)}</div>
+              <div>
+                {getEstimatedDepositTime(sendState.currentlySelectedToChain.chainId)}
+              </div>
             </Info>
             {sendState.currentlySelectedFromChain.chainId !==
               ChainId.MAINNET && (
