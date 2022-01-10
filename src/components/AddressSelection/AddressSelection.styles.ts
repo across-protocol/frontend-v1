@@ -180,6 +180,7 @@ export const ToggleIcon = styled(ChevronDown)`
 export const ToggleButton = styled.button`
   --radius: 30px;
   width: 100%;
+  color: var(--color-gray);
   padding: 0;
   margin: 0;
   font-size: inherit;

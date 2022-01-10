@@ -46,6 +46,7 @@ export const ToggleButton = styled.button`
   padding: 0;
   margin: 0;
   font-size: inherit;
+  color: var(--color-gray);
   background-color: inherit;
   border: none;
   display: flex;
