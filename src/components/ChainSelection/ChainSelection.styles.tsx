@@ -35,11 +35,11 @@ export const Logo = styled.img`
   margin-right: 20px;
 `;
 
-interface IMenuProps {
-  isOpen?: boolean;
-}
+type MenuProps = {
+  isOpen: boolean;
+};
 
-export const Menu = styled.ul<IMenuProps>`
+export const Menu = styled.ul<MenuProps>`
   position: absolute;
   top: 0;
   left: 0;
@@ -50,6 +50,8 @@ export const Menu = styled.ul<IMenuProps>`
   box-shadow: inset 0 8px 8% rgba(45, 46, 51, 0.2);
   list-style: none;
   display: ${(props) => (props.isOpen ? "flex" : "none")};
+  pointer-events: ${(props) => (props.isOpen ? "all" : "none")};
+  outline: none;
   flex-direction: column;
   z-index: 10000;
   width: 95%;
@@ -115,6 +117,7 @@ export const ToggleButton = styled.button`
   font-size: inherit;
   background-color: inherit;
   border: none;
+  outline: none;
   display: flex;
   align-items: center;
   cursor: pointer;

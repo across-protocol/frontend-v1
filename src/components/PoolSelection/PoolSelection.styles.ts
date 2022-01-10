@@ -37,7 +37,10 @@ export const Logo = styled.img`
   object-fit: cover;
   margin-right: 10px;
 `;
-export const Menu = styled.ul`
+type MenuProps = {
+  isOpen: boolean;
+};
+export const Menu = styled.ul<MenuProps>`
   position: absolute;
   top: 0;
   left: 0;
@@ -45,6 +48,8 @@ export const Menu = styled.ul`
   right: 0;
   padding-top: 10px;
   transform: translateY(100%);
+  pointer-events: ${({ isOpen }) => (isOpen ? "auto" : "none")};
+  outline: none;
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -90,6 +95,7 @@ export const ToggleButton = styled.button`
   font-size: inherit;
   background-color: inherit;
   border: none;
+  outline: none;
   display: flex;
   align-items: center;
   cursor: pointer;

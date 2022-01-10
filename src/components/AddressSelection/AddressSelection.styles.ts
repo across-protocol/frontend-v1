@@ -105,11 +105,11 @@ export const ButtonGroup = styled.div`
   }
 `;
 
-interface IMenuProps {
-  isOpen?: boolean;
-}
+type MenuProps = {
+  isOpen: boolean;
+};
 
-export const Menu = styled.ul<IMenuProps>`
+export const Menu = styled.ul<MenuProps>`
   position: absolute;
   top: 0;
   left: 0;
@@ -119,6 +119,8 @@ export const Menu = styled.ul<IMenuProps>`
   transform: translateY(100%);
   list-style: none;
   display: ${(props) => (props.isOpen ? "flex" : "none")};
+  pointer-events: ${({ isOpen }) => (isOpen ? "auto" : "none")};
+  outline: none;
   flex-direction: column;
   z-index: 10000;
   width: 95%;
@@ -186,6 +188,7 @@ export const ToggleButton = styled.button`
   font-size: inherit;
   background-color: inherit;
   border: none;
+  outline: none;
   display: flex;
   align-items: center;
   cursor: pointer;

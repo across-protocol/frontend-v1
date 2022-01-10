@@ -233,7 +233,7 @@ const CoinSelection = () => {
                 onChange={handleChange}
               />
             </RoundBox>
-            <Menu {...getMenuProps()}>
+            <Menu {...getMenuProps()} isOpen={isOpen}>
               {isOpen &&
                 tokenList.map((token, index) => (
                   <Item
