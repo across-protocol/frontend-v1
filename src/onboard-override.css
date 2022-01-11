@@ -12,6 +12,19 @@
   background-color: var(--color-gray);
   border-radius: 48px;
   color: var(--color-white);
+  width: fit-content;
+}
+.bn-onboard-custom.bn-onboard-icon-button span {
+  /* we can't add another element to properly center align this, so we'll do it manually sigh */
+  margin-left: 60px;
+}
+@media (min-width: 34.375rem) {
+  .bn-onboard-custom .bn-onboard-modal-select-wallets {
+    width: auto;
+  }
+  .bn-onboard-custom.bn-onboard-icon-button span {
+    margin-left: 42%;
+  }
 }
 
 .bn-onboard-custom .bn-onboard-modal-content-header-icon {
@@ -57,9 +70,6 @@
 }
 .bn-onboard-custom.bn-onboard-modal-select-wallets ul li {
   width: 100%;
-}
-.bn-onboard-custom.bn-onboard-icon-button span {
-  margin-left: 42%;
 }
 
 .bn-onboard-custom.bn-onboard-icon-button div {
