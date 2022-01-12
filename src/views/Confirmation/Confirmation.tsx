@@ -7,6 +7,7 @@ import {
   formatUnits,
   receiveAmount,
   getConfirmationDepositTime,
+  shortenAddress,
 } from "utils";
 import { useDeposits } from "state/hooks";
 import { Layout } from "components";
@@ -113,7 +114,8 @@ const Confirmation: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {deposit.from}
+                    <span>{deposit.from}</span>
+                    <span>{shortenAddress(deposit.from ?? "")}</span>
                   </SecondaryLink>
                 </div>
               </div>
@@ -133,7 +135,8 @@ const Confirmation: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {deposit.toAddress}
+                    <span>{deposit.toAddress}</span>
+                    <span>{shortenAddress(deposit.toAddress ?? "")}</span>
                   </SecondaryLink>
                 </div>
               </div>

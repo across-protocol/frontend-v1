@@ -5,6 +5,7 @@ import {
   Section,
   AccentSection,
 } from "components";
+import { QUERIES } from "utils";
 
 export const Wrapper = styled.div`
   padding-top: 50px;
@@ -51,6 +52,17 @@ export const Link = styled.a`
 
 export const SecondaryLink = styled(Link)`
   color: inherit;
+  & > span:first-of-type {
+    display: none;
+    @media ${QUERIES.tabletAndUp} {
+      display: revert;
+    }
+  }
+  & > span {
+    @media ${QUERIES.tabletAndUp} {
+      display: none;
+    }
+  }
 `;
 
 export const InfoSection = styled(AccentSection)`
