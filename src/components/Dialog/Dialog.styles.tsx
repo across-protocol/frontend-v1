@@ -12,7 +12,7 @@ export const Wrapper = styled(DialogContent)`
   width: min(440px, calc(100% - 20px));
   top: 10vh;
   overflow: auto;
-  min-height: min(60vh, fit-content);
+  min-height: 60vh;
   max-height: 80vh;
   @media ${QUERIES.mobileAndDown} {
     top: 25%;
