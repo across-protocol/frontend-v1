@@ -184,6 +184,7 @@ const AddressSelection: React.FC = () => {
                 Change account
               </ChangeButton>
             </ChangeWrapper>
+            <div>Note: All ETH transfered to L1 appears as WETH</div>
           )}
         </Wrapper>
         <Dialog isOpen={open} onClose={toggle}>
