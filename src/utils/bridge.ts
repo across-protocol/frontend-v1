@@ -188,7 +188,15 @@ export const bobaErc20Pairs = () => {
     (token) => token.symbol === "USDC"
   )[0];
 
+  const wbtcMainnet = TOKENS_LIST[ChainId.MAINNET].filter(
+    (token) => token.symbol === "WBTC"
+  )[0];
+  const wbtcBoba = TOKENS_LIST[ChainId.BOBA].filter(
+    (token) => token.symbol === "WBTC"
+  )[0];
+
   return {
     [usdcMainnet.address]: usdcBoba.address,
+    [wbtcMainnet.address]: wbtcBoba.address,
   };
 };
