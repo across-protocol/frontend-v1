@@ -94,6 +94,7 @@ export const MobileList = styled.ul`
   display: flex;
   list-style: none;
   flex-direction: column;
+  outline: none;
   color: var(--color-gray);
 `;
 
