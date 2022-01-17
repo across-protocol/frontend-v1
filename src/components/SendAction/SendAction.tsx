@@ -151,7 +151,8 @@ const SendAction: React.FC = () => {
     (hasToApprove && !canApprove) ||
     amountMinusFees.lte(0);
 
-  const isWETH = tokenInfo?.symbol === "WETH";
+  const shouldShowWETHAsETH =
+    tokenInfo?.symbol === "WETH" && sendState.fromChain === ChainId.OPTIMISM;
 
   return (
     <AccentSection>
@@ -201,7 +202,7 @@ const SendAction: React.FC = () => {
               <div>You will receive</div>
               <div>
                 {formatUnits(amountMinusFees, tokenInfo.decimals)}{" "}
-                {isWETH ? "ETH" : tokenInfo.symbol}
+                {shouldShowWETHAsETH ? "ETH" : tokenInfo.symbol}
               </div>
             </Info>
             <InfoIcon aria-label="info dialog" onClick={toggleInfoModal} />

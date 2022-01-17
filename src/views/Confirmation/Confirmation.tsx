@@ -37,7 +37,8 @@ const Confirmation: React.FC = () => {
   const tokenInfo = TOKENS_LIST[deposit.fromChain].find(
     (t) => t.address === deposit.token
   );
-  const isWETH = tokenInfo?.symbol === "WETH";
+  const shouldShowWETHAsETH =
+    tokenInfo?.symbol === "WETH" && deposit.fromChain === ChainId.OPTIMISM;
 
   return (
     <Layout>
@@ -82,18 +83,27 @@ const Confirmation: React.FC = () => {
                 <h3>Receiving</h3>
                 <div>
                   <Logo
-                    src={isWETH ? MAINNET_ETH?.logoURI : tokenInfo?.logoURI}
+                    src={
+                      shouldShowWETHAsETH
+                        ? MAINNET_ETH?.logoURI
+                        : tokenInfo?.logoURI
+                    }
                     alt={`${
-                      isWETH ? MAINNET_ETH?.symbol : tokenInfo?.symbol
+                      shouldShowWETHAsETH
+                        ? MAINNET_ETH?.symbol
+                        : tokenInfo?.symbol
                     } logo`}
                   />
                   <div>
                     {formatUnits(
                       amountMinusFees,
-                      (isWETH ? MAINNET_ETH?.decimals : tokenInfo?.decimals) ??
-                        18
+                      (shouldShowWETHAsETH
+                        ? MAINNET_ETH?.decimals
+                        : tokenInfo?.decimals) ?? 18
                     )}{" "}
-                    {isWETH ? MAINNET_ETH?.symbol : tokenInfo?.symbol}
+                    {shouldShowWETHAsETH
+                      ? MAINNET_ETH?.symbol
+                      : tokenInfo?.symbol}
                   </div>
                 </div>
               </Info>
