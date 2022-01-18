@@ -53,6 +53,7 @@ export const BaseLink = styled(UnstyledLink)`
   display: block;
   text-decoration: none;
   color: inherit;
+  outline: none;
   height: 100%;
   width: 100%;
 `;
