@@ -9,7 +9,6 @@
 }
 
 .bn-onboard-custom .bn-onboard-modal-select-wallets {
-  background-color: var(--color-gray);
   border-radius: 48px;
   color: var(--color-white);
 }
@@ -55,9 +54,21 @@
 .bn-onboard-custom.bn-onboard-icon-button {
   height: 50px;
 }
+
+.bn-onboard-custom.bn-onboard-modal-select-wallets {
+  width: 100%;
+  display: inline-block !important;
+}
+
 .bn-onboard-custom.bn-onboard-modal-select-wallets ul li {
   width: 100%;
 }
+
+.bn-onboard-custom.bn-onboard-modal-select-wallets li{
+  background-color: var(--color-gray);
+  border-radius: 40px;
+}
+
 .bn-onboard-custom.bn-onboard-icon-button span {
   margin-left: 42%;
 }
