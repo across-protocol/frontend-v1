@@ -3,7 +3,6 @@ import styled from "@emotion/styled";
 import { COLORS, QUERIES } from "utils";
 import { ReactComponent as UnstyledUmaLogo } from "assets/Across-Powered-UMA.svg";
 import { ReactComponent as DiscordLogo } from "assets/disc-logo.svg";
-import { ReactComponent as TwitterLogo } from "assets/icon-twitter.svg";
 import { ReactComponent as GithubLogo } from "assets/github-logo.svg";
 
 const NAV_LINKS = [
@@ -21,10 +20,7 @@ const DISCORD_LINK = {
   url: "https://discord.gg/across",
   logo: DiscordLogo,
 };
-const TWITTER_LINK = {
-  name: "Twitter",
-  url: "https://twitter.com/AcrossProtocol",
-};
+
 const GITHUB_LINK = {
   name: "Github",
   url: "https://github.com/across-protocol",
@@ -44,10 +40,9 @@ const Layout: React.FC = ({ children }) => (
         </Link>
       ))}
       <Link href={DISCORD_LINK.url} target="_blank" rel="noopener noreferrer">
-        <DiscordLogo />
-      </Link>
-      <Link href={TWITTER_LINK.url} target="_blank" rel="noopener noreferrer">
-        <TwitterLogo />
+        <span>
+          Support <DiscordLogo />
+        </span>
       </Link>
       <Link href={GITHUB_LINK.url} target="_blank" rel="noopener noreferrer">
         <GithubLogo />
@@ -79,6 +74,8 @@ const BaseFooter = styled.footer`
 const LinkFooter = styled(BaseFooter)`
   display: none;
   padding-bottom: 25px;
+  display: flex;
+  align-items: center;
   & svg {
     width: 25px;
     height: 25px;
@@ -104,6 +101,15 @@ const Link = styled.a`
   text-decoration: none;
   transition: color 100ms linear;
   color: hsla(${COLORS.white} / 0.5);
+
+  & > span {
+    display: flex;
+    align-items: center;
+
+    & > svg {
+      margin-left: 5px;
+    }
+  }
 
   &:not(:last-of-type) {
     margin-right: 45px;
