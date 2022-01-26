@@ -10,6 +10,7 @@ export const Wrapper = styled(Section)`
   border-bottom: none;
   display: flex;
   flex-direction: column;
+  padding-top: 15px;
   @media ${QUERIES.tabletAndUp} {
     padding-top: 30px;
   }
