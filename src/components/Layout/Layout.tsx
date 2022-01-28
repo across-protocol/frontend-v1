@@ -64,8 +64,6 @@ const BaseFooter = styled.footer`
 
 const LinkFooter = styled(BaseFooter)`
   display: none;
-  padding-bottom: 25px;
-  display: flex;
   align-items: center;
   & svg {
     width: 25px;
@@ -92,6 +90,8 @@ const Link = styled.a`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 5px;
+  font-size: ${14 / 16}rem;
 
   &:not(:last-of-type) {
     margin-right: 45px;
