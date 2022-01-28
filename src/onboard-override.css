@@ -58,6 +58,7 @@
 .bn-onboard-custom.bn-onboard-modal-select-wallets {
   width: 100%;
   display: inline-block !important;
+  text-align: center;
 }
 
 .bn-onboard-custom.bn-onboard-modal-select-wallets ul li {
@@ -69,8 +70,13 @@
   border-radius: 40px;
 }
 
+.bn-onboard-custom.bn-onboard-modal-select-wallets span{
+  display: block !important;
+  text-align: center;
+}
+
 .bn-onboard-custom.bn-onboard-icon-button span {
-  margin-left: 42%;
+  margin-left: 18%;
 }
 
 .bn-onboard-custom.bn-onboard-icon-button div {
