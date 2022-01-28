@@ -20,7 +20,9 @@
     width: auto;
   }
   .bn-onboard-custom.bn-onboard-icon-button span {
-    margin-left: 42%;
+    margin-left: 18%;
+    display: block ;
+    text-align: center;
   }
 }
 
@@ -81,13 +83,10 @@
   border-radius: 40px;
 }
 
-.bn-onboard-custom.bn-onboard-modal-select-wallets span{
-  display: block !important;
-  text-align: center;
-}
-
 .bn-onboard-custom.bn-onboard-icon-button span {
   margin-left: 18%;
+  display: block ;
+  text-align: center;
 }
 
 .bn-onboard-custom.bn-onboard-icon-button div {
