@@ -173,12 +173,6 @@ const PoolForm: FC<Props> = ({
             {symbol}
           </div>
         </PositionItem>
-        <PositionItem>
-          <div>Total</div>
-          <div>
-            {formatUnits(position.add(feesEarned), decimals)} {symbol}
-          </div>
-        </PositionItem>
       </Position>
       <ROI>
         <ROIItem>
