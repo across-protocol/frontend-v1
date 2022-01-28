@@ -22,7 +22,7 @@ export const Wrapper = styled.header`
 export const Navigation = styled.nav`
   height: 100%;
   display: none;
-  @media ${QUERIES.desktopAndUp} {
+  @media ${QUERIES.laptopAndUp} {
     display: revert;
   }
 `;
@@ -53,6 +53,7 @@ export const BaseLink = styled(UnstyledLink)`
   display: block;
   text-decoration: none;
   color: inherit;
+  outline: none;
   height: 100%;
   width: 100%;
 `;
@@ -85,7 +86,7 @@ export const WalletWrapper = styled.div`
 `;
 
 export const MobileNavigation = styled(motion.nav)`
-  @media ${QUERIES.desktopAndUp} {
+  @media ${QUERIES.laptopAndUp} {
     display: none;
   }
 `;
@@ -94,6 +95,7 @@ export const MobileList = styled.ul`
   display: flex;
   list-style: none;
   flex-direction: column;
+  outline: none;
   color: var(--color-gray);
 `;
 
