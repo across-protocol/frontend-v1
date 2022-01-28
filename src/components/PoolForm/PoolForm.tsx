@@ -158,14 +158,14 @@ const PoolForm: FC<Props> = ({
       </Info>
       <Position>
         <PositionItem>
-          <div>My deposit</div>
+          <div>Position Size</div>
           <div>
-            {/* This can never be < 0, but for some weird iOS bug it shows -0 on mobile */}
-            {formatUnits(position, decimals).replace("-", "")} {symbol}
+            {formatUnits(position.add(feesEarned), decimals).replace("-", "")}{" "}
+            {symbol}
           </div>
         </PositionItem>
         <PositionItem>
-          <div>Fees earned</div>
+          <div>Total fees earned</div>
           <div>
             {Number(formatUnits(feesEarned, decimals)) > 0
               ? formatUnits(feesEarned, decimals)
