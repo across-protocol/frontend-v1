@@ -160,8 +160,7 @@ const PoolForm: FC<Props> = ({
         <PositionItem>
           <div>Position Size</div>
           <div>
-            {formatUnits(position.add(feesEarned), decimals).replace("-", "")}{" "}
-            {symbol}
+            {formatUnits(totalPosition, decimals).replace("-", "")} {symbol}
           </div>
         </PositionItem>
         <PositionItem>
