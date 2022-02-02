@@ -8,8 +8,10 @@ export const Wrapper = styled(RoundBox)`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  cursor: pointer;
   padding: 0;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const ConnectButton = styled(SecondaryButton)`
@@ -54,4 +56,13 @@ export const Info = styled.div`
 export const UnsupportedNetwork = styled.div`
   background-color: rgba(45, 46, 51, 0.25);
   padding: 1rem 0.5rem;
+`;
+
+export const WalletModal = styled.div`
+  background: #fff;
+  border-radius: 16px;
+  min-height: 100px;
+  width: 95%;
+  margin: 0 auto;
+  margin-top: 4px;
 `;
