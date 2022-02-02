@@ -1,4 +1,3 @@
-
 import { FC } from "react";
 import styled from "@emotion/styled";
 import heroBg from "assets/hero-across-bg.png";

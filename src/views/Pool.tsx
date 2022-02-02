@@ -1,4 +1,3 @@
-
 import { FC, useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Layout from "components/Layout";
