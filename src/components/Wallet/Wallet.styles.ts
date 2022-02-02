@@ -93,7 +93,7 @@ export const WalletModalChain = styled.div`
 
 export const WalletModalDisconnect = styled.div`
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 400;
   text-indent: 2px;
   margin-top: 4px;
   color: var(--color-purple);
