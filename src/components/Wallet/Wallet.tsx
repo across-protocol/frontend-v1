@@ -1,5 +1,5 @@
 import { onboard } from "utils";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import { useConnection, useETHBalance } from "state/hooks";
 import {
   DEFAULT_FROM_CHAIN_ID,
@@ -21,16 +21,25 @@ import {
   WalletModalDisconnect,
 } from "./Wallet.styles";
 
-const { init } = onboard;
+import useClickOutsideModal from "hooks/useClickOutsideModal";
+
+const { init, reset } = onboard;
 
 const Wallet: FC = () => {
   const { account, isConnected, chainId } = useConnection();
   const [isOpen, setIsOpen] = useState(false);
+  const modalRef = useRef(null);
+  useClickOutsideModal(modalRef, () => setIsOpen(false));
 
   // Note: this must be before early returns.
   useEffect(() => {
     if (!isConnected && isOpen) setIsOpen(false);
   }, [isConnected, isOpen]);
+
+  const disconnectWallet = () => {
+    setIsOpen(false);
+    reset();
+  };
 
   const { data: balance } = useETHBalance(
     { account: account ?? "", chainId: chainId ?? DEFAULT_FROM_CHAIN_ID },
@@ -62,11 +71,13 @@ const Wallet: FC = () => {
         <Account>{shortenAddress(account ?? "")}</Account>
       </Wrapper>
       {isOpen && (
-        <WalletModal>
+        <WalletModal ref={modalRef}>
           <WalletModalHeader>Connected</WalletModalHeader>
           <WalletModalAccount>{account}</WalletModalAccount>
           <WalletModalChain>{CHAINS[chainId ?? 1].name}</WalletModalChain>
-          <WalletModalDisconnect>Disconnect</WalletModalDisconnect>
+          <WalletModalDisconnect onClick={() => disconnectWallet()}>
+            Disconnect
+          </WalletModalDisconnect>
         </WalletModal>
       )}
     </div>

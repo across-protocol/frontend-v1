@@ -68,6 +68,7 @@ export const WalletModal = styled.div`
   margin-top: 4px;
   margin-left: 4px;
   padding: 1rem;
+  z-index: 10000;
 `;
 
 export const WalletModalHeader = styled.h3`
@@ -96,7 +97,5 @@ export const WalletModalDisconnect = styled.div`
   text-indent: 2px;
   margin-top: 4px;
   color: var(--color-purple);
-  &:hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
 `;
