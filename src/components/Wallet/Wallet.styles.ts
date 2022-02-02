@@ -59,10 +59,44 @@ export const UnsupportedNetwork = styled.div`
 `;
 
 export const WalletModal = styled.div`
+  position: absolute;
   background: #fff;
   border-radius: 16px;
   min-height: 100px;
-  width: 95%;
-  margin: 0 auto;
+  width: 300px;
+  /* margin: 0 auto; */
   margin-top: 4px;
+  margin-left: 4px;
+  padding: 1rem;
+`;
+
+export const WalletModalHeader = styled.h3`
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-indent: 2px;
+`;
+
+export const WalletModalAccount = styled.div`
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-indent: 2px;
+`;
+
+export const WalletModalChain = styled.div`
+  text-indent: 2px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  border-bottom: 1px solid var(--color-gray-transparent);
+  padding-bottom: 0.5rem;
+`;
+
+export const WalletModalDisconnect = styled.div`
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-indent: 2px;
+  margin-top: 4px;
+  color: var(--color-purple);
+  &:hover {
+    cursor: pointer;
+  }
 `;
