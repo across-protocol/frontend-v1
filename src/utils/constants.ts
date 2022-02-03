@@ -603,6 +603,10 @@ export function onboardBaseConfig(): Initialization {
         { walletName: "metamask", preferred: true },
         { walletName: "tally", preferred: true },
         { walletName: "coinbase", preferred: true },
+        {
+          walletName: "walletConnect",
+          infuraKey: process.env.REACT_APP_PUBLIC_INFURA_ID,
+        },
       ],
     },
     walletCheck: [{ checkName: "connect" }, { checkName: "accounts" }],
