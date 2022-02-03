@@ -92,6 +92,6 @@ export const WalletModalDisconnect = styled.div`
   font-size: ${14 / 16}rem;
   text-indent: 2px;
   margin-top: 4px;
-  color: var(--color-purple);
+  color: var(--color-secondary);
   cursor: pointer;
 `;
