@@ -593,7 +593,7 @@ export const DEFAULT_TO_CHAIN_ID = ChainId.MAINNET;
 /* Onboard config */
 
 export function onboardBaseConfig(): Initialization {
-  // const infuraRpc = PROVIDERS[DEFAULT_FROM_CHAIN_ID]().connection.url;
+  const infuraRpc = PROVIDERS[DEFAULT_FROM_CHAIN_ID]().connection.url;
   return {
     dappId: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY || "",
     networkId: DEFAULT_FROM_CHAIN_ID,
@@ -603,10 +603,6 @@ export function onboardBaseConfig(): Initialization {
         { walletName: "metamask", preferred: true },
         { walletName: "tally", preferred: true },
         { walletName: "coinbase", preferred: true },
-        {
-          walletName: "walletConnect",
-          infuraKey: process.env.REACT_APP_PUBLIC_INFURA_ID,
-        },
       ],
     },
     walletCheck: [{ checkName: "connect" }, { checkName: "accounts" }],
