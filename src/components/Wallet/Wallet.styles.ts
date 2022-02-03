@@ -64,7 +64,6 @@ export const WalletModal = styled.div`
   border-radius: 16px;
   min-height: 100px;
   width: 300px;
-  /* margin: 0 auto; */
   margin-top: 4px;
   margin-left: 4px;
   padding: 1rem;
@@ -72,28 +71,25 @@ export const WalletModal = styled.div`
 `;
 
 export const WalletModalHeader = styled.h3`
-  font-size: 0.875rem;
+  font-size: ${14 / 16}rem;
   font-weight: 700;
   text-indent: 2px;
 `;
 
 export const WalletModalAccount = styled.div`
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-size: ${12 / 16}rem;
   text-indent: 2px;
 `;
 
 export const WalletModalChain = styled.div`
   text-indent: 2px;
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-size: ${12 / 16}rem;
   border-bottom: 1px solid var(--color-gray-transparent);
   padding-bottom: 0.5rem;
 `;
 
 export const WalletModalDisconnect = styled.div`
-  font-size: 0.875rem;
-  font-weight: 400;
+  font-size: ${14 / 16}rem;
   text-indent: 2px;
   margin-top: 4px;
   color: var(--color-purple);
