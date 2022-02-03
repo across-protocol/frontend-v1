@@ -59,7 +59,7 @@ const Wallet: FC = () => {
   }
 
   return (
-    <div>
+    <div ref={modalRef}>
       <Wrapper onClick={() => setIsOpen(!isOpen)}>
         <Info>
           <div>
@@ -71,7 +71,7 @@ const Wallet: FC = () => {
         <Account>{shortenAddress(account ?? "")}</Account>
       </Wrapper>
       {isOpen && (
-        <WalletModal ref={modalRef}>
+        <WalletModal>
           <WalletModalHeader>Connected</WalletModalHeader>
           <WalletModalAccount>{account}</WalletModalAccount>
           <WalletModalChain>{CHAINS[chainId ?? 1].name}</WalletModalChain>
