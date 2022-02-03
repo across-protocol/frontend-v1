@@ -60,7 +60,7 @@ export const UnsupportedNetwork = styled.div`
 
 export const WalletModal = styled.div`
   position: absolute;
-  background: #fff;
+  background: var(--color-white);
   border-radius: 16px;
   min-height: 100px;
   width: 300px;

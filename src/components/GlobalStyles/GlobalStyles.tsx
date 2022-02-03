@@ -41,8 +41,7 @@ const variables = css`
     --color-error: hsl(${COLORS.error[500]});
     --color-error-light: hsl(${COLORS.error[300]});
     --color-uma-red: hsl(${COLORS.umaRed});
-    --color-purple: rgba(150, 84, 233, 1);
-
+    --color-purple: hsl(${COLORS.purple});
     --color-primary-transparent: hsla(${COLORS.primary[500]} / 0.4);
     --color-black-transparent: hsla(${COLORS.black} / 0.75);
     --color-white-transparent: hsla(${COLORS.white} / 0.75);
