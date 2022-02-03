@@ -602,6 +602,7 @@ export function onboardBaseConfig(): Initialization {
       wallets: [
         { walletName: "metamask", preferred: true },
         { walletName: "tally", preferred: true },
+        { walletName: "coinbase", preferred: true },
       ],
     },
     walletCheck: [{ checkName: "connect" }, { checkName: "accounts" }],
