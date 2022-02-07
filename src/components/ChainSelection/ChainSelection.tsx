@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { onboard } from "utils";
 import { useConnection } from "state/hooks";
 import { CHAINS, switchChain, ChainId, UnsupportedChainIdError } from "utils";
@@ -24,8 +24,31 @@ const ChainSelection: React.FC = () => {
   const { init } = onboard;
   const { isConnected, provider, chainId, error } = useConnection();
   const sendState = useAppSelector((state) => state.send);
-
+  console.log("sendState", sendState, "chainidUseConn", chainId);
   const dispatch = useAppDispatch();
+
+  const [dropdownValue, setDropdownValue] = useState(
+    sendState.currentlySelectedFromChain
+  );
+
+  useEffect(() => {
+    if (chainId !== sendState.fromChain) {
+      const findChain = CHAINS_SELECTION.find((x) => x.chainId === chainId);
+      const notFindChain = CHAINS_SELECTION.filter(
+        (x) => x.chainId !== chainId
+      );
+      if (findChain && notFindChain) {
+        setDropdownValue(findChain);
+        dispatch(actions.updateSelectedFromChain(findChain));
+        dispatch(actions.updateSelectedToChain(notFindChain[0]));
+      }
+    }
+    // setDropdownValue(sendState.currentlySelectedFromChain);
+  }, [
+    chainId,
+    sendState.currentlySelectedFromChain,
+    sendState.currentlySelectedToChain,
+  ]);
 
   const wrongNetworkSend =
     provider &&
@@ -56,8 +79,8 @@ const ChainSelection: React.FC = () => {
     getMenuProps,
   } = useSelect({
     items: CHAINS_SELECTION,
-    defaultSelectedItem: sendState.currentlySelectedFromChain,
-    selectedItem: sendState.currentlySelectedFromChain,
+    defaultSelectedItem: dropdownValue,
+    selectedItem: dropdownValue,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
