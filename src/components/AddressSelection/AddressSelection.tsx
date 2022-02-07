@@ -34,13 +34,32 @@ import { actions } from "state/send";
 import { AnimatePresence } from "framer-motion";
 
 const AddressSelection: React.FC = () => {
-  const { isConnected } = useConnection();
+  const { isConnected, chainId } = useConnection();
   const { toChain, toAddress, fromChain, setToAddress } = useSend();
   const [address, setAddress] = useState("");
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
 
   const sendState = useAppSelector((state) => state.send);
+  const [dropdownValue, setDropdownValue] = useState(
+    sendState.currentlySelectedToChain
+  );
+
+  console.log("CID", chainId, "sendState", sendState);
+  useEffect(() => {
+    if (chainId && chainId !== sendState.fromChain) {
+      const notFindChain = CHAINS_SELECTION.filter(
+        (x) => x.chainId !== chainId
+      );
+      if (notFindChain) {
+        setDropdownValue(notFindChain[0]);
+        dispatch(
+          actions.updateSelectedToChain(notFindChain[notFindChain.length - 1])
+        );
+      }
+    }
+    // setDropdownValue(sendState.currentlySelectedFromChain);
+  }, [chainId, sendState.fromChain, dispatch]);
 
   const {
     isOpen,
@@ -51,8 +70,8 @@ const AddressSelection: React.FC = () => {
     getMenuProps,
   } = useSelect({
     items: CHAINS_SELECTION,
-    defaultSelectedItem: sendState.currentlySelectedToChain,
-    selectedItem: sendState.currentlySelectedToChain,
+    defaultSelectedItem: dropdownValue,
+    selectedItem: dropdownValue,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
         const nextState = { ...sendState, toChain: selectedItem.chainId };

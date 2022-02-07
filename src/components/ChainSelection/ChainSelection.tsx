@@ -32,7 +32,7 @@ const ChainSelection: React.FC = () => {
   );
 
   useEffect(() => {
-    if (chainId !== sendState.fromChain) {
+    if (chainId && chainId !== sendState.fromChain) {
       const findChain = CHAINS_SELECTION.find((x) => x.chainId === chainId);
       const notFindChain = CHAINS_SELECTION.filter(
         (x) => x.chainId !== chainId
@@ -40,15 +40,11 @@ const ChainSelection: React.FC = () => {
       if (findChain && notFindChain) {
         setDropdownValue(findChain);
         dispatch(actions.updateSelectedFromChain(findChain));
-        dispatch(actions.updateSelectedToChain(notFindChain[0]));
+        // dispatch(actions.updateSelectedToChain(notFindChain[0]));
       }
     }
     // setDropdownValue(sendState.currentlySelectedFromChain);
-  }, [
-    chainId,
-    sendState.currentlySelectedFromChain,
-    sendState.currentlySelectedToChain,
-  ]);
+  }, [chainId, sendState.fromChain, dispatch]);
 
   const wrongNetworkSend =
     provider &&
