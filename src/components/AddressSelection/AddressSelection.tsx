@@ -34,7 +34,7 @@ import { actions } from "state/send";
 import { AnimatePresence } from "framer-motion";
 
 const AddressSelection: React.FC = () => {
-  const { isConnected } = useConnection();
+  const { isConnected, chainId } = useConnection();
   const { toChain, toAddress, fromChain, setToAddress } = useSend();
   const [address, setAddress] = useState("");
   const [open, setOpen] = useState(false);
