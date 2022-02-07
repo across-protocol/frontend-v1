@@ -25,7 +25,6 @@ const ChainSelection: React.FC = () => {
   const { init } = onboard;
   const { isConnected, provider, chainId, error } = useConnection();
   const sendState = useAppSelector((state) => state.send);
-  console.log("sendState", sendState, "chainidUseConn", chainId);
   const dispatch = useAppDispatch();
 
   const [dropdownValue, setDropdownValue] = useState(
