@@ -32,19 +32,18 @@ const ChainSelection: React.FC = () => {
   );
 
   useEffect(() => {
-    if (chainId && chainId !== sendState.fromChain) {
-      const findChain = CHAINS_SELECTION.find((x) => x.chainId === chainId);
-      const notFindChain = CHAINS_SELECTION.filter(
-        (x) => x.chainId !== chainId
-      );
-      if (findChain && notFindChain) {
-        setDropdownValue(findChain);
-        dispatch(actions.updateSelectedFromChain(findChain));
-        // dispatch(actions.updateSelectedToChain(notFindChain[0]));
-      }
-    }
-    // setDropdownValue(sendState.currentlySelectedFromChain);
-  }, [chainId, sendState.fromChain, dispatch]);
+    // if (chainId && chainId !== sendState.fromChain) {
+    //   const findChain = CHAINS_SELECTION.find((x) => x.chainId === chainId);
+    //   const notFindChain = CHAINS_SELECTION.filter(
+    //     (x) => x.chainId !== chainId
+    //   );
+    //   if (findChain && notFindChain) {
+    //     setDropdownValue(findChain);
+    //     dispatch(actions.updateSelectedFromChain(findChain));
+    //   }
+    // }
+    setDropdownValue(sendState.currentlySelectedFromChain);
+  }, [chainId, sendState.currentlySelectedFromChain, dispatch]);
 
   const wrongNetworkSend =
     provider &&
@@ -79,6 +78,7 @@ const ChainSelection: React.FC = () => {
     selectedItem: dropdownValue,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
+        setDropdownValue(selectedItem);
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
         dispatch(actions.updateSelectedFromChain(selectedItem));

@@ -45,21 +45,21 @@ const AddressSelection: React.FC = () => {
     sendState.currentlySelectedToChain
   );
 
-  console.log("CID", chainId, "sendState", sendState);
   useEffect(() => {
-    if (chainId && chainId !== sendState.fromChain) {
-      const notFindChain = CHAINS_SELECTION.filter(
-        (x) => x.chainId !== chainId
-      );
-      if (notFindChain) {
-        setDropdownValue(notFindChain[0]);
-        dispatch(
-          actions.updateSelectedToChain(notFindChain[notFindChain.length - 1])
-        );
-      }
-    }
+    // if (chainId && chainId !== sendState.fromChain) {
+    //   const notFindChain = CHAINS_SELECTION.filter(
+    //     (x) => x.chainId !== chainId
+    //   );
+    //   if (notFindChain) {
+    //     setDropdownValue(notFindChain[0]);
+    //     dispatch(
+    //       actions.updateSelectedToChain(notFindChain[notFindChain.length - 1])
+    //     );
+    //   }
+    // }
+    setDropdownValue(sendState.currentlySelectedToChain);
     // setDropdownValue(sendState.currentlySelectedFromChain);
-  }, [chainId, sendState.fromChain, dispatch]);
+  }, [chainId, sendState.currentlySelectedToChain, dispatch]);
 
   const {
     isOpen,
@@ -74,6 +74,7 @@ const AddressSelection: React.FC = () => {
     selectedItem: dropdownValue,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
+        setDropdownValue(selectedItem);
         const nextState = { ...sendState, toChain: selectedItem.chainId };
         dispatch(actions.toChain(nextState));
         dispatch(actions.updateSelectedToChain(selectedItem));
