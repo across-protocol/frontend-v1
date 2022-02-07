@@ -19,6 +19,7 @@ import { useSelect } from "downshift";
 import { CHAINS_SELECTION } from "utils/constants";
 import { actions } from "state/send";
 import { useAppDispatch, useAppSelector } from "state/hooks";
+import usePrevious from "hooks/usePrevious";
 
 const ChainSelection: React.FC = () => {
   const { init } = onboard;
@@ -31,19 +32,34 @@ const ChainSelection: React.FC = () => {
     sendState.currentlySelectedFromChain
   );
 
+  /*
+    The following block will attempt to change the dropdown when the user connects the app.
+
+    Otherwise, it just makes sure to map the dropdown value when the currentSelected block changes.
+
+    This will also change the dropdown value in <AddressSelection /> because of the hook in there.
+  */
+  const previousChainId = usePrevious(chainId);
   useEffect(() => {
-    // if (chainId && chainId !== sendState.fromChain) {
-    //   const findChain = CHAINS_SELECTION.find((x) => x.chainId === chainId);
-    //   const notFindChain = CHAINS_SELECTION.filter(
-    //     (x) => x.chainId !== chainId
-    //   );
-    //   if (findChain && notFindChain) {
-    //     setDropdownValue(findChain);
-    //     dispatch(actions.updateSelectedFromChain(findChain));
-    //   }
-    // }
-    setDropdownValue(sendState.currentlySelectedFromChain);
-  }, [chainId, sendState.currentlySelectedFromChain, dispatch]);
+    if (chainId && previousChainId === undefined) {
+      const findChain = CHAINS_SELECTION.find((x) => x.chainId === chainId);
+      const notFindChain = CHAINS_SELECTION.filter(
+        (x) => x.chainId !== chainId
+      );
+      if (findChain && notFindChain) {
+        setDropdownValue(findChain);
+        dispatch(actions.updateSelectedFromChain(findChain));
+        dispatch(actions.updateSelectedToChain(notFindChain[0]));
+      }
+    } else {
+      setDropdownValue(sendState.currentlySelectedFromChain);
+    }
+  }, [
+    chainId,
+    previousChainId,
+    sendState.currentlySelectedFromChain,
+    dispatch,
+  ]);
 
   const wrongNetworkSend =
     provider &&

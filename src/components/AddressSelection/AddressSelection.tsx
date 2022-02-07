@@ -34,7 +34,7 @@ import { actions } from "state/send";
 import { AnimatePresence } from "framer-motion";
 
 const AddressSelection: React.FC = () => {
-  const { isConnected, chainId } = useConnection();
+  const { isConnected } = useConnection();
   const { toChain, toAddress, fromChain, setToAddress } = useSend();
   const [address, setAddress] = useState("");
   const [open, setOpen] = useState(false);
@@ -45,21 +45,10 @@ const AddressSelection: React.FC = () => {
     sendState.currentlySelectedToChain
   );
 
+  // If somehow currentlySelectedToChain is changed externally, make sure the dropdown maps to it.
   useEffect(() => {
-    // if (chainId && chainId !== sendState.fromChain) {
-    //   const notFindChain = CHAINS_SELECTION.filter(
-    //     (x) => x.chainId !== chainId
-    //   );
-    //   if (notFindChain) {
-    //     setDropdownValue(notFindChain[0]);
-    //     dispatch(
-    //       actions.updateSelectedToChain(notFindChain[notFindChain.length - 1])
-    //     );
-    //   }
-    // }
     setDropdownValue(sendState.currentlySelectedToChain);
-    // setDropdownValue(sendState.currentlySelectedFromChain);
-  }, [chainId, sendState.currentlySelectedToChain, dispatch]);
+  }, [sendState.currentlySelectedToChain]);
 
   const {
     isOpen,
