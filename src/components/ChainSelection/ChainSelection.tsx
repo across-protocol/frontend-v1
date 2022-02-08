@@ -48,7 +48,9 @@ const ChainSelection: React.FC = () => {
       if (findChain && notFindChain) {
         setDropdownValue(findChain);
         dispatch(actions.updateSelectedFromChain(findChain));
-        dispatch(actions.updateSelectedToChain(notFindChain[0]));
+        dispatch(
+          actions.updateSelectedToChain(notFindChain[notFindChain.length - 1])
+        );
       }
     } else {
       setDropdownValue(sendState.currentlySelectedFromChain);
