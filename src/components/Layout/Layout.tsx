@@ -5,6 +5,8 @@ import { ReactComponent as UnstyledUmaLogo } from "assets/Across-Powered-UMA.svg
 import { ReactComponent as SupportLogo } from "assets/support-logo.svg";
 import { ReactComponent as GithubLogo } from "assets/github-logo.svg";
 import { ReactComponent as DocsLogo } from "assets/docs-logo.svg";
+import { ReactComponent as MediumLogo } from "assets/Across-Medium-white.svg";
+import { ReactComponent as DiscourseLogo } from "assets/Across-Discourse-white.svg";
 
 const NAV_LINKS = [
   {
@@ -21,6 +23,16 @@ const NAV_LINKS = [
     name: "Github",
     url: "https://github.com/across-protocol",
     icon: GithubLogo,
+  },
+  {
+    name: "Medium",
+    url: "",
+    icon: MediumLogo,
+  },
+  {
+    name: "Discourse",
+    url: "",
+    icon: DiscourseLogo,
   },
 ];
 
@@ -60,6 +72,10 @@ const BaseFooter = styled.footer`
   padding: 0 15px 15px;
   align-self: self-end;
   justify-self: center;
+  @media ${QUERIES.laptopAndUp} {
+    justify-self: start;
+    /* margin-left: 27px; */
+  }
 `;
 
 const LinkFooter = styled(BaseFooter)`
