@@ -492,10 +492,7 @@ export const CHAINS: Record<ChainId, ChainInfo> = {
 };
 
 export const ADDRESSES: Record<ChainId, { BRIDGE?: string }> = {
-  [ChainId.MAINNET]: {
-    // Stubbed value. Does not work. TODO: Change this out when contract deployed.
-    BRIDGE: "0x2271a5E74eA8A29764ab10523575b41AA52455f0",
-  },
+  [ChainId.MAINNET]: {},
   [ChainId.RINKEBY]: {},
   [ChainId.KOVAN]: {},
   [ChainId.OPTIMISM]: {
@@ -504,15 +501,11 @@ export const ADDRESSES: Record<ChainId, { BRIDGE?: string }> = {
   [ChainId.BOBA]: {
     BRIDGE: "0xCD43CEa89DF8fE39031C03c24BC24480e942470B",
   },
-  [ChainId.KOVAN_OPTIMISM]: {
-    BRIDGE: "0x2271a5E74eA8A29764ab10523575b41AA52455f0",
-  },
+  [ChainId.KOVAN_OPTIMISM]: {},
   [ChainId.ARBITRUM]: {
     BRIDGE: "0xD8c6dD978a3768F7DDfE3A9aAD2c3Fd75Fa9B6Fd",
   },
-  [ChainId.ARBITRUM_RINKEBY]: {
-    BRIDGE: "0x6999526e507Cc3b03b180BbE05E1Ff938259A874",
-  },
+  [ChainId.ARBITRUM_RINKEBY]: {},
 };
 
 type GetProvider = () => ethers.providers.JsonRpcProvider;
