@@ -45,11 +45,21 @@ const ChainSelection: React.FC = () => {
       const notFindChain = CHAINS_SELECTION.filter(
         (x) => x.chainId !== chainId
       );
+
       if (findChain && notFindChain) {
         setDropdownValue(findChain);
         dispatch(actions.updateSelectedFromChain(findChain));
         dispatch(
           actions.updateSelectedToChain(notFindChain[notFindChain.length - 1])
+        );
+        dispatch(
+          actions.fromChain({ ...sendState, fromChain: findChain.chainId })
+        );
+        dispatch(
+          actions.toChain({
+            ...sendState,
+            toChain: notFindChain[notFindChain.length - 1].chainId,
+          })
         );
       }
     } else {
@@ -60,6 +70,7 @@ const ChainSelection: React.FC = () => {
     previousChainId,
     sendState.currentlySelectedFromChain,
     dispatch,
+    sendState,
   ]);
 
   const wrongNetworkSend =
