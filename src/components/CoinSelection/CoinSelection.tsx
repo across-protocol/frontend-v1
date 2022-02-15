@@ -4,7 +4,7 @@ import { useSelect } from "downshift";
 import { ChainId, max } from "utils";
 
 import { useSend, useBalances, useConnection } from "state/hooks";
-import { parseUnits, formatUnits, ParsingError, TOKENS_LIST } from "utils";
+import { parseUnits, formatUnits, ParsingError, TOKENS_LIST, Token } from "utils";
 import { Section, SectionTitle } from "../Section";
 import { useAppSelector } from "state/hooks";
 
@@ -32,15 +32,16 @@ const CoinSelection = () => {
   const [error, setError] = React.useState<Error>();
   const sendState = useAppSelector((state) => state.send);
   const tokenList = useMemo(() => {
+    const filterByToChain = (token: Token) => TOKENS_LIST[toChain].some(element => element.symbol === token.symbol);
     if (fromChain === ChainId.MAINNET && toChain === ChainId.OPTIMISM) {
-      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].slice(1);
+      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].slice(1).filter(filterByToChain);
     }
     if (fromChain === ChainId.MAINNET && toChain === ChainId.BOBA) {
       return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].filter(
-        (token) => ["USDC", "ETH", "WBTC", "BOBA"].includes(token.symbol)
+        filterByToChain
       );
     }
-    return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId];
+    return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].filter(filterByToChain);
   }, [fromChain, toChain, sendState.currentlySelectedFromChain.chainId]);
   const { data: balances } = useBalances(
     {
