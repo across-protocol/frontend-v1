@@ -26,13 +26,13 @@ const NAV_LINKS = [
   },
   {
     name: "Medium",
-    url: "",
+    url: "https://medium.com/across-protocol",
     icon: MediumLogo,
     className: "nav-link",
   },
   {
     name: "Discourse",
-    url: "",
+    url: "https://forum.across.to",
     icon: DiscourseLogo,
     className: "nav-link",
   },
