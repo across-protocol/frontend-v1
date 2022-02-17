@@ -26,23 +26,19 @@ import { AnimatePresence } from "framer-motion";
 const FEE_ESTIMATION = ".004";
 const CoinSelection = () => {
   const { account, isConnected } = useConnection();
-  const { setAmount, setToken, fromChain, amount, token, fees, toChain } =
+  const { setAmount, setToken, amount, token, fees } =
     useSend();
 
   const [error, setError] = React.useState<Error>();
   const sendState = useAppSelector((state) => state.send);
   const tokenList = useMemo(() => {
-    const filterByToChain = (token: Token) => TOKENS_LIST[toChain].some(element => element.symbol === token.symbol);
-    if (fromChain === ChainId.MAINNET && toChain === ChainId.OPTIMISM) {
-      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].slice(1).filter(filterByToChain);
-    }
-    if (fromChain === ChainId.MAINNET && toChain === ChainId.BOBA) {
-      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].filter(
-        filterByToChain
-      );
+    const filterByToChain = (token: Token) => TOKENS_LIST[sendState.currentlySelectedToChain.chainId].some(element => element.symbol === token.symbol);
+    if (sendState.currentlySelectedFromChain.chainId === ChainId.MAINNET && sendState.currentlySelectedToChain.chainId === ChainId.OPTIMISM) {
+      // Note: because of how Optimism treats WETH, it must not be sent over their canonical bridge.
+      return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].filter(element => element.symbol !== "WETH").filter(filterByToChain);
     }
     return TOKENS_LIST[sendState.currentlySelectedFromChain.chainId].filter(filterByToChain);
-  }, [fromChain, toChain, sendState.currentlySelectedFromChain.chainId]);
+  }, [sendState.currentlySelectedFromChain.chainId, sendState.currentlySelectedToChain.chainId]);
   const { data: balances } = useBalances(
     {
       account: account!,

@@ -1,4 +1,4 @@
-import { clients, across } from "@uma/sdk";
+import { clients, across, utils } from "@uma/sdk";
 import { BridgePoolEthers__factory } from "@uma/contracts-frontend";
 import { ethers, BigNumber } from "ethers";
 
@@ -158,10 +158,6 @@ export const getConfirmationDepositTime = (chainId: ChainId) => {
   }
 };
 
-function exists<T>(input: T | undefined | null): input is T {
-  return input !== undefined && input !== null;
-}
-
 // General function to pull a token mapping from adress fromChain -> toChain with an optional list of symbols to exclude.
 function getTokenPairMapping(fromChain: ChainId, toChain: ChainId, symbolsToExclude: string[] = []): Record<string, string> {
   return Object.fromEntries(TOKENS_LIST[fromChain].map(fromChainElement => {
@@ -172,7 +168,7 @@ function getTokenPairMapping(fromChain: ChainId, toChain: ChainId, symbolsToExcl
     } else {
       return [fromChainElement.address, toChainElement.address]
     }
-  }).filter(exists));
+  }).filter(utils.exists));
 }
 
 // This will be moved inside the SDK in the near future
