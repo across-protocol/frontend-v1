@@ -28,11 +28,13 @@ const NAV_LINKS = [
     name: "Medium",
     url: "",
     icon: MediumLogo,
+    className: "nav-link",
   },
   {
     name: "Discourse",
     url: "",
     icon: DiscourseLogo,
+    className: "nav-link",
   },
 ];
 
@@ -45,6 +47,7 @@ const Layout: React.FC = ({ children }) => (
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
+          className={link.className ?? ""}
         >
           <link.icon />
           <div>{link.name}</div>
@@ -96,6 +99,7 @@ const LogoFooter = styled(BaseFooter)`
   @media ${QUERIES.tabletAndUp} {
     position: sticky;
     right: revert;
+    margin-left: auto;
   }
 `;
 
@@ -115,6 +119,12 @@ const Link = styled.a`
 
   &:hover {
     color: var(--color-white);
+  }
+  &.nav-link {
+    opacity: 0.75;
+    &:hover {
+      opacity: 1;
+    }
   }
 `;
 
