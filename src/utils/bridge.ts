@@ -159,21 +159,34 @@ export const getConfirmationDepositTime = (chainId: ChainId) => {
 };
 
 // General function to pull a token mapping from adress fromChain -> toChain with an optional list of symbols to exclude.
-function getTokenPairMapping(fromChain: ChainId, toChain: ChainId, symbolsToExclude: string[] = []): Record<string, string> {
-  return Object.fromEntries(TOKENS_LIST[fromChain].map(fromChainElement => {
-    if (symbolsToExclude.includes(fromChainElement.symbol)) return null;
-    const toChainElement = TOKENS_LIST[toChain].find(({ symbol }) => symbol === fromChainElement.symbol);
-    if (!toChainElement) {
-      return null;
-    } else {
-      return [fromChainElement.address, toChainElement.address]
-    }
-  }).filter(utils.exists));
+function getTokenPairMapping(
+  fromChain: ChainId,
+  toChain: ChainId,
+  symbolsToExclude: string[] = []
+): Record<string, string> {
+  return Object.fromEntries(
+    TOKENS_LIST[fromChain]
+      .map((fromChainElement) => {
+        if (symbolsToExclude.includes(fromChainElement.symbol)) return null;
+        const toChainElement = TOKENS_LIST[toChain].find(
+          ({ symbol }) => symbol === fromChainElement.symbol
+        );
+        if (!toChainElement) {
+          return null;
+        } else {
+          return [fromChainElement.address, toChainElement.address];
+        }
+      })
+      .filter(utils.exists)
+  );
 }
 
 // This will be moved inside the SDK in the near future
 export const optimismErc20Pairs = () => {
-  return getTokenPairMapping(ChainId.MAINNET, ChainId.OPTIMISM, ["WETH", "ETH"]);
+  return getTokenPairMapping(ChainId.MAINNET, ChainId.OPTIMISM, [
+    "WETH",
+    "ETH",
+  ]);
 };
 
 // This will be moved inside the SDK in the near future
