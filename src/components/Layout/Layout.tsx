@@ -77,7 +77,6 @@ const BaseFooter = styled.footer`
   justify-self: center;
   @media ${QUERIES.laptopAndUp} {
     justify-self: start;
-    /* margin-left: 27px; */
   }
 `;
 
