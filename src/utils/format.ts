@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import assert from "assert";
 
 export function isValidString(s: string | null | undefined | ""): s is string {
   if (s != null && typeof s === "string" && s !== "") {
@@ -46,4 +47,19 @@ export function parseUnits(value: string, decimals: number): ethers.BigNumber {
 
 export function parseEther(value: string): ethers.BigNumber {
   return parseUnits(value, 18);
+}
+
+export function stringToHex(value: string) {
+  return ethers.utils.hexlify(ethers.utils.toUtf8Bytes(value));
+}
+
+// appends hex tag to data
+export function tagHex(dataHex: string, tagHex: string) {
+  assert(ethers.utils.isHexString(dataHex), "Data must be valid hex string");
+  return ethers.utils.hexConcat([dataHex, tagHex]);
+}
+
+// converts a string tag to hex and appends
+export function tagString(dataHex: string, tagString: string) {
+  return ethers.utils.hexConcat([dataHex, stringToHex(tagString)]);
 }
