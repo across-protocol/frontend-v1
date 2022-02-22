@@ -608,6 +608,13 @@ export const DEFAULT_TO_CHAIN_ID = ChainId.MAINNET;
 
 /* Onboard config */
 
+const rpc = {
+  1: `https://mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
+  10: `https://optimism-mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
+  288: `https://mainnet.boba.network/`,
+  42161: `https://arbitrum-mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
+};
+
 export function onboardBaseConfig(): Initialization {
   // const infuraRpc = PROVIDERS[DEFAULT_FROM_CHAIN_ID]().connection.url;
   return {
@@ -619,15 +626,16 @@ export function onboardBaseConfig(): Initialization {
         { walletName: "metamask", preferred: true },
         {
           walletName: "walletConnect",
-          rpc: {
-            1: `https://mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
-            10: `https://optimism-mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
-            288: `https://mainnet.boba.network/`,
-            42161: `https://arbitrum-mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
-          },
+          rpc,
           preferred: true,
         },
-        // { walletName: "coinbase", preferred: true },
+        { walletName: "coinbase", preferred: true },
+        {
+          walletName: "walletLink",
+          rpc,
+          appName: "across",
+          preferred: true,
+        },
         { walletName: "tally", preferred: true },
       ],
     },
