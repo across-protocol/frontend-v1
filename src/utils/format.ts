@@ -59,7 +59,13 @@ export function tagHex(dataHex: string, tagHex: string) {
   return ethers.utils.hexConcat([dataHex, tagHex]);
 }
 
-// converts a string tag to hex and appends
+// converts a string tag to hex and appends, currently not in use
 export function tagString(dataHex: string, tagString: string) {
-  return ethers.utils.hexConcat([dataHex, stringToHex(tagString)]);
+  return tagHex(dataHex, stringToHex(tagString));
+}
+
+// tags only an address
+export function tagAddress(dataHex: string, address: string) {
+  assert(ethers.utils.isAddress(address), "Data must be a valid address");
+  return tagHex(dataHex, address);
 }

@@ -14,7 +14,7 @@ import {
   MAX_APPROVAL_AMOUNT,
   optimismErc20Pairs,
   bobaErc20Pairs,
-  tagHex,
+  tagAddress,
 } from "utils";
 import type { RootState, AppDispatch } from "./";
 import { ErrorContext } from "context/ErrorContext";
@@ -301,8 +301,8 @@ export function useSendAcross() {
 
       // do not tag a referrer if data is not provided as a hex string.
       const taggedData =
-        referrer && ethers.utils.isHexString(referrer)
-          ? tagHex(data, referrer)
+        referrer && ethers.utils.isAddress(referrer)
+          ? tagAddress(data, referrer)
           : data;
       const tx = await signer.sendTransaction({
         data: taggedData,
