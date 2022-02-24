@@ -111,6 +111,7 @@ const Link = styled.a`
   align-items: center;
   gap: 5px;
   font-size: ${14 / 16}rem;
+  opacity: 0.75;
 
   &:not(:last-of-type) {
     margin-right: 45px;
@@ -118,12 +119,7 @@ const Link = styled.a`
 
   &:hover {
     color: var(--color-white);
-  }
-  &.nav-link {
-    opacity: 0.75;
-    &:hover {
-      opacity: 1;
-    }
+    opacity: 1;
   }
 `;
 
