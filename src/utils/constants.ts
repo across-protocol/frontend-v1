@@ -608,11 +608,15 @@ export const DEFAULT_TO_CHAIN_ID = ChainId.MAINNET;
 
 /* Onboard config */
 
-const rpc = {
+const rpc: Record<ChainId, string> = {
   1: `https://mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
+  4: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
   10: `https://optimism-mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
+  42: `https://kovan.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
+  69: `https://optimism-kovan.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
   288: `https://mainnet.boba.network/`,
   42161: `https://arbitrum-mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
+  421611: `https://arbitrum-mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
 };
 
 export function onboardBaseConfig(): Initialization {
