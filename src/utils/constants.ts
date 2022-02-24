@@ -632,7 +632,7 @@ export function onboardBaseConfig(): Initialization {
         { walletName: "coinbase", preferred: true },
         {
           walletName: "walletLink",
-          rpc,
+          rpcUrl: `https://mainnet.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
           appName: "across",
           preferred: true,
         },
