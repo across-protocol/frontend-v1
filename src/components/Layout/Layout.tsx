@@ -50,7 +50,7 @@ const Layout: React.FC = ({ children }) => (
           className={link.className ?? ""}
         >
           <link.icon />
-          <div>{link.name}</div>
+          <LinkText>{link.name}</LinkText>
         </Link>
       ))}
     </LinkFooter>
@@ -154,4 +154,8 @@ const Main = styled.main`
   grid-column: 2;
   box-shadow: 0 0 120px hsla(${COLORS.primary[500]} / 0.25);
   clip-path: inset(0px -160px 0px -160px);
+`;
+
+const LinkText = styled.div`
+  color: #ffffff;
 `;
