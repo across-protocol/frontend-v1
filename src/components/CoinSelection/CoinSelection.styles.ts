@@ -75,7 +75,7 @@ export const Menu = styled.ul<MenuProps>`
   right: 0;
   padding-top: 10px;
   transform: translateY(50%);
-  box-shadow: 0px 160px 8px 8px hsla(${COLORS.gray[500]} / 0.2);
+  box-shadow: ${({ isOpen }) => (isOpen ? `0px 160px 8px 8px hsla(${COLORS.gray[500]} / 0.2)` : "none")};
   list-style: none;
   display: flex;
   flex-direction: column;
