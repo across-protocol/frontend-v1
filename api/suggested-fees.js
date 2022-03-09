@@ -11,17 +11,25 @@ const handler = async (request, response) => {
     const { REACT_APP_PUBLIC_INFURA_ID } = process.env;
     const provider = new ethers.providers.StaticJsonRpcProvider(`https://mainnet.infura.io/v3/${REACT_APP_PUBLIC_INFURA_ID}`);
 
-    let { amount, l2Token, chainId } = request.query;
+    let { amount, l2Token, chainId, timestamp } = request.query;
     if (!isString(amount) || !isString(l2Token) || !isString(chainId)) throw new InputError("Must provide amount and token as query params");
+    const parsedTimestamp = isString(timestamp) ? Number(timestamp) : (await provider.getBlock("latest")).timestamp;
 
-    let { l1Token } = await getTokenDetails(provider, l2Token, chainId);
+    let { l1Token, bridgePool } = await getTokenDetails(provider, l2Token, chainId);
     if (l1Token === sdk.across.constants.ADDRESSES.WETH) l1Token = sdk.across.constants.ADDRESSES.WETH;
-    const depositFeeDetails = await sdk.across.gasFeeCalculator.getDepositFeesDetails(provider, amount, l1Token === sdk.across.constants.ADDRESSES.WETH ? sdk.across.constants.ADDRESSES.ETH : l1Token);
+    const lpFeeCalculator = new sdk.across.LpFeeCalculator(provider);
+
+    const [depositFeeDetails, lpFee]  = await Promise.all([
+      sdk.across.gasFeeCalculator.getDepositFeesDetails(provider, amount, l1Token === sdk.across.constants.ADDRESSES.WETH ? sdk.across.constants.ADDRESSES.ETH : l1Token),
+      lpFeeCalculator.getLpFeePct(l1Token, bridgePool, amount, parsedTimestamp)
+    ]);
     if (depositFeeDetails.isAmountTooLow) throw new InputError("Sent amount is too low relative to fees");
     
     const responseJson = {
       slowFeePct: depositFeeDetails.slow.pct,
-      instantFeePct: depositFeeDetails.instant.pct
+      instantFeePct: depositFeeDetails.instant.pct,
+      lpFeePct: lpFee.toString(),
+      timestamp: parsedTimestamp.toString()
     };
 
     response.status(200).json(responseJson);
