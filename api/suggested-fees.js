@@ -14,7 +14,9 @@ const handler = async (request, response) => {
 
     let { amount, l2Token, chainId, timestamp } = request.query;
     if (!isString(amount) || !isString(l2Token) || !isString(chainId))
-      throw new InputError("Must provide amount and token as query params");
+      throw new InputError(
+        "Must provide amount, chainId, and l2Token as query params"
+      );
     const parsedTimestamp = isString(timestamp)
       ? Number(timestamp)
       : (await provider.getBlock("latest")).timestamp;
