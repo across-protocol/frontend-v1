@@ -20,13 +20,18 @@ import {
   Wrapper,
   Info,
   AccentSection,
-  InfoIcon,
   L1Info,
+  InfoContainer,
+  AmountToReceive,
+  InfoHeadlineContainer,
+  FeesButton,
+  SlippageDisclaimer,
 } from "./SendAction.styles";
 import api from "state/chainApi";
 import InformationDialog from "components/InformationDialog";
 import { useAppSelector } from "state/hooks";
 import { ErrorContext } from "context/ErrorContext";
+import { ReactComponent as ConfettiIcon } from "assets/confetti.svg";
 
 const CONFIRMATIONS = 1;
 const SendAction: React.FC = () => {
@@ -158,53 +163,60 @@ const SendAction: React.FC = () => {
       <Wrapper>
         {amount.gt(0) && fees && tokenInfo && (
           <>
-            <Info>
-              <div>
-                Time to{" "}
-                {CHAINS[sendState.currentlySelectedToChain.chainId].name}
-              </div>
-              <div>
-                {getEstimatedDepositTime(
-                  sendState.currentlySelectedToChain.chainId
-                )}
-              </div>
-            </Info>
-            {sendState.currentlySelectedFromChain.chainId !==
-              ChainId.MAINNET && (
+            <InfoHeadlineContainer>
+              <SlippageDisclaimer>
+              <ConfettiIcon />
+                All transfers are slippage free!
+              </SlippageDisclaimer>
+              <FeesButton onClick={toggleInfoModal}>Fees info</FeesButton>
+            </InfoHeadlineContainer>
+            <InfoContainer>
               <Info>
-                <div>Ethereum Gas Fee</div>
+                {`Time to ${
+                  CHAINS[sendState.currentlySelectedToChain.chainId].name
+                }`}
                 <div>
-                  {formatUnits(
-                    fees.instantRelayFee.total.add(fees.slowRelayFee.total),
-                    tokenInfo.decimals
-                  )}{" "}
-                  {tokenInfo.symbol}
+                  {getEstimatedDepositTime(
+                    sendState.currentlySelectedToChain.chainId
+                  )}
                 </div>
               </Info>
-            )}
-            <Info>
-              <div>
-                {sendState.currentlySelectedFromChain.chainId ===
-                ChainId.MAINNET
-                  ? "Native Bridge Fee"
-                  : "Bridge Fee"}
-              </div>
-              <div>
-                {sendState.currentlySelectedFromChain.chainId ===
-                ChainId.MAINNET
-                  ? "Free"
-                  : `${formatUnits(fees.lpFee.total, tokenInfo.decimals)}
+              {sendState.currentlySelectedFromChain.chainId !==
+                ChainId.MAINNET && (
+                <Info>
+                  <div>Ethereum Network Gas</div>
+                  <div>
+                    {formatUnits(
+                      fees.instantRelayFee.total.add(fees.slowRelayFee.total),
+                      tokenInfo.decimals
+                    )}{" "}
+                    {tokenInfo.symbol}
+                  </div>
+                </Info>
+              )}
+              <Info>
+                <div>
+                  {sendState.currentlySelectedFromChain.chainId ===
+                  ChainId.MAINNET
+                    ? "Native Bridge Fee"
+                    : "Across Bridge Fee"}
+                </div>
+                <div>
+                  {sendState.currentlySelectedFromChain.chainId ===
+                  ChainId.MAINNET
+                    ? "Free"
+                    : `${formatUnits(fees.lpFee.total, tokenInfo.decimals)}
                   ${tokenInfo.symbol}`}
-              </div>
-            </Info>
-            <Info>
+                </div>
+              </Info>
+            </InfoContainer>
+            <AmountToReceive>
               <div>You will receive</div>
               <div>
                 {formatUnits(amountMinusFees, tokenInfo.decimals)}{" "}
                 {isWETH ? "ETH" : tokenInfo.symbol}
               </div>
-            </Info>
-            <InfoIcon aria-label="info dialog" onClick={toggleInfoModal} />
+            </AmountToReceive>
           </>
         )}
 
