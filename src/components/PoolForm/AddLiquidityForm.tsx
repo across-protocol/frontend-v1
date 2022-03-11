@@ -73,14 +73,14 @@ const AddLiquidityForm: FC<Props> = ({
   const [updateEthBalance] = api.endpoints.ethBalance.useLazyQuery();
 
   const updateAllowance = useCallback(async () => {
-    if (!account || !provider) return;
+    if (!account || !provider || symbol === "ETH") return;
     const allowance = await getAllowance({
       account,
       spender: bridgeAddress,
       provider,
     });
     setAllowance(allowance.toString());
-  }, [setAllowance, getAllowance, provider, account, bridgeAddress]);
+  }, [setAllowance, getAllowance, provider, account, bridgeAddress, symbol]);
 
   // trigger update allowance, only if bridge/token changes. ignore eth.
   useEffect(() => {
@@ -90,9 +90,13 @@ const AddLiquidityForm: FC<Props> = ({
   // check if user needs to approve based on amount entered in form or a change in allowance
   useEffect(() => {
     try {
-      const weiAmount = toWeiSafe(amount, decimals);
-      const hasToApprove = weiAmount.gt(allowance);
-      setUserNeedsToApprove(hasToApprove);
+      if (symbol === "ETH") {
+        setUserNeedsToApprove(false);
+      } else {
+        const weiAmount = toWeiSafe(amount, decimals);
+        const hasToApprove = weiAmount.gt(allowance);
+        setUserNeedsToApprove(hasToApprove);
+      }
     } catch (err) {
       // do nothing. this happens when users input is not a number and causes toWei to throw. if we dont
       // catch here, app will crash when user enters something like "0."
