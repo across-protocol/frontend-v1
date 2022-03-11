@@ -211,11 +211,11 @@ const SendAction: React.FC = () => {
               </Info>
             </InfoContainer>
             <AmountToReceive>
-              <div>You will receive</div>
-              <div>
+              You will receive
+              <span>
                 {formatUnits(amountMinusFees, tokenInfo.decimals)}{" "}
                 {isWETH ? "ETH" : tokenInfo.symbol}
-              </div>
+              </span>
             </AmountToReceive>
           </>
         )}

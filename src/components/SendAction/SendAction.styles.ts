@@ -76,6 +76,10 @@ export const AmountToReceive = styled.div`
   line-height: ${20 / 16}rem;
   font-weight: 600;
   color: var(--color-white);
+
+  span {
+    font: inherit;
+  }
 `
 
 export const L1Info = styled(Info)`
