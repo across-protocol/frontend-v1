@@ -12,6 +12,21 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
     <Dialog isOpen={isOpen} onClose={onClose}>
       <Title>Information</Title>
       <Info>
+        <ArticleTitle>How is there no slippage on Across?</ArticleTitle>
+        <Text>
+          Across does not use AMMs to transfer funds between chains resulting in
+          slippage-free transfers! View{" "}
+          <Link
+            href="https://docs.across.to/bridge/how-does-across-work-1/architecture-process-walkthrough"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </Link>{" "}
+          for more info on how Across works.”
+        </Text>
+      </Info>
+      <Info>
         <ArticleTitle>Time to Destination</ArticleTitle>
         <Text>
           The estimated amount of time expected to receive your funds. If you do
@@ -27,7 +42,7 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
         </Text>
       </Info>
       <Info>
-        <ArticleTitle>Native Bridge Fee</ArticleTitle>
+        <ArticleTitle>Across Bridge Fee</ArticleTitle>
         <Text>
           For transfers from L2 to L1, assets are sent near instantly by
           utilizing funds from a liquidity pool. The fee is for rewarding
@@ -36,13 +51,20 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
         </Text>
       </Info>
       <Info>
-        <ArticleTitle>Gas Fee</ArticleTitle>
+        <ArticleTitle>Ethereum Network Gas</ArticleTitle>
         <Text>
           Across sends funds by default via an instant relay. If an instant
           relay is unavailable, a slow relay will occur. Instant and slow
           relayers charge a fee for performing the relay. These fees are
-          dependent on Ethereum Gas fees. View here to learn more about Ethereum
-          gas fees.
+          dependent on Ethereum Gas fees. View{" "}
+          <Link
+            href="https://ethereum.org/en/developers/docs/gas/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </Link>
+          {" "}to learn more about Ethereum gas fees.
         </Text>
       </Info>
 
