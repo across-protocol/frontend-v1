@@ -239,14 +239,6 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       logoURI: ethereumLogo,
       bridgePool: getAddress("0x7355Efc63Ae731f584380a9838292c7046c1e433"),
     },
-    {
-      address: getAddress("0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"),
-      name: "Dai Stablecoin",
-      symbol: "DAI",
-      decimals: 18,
-      logoURI: daiLogo,
-      bridgePool: getAddress("0x43f133FE6fDFA17c417695c476447dc2a449Ba5B"),
-    },
   ],
   [ChainId.KOVAN_OPTIMISM]: [
     {
@@ -256,14 +248,6 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       decimals: 18,
       logoURI: wethLogo,
       bridgePool: "m",
-    },
-    {
-      address: getAddress("0x2a41F55E25EfEE3E53834140c0bD81dBF3464831"),
-      name: "DAI (L2 Dai)",
-      symbol: "DAI",
-      decimals: 18,
-      logoURI: usdcLogo,
-      bridgePool: "",
     },
     {
       address: ethers.constants.AddressZero,
