@@ -641,7 +641,7 @@ export function useSendArbitrum() {
     }
   }, [bridge, amount, fees, token, isConnected, toAddress, fromChain]);
 
-  const approve = useCallback(async () => {
+  const approve = useCallback(() => {
     if (!bridge) return;
     return bridge.approveToken(token, MAX_APPROVAL_AMOUNT);
   }, [bridge, token]);
