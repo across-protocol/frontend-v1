@@ -15,6 +15,7 @@ import {
   optimismErc20Pairs,
   bobaErc20Pairs,
   tagAddress,
+  validateContractAndChain,
 } from "utils";
 import type { RootState, AppDispatch } from "./";
 import { ErrorContext } from "context/ErrorContext";
@@ -313,10 +314,16 @@ export function useSendAcross() {
         referrer && ethers.utils.isAddress(referrer)
           ? tagAddress(data, referrer)
           : data;
+
+      if (!await validateContractAndChain(depositBox.address, currentlySelectedFromChain.chainId, signer)) {
+        return {};
+      }
+      
       const tx = await signer.sendTransaction({
         data: taggedData,
         value,
         to: depositBox.address,
+        chainId: currentlySelectedFromChain.chainId
       });
       return { tx, fees };
     } catch (e) {
@@ -482,6 +489,9 @@ export function useSendOptimism() {
 
   const send = useCallback(async () => {
     if (!isConnected || !signer) return {};
+    if (!await validateContractAndChain(bridgeAddress, fromChain, signer)) {
+      return {};
+    }
     if (token === ethers.constants.AddressZero) {
       return {
         tx: await optimismBridge.depositEth(signer, amount),
@@ -495,7 +505,7 @@ export function useSendOptimism() {
         fees,
       };
     }
-  }, [amount, fees, token, isConnected, optimismBridge, signer]);
+  }, [amount, fees, token, isConnected, optimismBridge, signer, fromChain, bridgeAddress]);
 
   const approve = useCallback(() => {
     if (!signer) return;
@@ -610,6 +620,9 @@ export function useSendArbitrum() {
 
   const send = useCallback(async () => {
     if (!bridge || !isConnected) return {};
+    if (!await validateContractAndChain((await bridge.l1Bridge.getInbox()).address, fromChain, bridge.l1Bridge.l1Signer)) {
+      return {};
+    }
     if (token === ethers.constants.AddressZero) {
       return {
         tx: await bridge.depositETH(amount),
@@ -626,7 +639,7 @@ export function useSendArbitrum() {
         fees,
       };
     }
-  }, [bridge, amount, fees, token, isConnected, toAddress]);
+  }, [bridge, amount, fees, token, isConnected, toAddress, fromChain]);
 
   const approve = useCallback(() => {
     if (!bridge) return;
@@ -758,6 +771,10 @@ export function useSendBoba() {
 
   const send = useCallback(async () => {
     if (!isConnected || !signer) return {};
+
+    if (!await validateContractAndChain(bridgeAddress, fromChain, signer)) {
+      return {};
+    }
     if (token === ethers.constants.AddressZero) {
       return {
         tx: await bobaBridge.depositEth(signer, amount),
@@ -771,7 +788,7 @@ export function useSendBoba() {
         fees,
       };
     }
-  }, [amount, fees, token, isConnected, bobaBridge, signer]);
+  }, [amount, fees, token, isConnected, bobaBridge, signer, fromChain, bridgeAddress]);
 
   const approve = useCallback(() => {
     if (!signer) return;
