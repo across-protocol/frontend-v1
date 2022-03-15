@@ -505,7 +505,7 @@ export function useSendOptimism() {
         fees,
       };
     }
-  }, [amount, fees, token, isConnected, optimismBridge, signer]);
+  }, [amount, fees, token, isConnected, optimismBridge, signer, fromChain]);
 
   const approve = useCallback(() => {
     if (!signer) return;
@@ -639,7 +639,7 @@ export function useSendArbitrum() {
         fees,
       };
     }
-  }, [bridge, amount, fees, token, isConnected, toAddress]);
+  }, [bridge, amount, fees, token, isConnected, toAddress, fromChain]);
 
   const approve = useCallback(async () => {
     if (!bridge) return;
@@ -788,7 +788,7 @@ export function useSendBoba() {
         fees,
       };
     }
-  }, [amount, fees, token, isConnected, bobaBridge, signer]);
+  }, [amount, fees, token, isConnected, bobaBridge, signer, fromChain]);
 
   const approve = useCallback(() => {
     if (!signer) return;
