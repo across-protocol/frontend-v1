@@ -1,3 +1,4 @@
+import { MatomoProvider, createInstance } from '@datapunt/matomo-tracker-react'
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -8,14 +9,23 @@ import ErrorProvider from "context/ErrorContext";
 import App from "./App";
 import "./onboard-override.css";
 
+const instance = createInstance({
+  urlBase: "https://across.matomo.cloud",
+  siteId: 1,
+  linkTracking: true,
+  trackerUrl: 'https://across.matomo.cloud/matomo.php',
+})
+
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalStyles />
-    <Provider store={store}>
-      <ErrorProvider>
-        <App />
-      </ErrorProvider>
-    </Provider>
+  <GlobalStyles />
+    <MatomoProvider value={instance}>
+      <Provider store={store}>
+        <ErrorProvider>
+          <App />
+        </ErrorProvider>
+      </Provider>
+    </MatomoProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
