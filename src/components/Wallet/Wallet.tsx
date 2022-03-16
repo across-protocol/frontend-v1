@@ -25,6 +25,12 @@ import useClickOutsideModal from "hooks/useClickOutsideModal";
 
 const { init, reset } = onboard;
 
+function initWithMatomo() {
+  // How do we import paq?
+  _paq.push(["Test", "ConnectWallet", "Blah"])
+  init()
+}
+
 const Wallet: FC = () => {
   const { account, isConnected, chainId } = useConnection();
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +61,7 @@ const Wallet: FC = () => {
   }
 
   if (!isConnected) {
-    return <ConnectButton onClick={init}>Connect Wallet</ConnectButton>;
+    return <ConnectButton onClick={initWithMatomo}>Connect Wallet</ConnectButton>;
   }
 
   return (
