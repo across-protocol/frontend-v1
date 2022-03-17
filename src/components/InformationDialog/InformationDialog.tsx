@@ -23,7 +23,7 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
           >
             here
           </Link>{" "}
-          for more info on how Across works.”
+          for more info on how Across works.
         </Text>
       </Info>
       <Info>
