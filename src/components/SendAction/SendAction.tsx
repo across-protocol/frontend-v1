@@ -165,7 +165,7 @@ const SendAction: React.FC = () => {
           <>
             <InfoHeadlineContainer>
               <SlippageDisclaimer>
-              <ConfettiIcon />
+                <ConfettiIcon />
                 All transfers are slippage free!
               </SlippageDisclaimer>
               <FeesButton onClick={toggleInfoModal}>Fees info</FeesButton>

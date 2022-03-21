@@ -53,7 +53,14 @@ const Header: React.FC = () => {
         <List>
           {LINKS.map(({ href, name }) => (
             <Item key={href} aria-selected={location.pathname === href}>
-              <Link to={href}>{name}</Link>
+              <Link
+                to={{
+                  pathname: href,
+                  search: location.search,
+                }}
+              >
+                {name}
+              </Link>
             </Item>
           ))}
         </List>
@@ -71,7 +78,14 @@ const Header: React.FC = () => {
                   key={href}
                   aria-selected={location.pathname === href}
                 >
-                  <MobileLink to={href}>{name}</MobileLink>
+                  <MobileLink
+                    to={{
+                      pathname: href,
+                      search: location.search,
+                    }}
+                  >
+                    {name}
+                  </MobileLink>
                 </MobileItem>
               ))}
               {MOBILE_ONLY_LINKS.map(({ href, name }) => (
