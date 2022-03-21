@@ -10,6 +10,7 @@ import umaLogo from "assets/UMA-round.svg";
 import bobaLogo from "assets/Across-Boba-Color30x30.svg";
 import badgerLogo from "assets/badger.svg";
 import wbtcLogo from "assets/wbtc-logo.svg";
+import daiLogo from "assets/dai-logo.svg";
 import { getAddress } from "./address";
 /* Colors and Media Queries section */
 
@@ -144,6 +145,14 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       logoURI: bobaLogo,
       bridgePool: getAddress("0x4841572daA1f8E4Ce0f62570877c2D0CC18C9535"),
     },
+    {
+      address: getAddress("0x6B175474E89094C44Da98b954EedeAC495271d0F"),
+      name: "Dai Stablecoin",
+      symbol: "DAI",
+      decimals: 18,
+      logoURI: daiLogo,
+      bridgePool: getAddress("0x43f133FE6fDFA17c417695c476447dc2a449Ba5B"),
+    },
   ],
   [ChainId.RINKEBY]: [
     {
@@ -177,7 +186,7 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       name: "DAI Stablecoin",
       symbol: "DAI",
       decimals: 18,
-      logoURI: usdcLogo,
+      logoURI: daiLogo,
       bridgePool: "f",
     },
     {
@@ -241,14 +250,6 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       bridgePool: "m",
     },
     {
-      address: getAddress("0x2a41F55E25EfEE3E53834140c0bD81dBF3464831"),
-      name: "DAI (L2 Dai)",
-      symbol: "DAI",
-      decimals: 18,
-      logoURI: usdcLogo,
-      bridgePool: "",
-    },
-    {
       address: ethers.constants.AddressZero,
       name: "Ether",
       symbol: "ETH",
@@ -305,6 +306,14 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       decimals: 18,
       logoURI: badgerLogo,
       bridgePool: getAddress("0x43298F9f91a4545dF64748e78a2c777c580573d6"),
+    },
+    {
+      address: getAddress("0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"),
+      name: "Dai Stablecoin",
+      symbol: "DAI",
+      decimals: 18,
+      logoURI: daiLogo,
+      bridgePool: getAddress("0x43f133FE6fDFA17c417695c476447dc2a449Ba5B"),
     },
   ],
   [ChainId.ARBITRUM_RINKEBY]: [
@@ -373,6 +382,14 @@ export const TOKENS_LIST: Record<ChainId, TokenList> = {
       decimals: 18,
       logoURI: ethereumLogo,
       bridgePool: "",
+    },
+    {
+      address: getAddress("0xf74195Bb8a5cf652411867c5C2C5b8C2a402be35"),
+      name: "Dai Stablecoin",
+      symbol: "DAI",
+      decimals: 18,
+      logoURI: daiLogo,
+      bridgePool: getAddress("0x43f133FE6fDFA17c417695c476447dc2a449Ba5B"),
     },
   ],
 };
