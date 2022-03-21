@@ -10,6 +10,7 @@ import umaLogo from "assets/UMA-round.svg";
 import bobaLogo from "assets/Across-Boba-Color30x30.svg";
 import badgerLogo from "assets/badger.svg";
 import wbtcLogo from "assets/wbtc-logo.svg";
+import daiLogo from "assets/dai-logo.svg";
 import { getAddress } from "./address";
 /* Colors and Media Queries section */
 
