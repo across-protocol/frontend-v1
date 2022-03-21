@@ -80,7 +80,7 @@ export const AmountToReceive = styled.div`
   span {
     font: inherit;
   }
-`
+`;
 
 export const L1Info = styled(Info)`
   justify-content: space-around;

@@ -63,8 +63,8 @@ const InformationDialog: React.FC<Props> = ({ isOpen, onClose }) => {
             rel="noopener noreferrer"
           >
             here
-          </Link>
-          {" "}to learn more about Ethereum gas fees.
+          </Link>{" "}
+          to learn more about Ethereum gas fees.
         </Text>
       </Info>
 
