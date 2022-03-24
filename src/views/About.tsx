@@ -95,7 +95,7 @@ const About: FC = () => {
             Across does not use AMMs to transfer funds between chains. This means slippage-free transfers.
 
             You can read more about our low fees 
-
+          
             <Link
               href="https://medium.com/across-protocol/how-does-across-protocol-bridgeforless-2b972d7d9c85"
               target="_blank"
@@ -132,7 +132,7 @@ const About: FC = () => {
               Read our articles on Medium
             </Link>
 
-            
+            </BulletText>
             
            
 
