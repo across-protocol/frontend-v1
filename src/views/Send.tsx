@@ -9,11 +9,16 @@ import {
 } from "components";
 
 const Send: React.FC = () => {
-  const { trackPageView, trackEvent } = useMatomo()
+  const { trackPageView } = useMatomo()
 
   // Track page views of the Send tab
   React.useEffect(() => {
-    trackPageView()
+    trackPageView(
+      {
+        documentTitle: "Send",
+        href: "https://across.to"
+      }
+    )
   }, [])
 
   return (

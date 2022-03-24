@@ -33,6 +33,8 @@ import { useAppDispatch, useAppSelector } from "state/hooks";
 import { actions } from "state/send";
 import { AnimatePresence } from "framer-motion";
 
+import { useMatomo  } from "@datapunt/matomo-tracker-react";
+
 const AddressSelection: React.FC = () => {
   const { isConnected } = useConnection();
   const { toChain, toAddress, fromChain, setToAddress } = useSend();
@@ -41,6 +43,8 @@ const AddressSelection: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const sendState = useAppSelector((state) => state.send);
+
+  const { trackEvent } = useMatomo();
 
   const {
     isOpen,
@@ -55,6 +59,11 @@ const AddressSelection: React.FC = () => {
     selectedItem: sendState.currentlySelectedToChain,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
+        // Matomo track toChain selection
+        trackEvent(
+          {category: "send", action: "setToChain", name: selectedItem.chainId.toString()}
+        );
+
         const nextState = { ...sendState, toChain: selectedItem.chainId };
         dispatch(actions.toChain(nextState));
         dispatch(actions.updateSelectedToChain(selectedItem));

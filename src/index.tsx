@@ -19,13 +19,13 @@ const instance = createInstance({
 ReactDOM.render(
   <React.StrictMode>
   <GlobalStyles />
-    <MatomoProvider value={instance}>
-      <Provider store={store}>
-        <ErrorProvider>
+    <Provider store={store}>
+      <ErrorProvider>
+        <MatomoProvider value={instance}>
           <App />
-        </ErrorProvider>
-      </Provider>
-    </MatomoProvider>
+        </MatomoProvider>
+      </ErrorProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

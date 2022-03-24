@@ -32,6 +32,7 @@ import InformationDialog from "components/InformationDialog";
 import { useAppSelector } from "state/hooks";
 import { ErrorContext } from "context/ErrorContext";
 import { ReactComponent as ConfettiIcon } from "assets/confetti.svg";
+import { useMatomo  } from "@datapunt/matomo-tracker-react";
 
 const CONFIRMATIONS = 1;
 const SendAction: React.FC = () => {
@@ -56,6 +57,7 @@ const SendAction: React.FC = () => {
   const { addTransaction } = useTransactions();
   const { addDeposit } = useDeposits();
   const [updateEthBalance] = api.endpoints.ethBalance.useLazyQuery();
+  const { trackEvent } = useMatomo();
   // trigger balance update
   const [updateBalances] = api.endpoints.balances.useLazyQuery();
   const tokenInfo = TOKENS_LIST[
@@ -123,6 +125,19 @@ const SendAction: React.FC = () => {
       return;
     }
     if (canSend) {
+      // Matomo track send transactions
+      trackEvent(
+        {
+          category: "send",
+          action: "bridge",
+          name: tokenInfo && tokenInfo.symbol.concat(
+            " ", sendState.currentlySelectedFromChain.chainId.toString().concat(
+              "->", sendState.currentlySelectedToChain.chainId.toString()
+            )
+          ),
+          value: tokenInfo && Number(formatUnits(amount, tokenInfo.decimals))
+        }
+      );
       setSendPending(true);
       if (error) removeError();
       handleSend()
