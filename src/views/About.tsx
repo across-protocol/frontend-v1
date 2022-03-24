@@ -37,47 +37,109 @@ const About: FC = () => {
     <Wrapper>
       <HeroBg>
         <HeroHeader>
-          Instantly Send Assets from Layer 2 Rollups to Ethereum
+        Across is a cross-chain bridging solution that allows you to send assets between L1 and L2
         </HeroHeader>
       </HeroBg>
       <Body>
         <Bullet>
           <Image src={BulletImg} alt="across_logo" />
           <TextWrapper>
-            <BulletHeader>Instantaneous Liquidity</BulletHeader>
+            <BulletHeader>FAST</BulletHeader>
             <BulletText>
-              Assets are bridged and available for use on mainnet almost
-              instantly.
-            </BulletText>
-          </TextWrapper>
-        </Bullet>
-        <Bullet>
-          <Image src={BulletImg} alt="across_logo" />
-          <TextWrapper>
-            <BulletHeader>Secure</BulletHeader>
-            <BulletText>
-              Powered By UMA protocol. Transfers are secured by UMA's Optimistic
-              Oracle, which is audited by OpenZeppelin and trusted by top teams
-              to protect hundreds of millions of dollars in value.
-            </BulletText>
-          </TextWrapper>
-        </Bullet>
-        <Bullet>
-          <Image src={BulletImg} alt="across_logo" />
-          <TextWrapper>
-            <BulletHeader>Cheap</BulletHeader>
-            <BulletText>
-              Relayers and liquidity providers are compensated with fees from
-              users initiating transfers, but this fee is less than any other
-              solution on the market.
-            </BulletText>
+            Using Across means that assets are bridged and available for use on mainnet almost instantly. You can typically expect to receive your funds within 1-2 minutes. 
+
+            You can learn more about how Across protocol executes near-instantaneous transfers 
+          
             <Link
-              href="https://across.gitbook.io/bridge/"
+              href="https://medium.com/across-protocol/how-is-across-protocol-so-fast-d77b4e7481c9"
               target="_blank"
               rel="noreferrer"
             >
-              Read more
+              here.
             </Link>
+
+            </BulletText>
+          </TextWrapper>
+        </Bullet>
+        <Bullet>
+          <Image src={BulletImg} alt="across_logo" />
+          <TextWrapper>
+            <BulletHeader>SECURE</BulletHeader>
+            <BulletText>
+            Secured by UMA’s optimistic oracle. This optimistic oracle has been audited by OpenZeppelin and is trusted by top teams to protect hundreds of millions of dollars in value.
+
+            Across’ contracts have also been audited by OpenZeppelin. Our bridge’s smart contracts have been extensively tested —  proven by our audits, TVL in Across’ bridge and our contracts standing the test of time.
+
+            You can read more about our security 
+
+            <Link
+              href="https://medium.com/across-protocol/a-deep-dive-into-across-protocols-security-c9b46a217b3b"
+              target="_blank"
+              rel="noreferrer"
+            >
+              here.
+            </Link>
+
+            </BulletText>
+          </TextWrapper>
+        </Bullet>
+        <Bullet>
+          <Image src={BulletImg} alt="across_logo" />
+          <TextWrapper>
+            <BulletHeader>COST-EFFICIENT</BulletHeader>
+            <BulletText>
+            Across Protocol is highly cost-efficient. 
+
+            Especially for large transfers, Across is the cheapest cross-chain bridge in regards to fees. 
+
+            Across does not use AMMs to transfer funds between chains. This means slippage-free transfers.
+
+            You can read more about our low fees 
+
+            <Link
+              href="https://medium.com/across-protocol/how-does-across-protocol-bridgeforless-2b972d7d9c85"
+              target="_blank"
+              rel="noreferrer"
+            >
+              here.
+            </Link>
+
+            For more information on Across Protocol, check out these resources: 
+
+            <Link
+              href="https://docs.across.to/bridge/"
+              target="_blank"
+              rel="noreferrer"
+            >
+               Deep dive into our docs site
+
+            </Link>
+
+            <Link
+              href="https://medium.com/across-protocol"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Stay up to date on our Twitter
+
+            </Link>
+
+            <Link
+              href="https://medium.com/across-protocol/how-does-across-protocol-bridgeforless-2b972d7d9c85"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Read our articles on Medium
+            </Link>
+
+            
+            
+           
+
+
+           
+
+
           </TextWrapper>
         </Bullet>
       </Body>
