@@ -130,11 +130,11 @@ const SendAction: React.FC = () => {
         {
           category: "send",
           action: "bridge",
-          name: tokenInfo && tokenInfo.symbol.concat(
-            " ", sendState.currentlySelectedFromChain.chainId.toString().concat(
-              "->", sendState.currentlySelectedToChain.chainId.toString()
-            )
-          ),
+          name: tokenInfo && JSON.stringify({
+            symbol: tokenInfo.symbol,
+            from: sendState.currentlySelectedFromChain.chainId,
+            to: sendState.currentlySelectedToChain.chainId
+          }),
           value: tokenInfo && Number(formatUnits(amount, tokenInfo.decimals))
         }
       );
