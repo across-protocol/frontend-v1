@@ -103,6 +103,7 @@ const About: FC = () => {
             >
               here.
             </Link>
+            </BulletText>
 
             For more information on Across Protocol, check out these resources: 
 
@@ -132,7 +133,7 @@ const About: FC = () => {
               Read our articles on Medium
             </Link>
 
-            </BulletText>
+    
             
            
 
