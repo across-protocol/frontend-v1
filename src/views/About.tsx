@@ -45,7 +45,8 @@ const About: FC = () => {
           <Image src={BulletImg} alt="across_logo" />
           <TextWrapper>
             <BulletHeader>FAST</BulletHeader>
-            <BulletText>
+            </BulletText>
+            <Bullet>
             Using Across means that assets are bridged and available for use on mainnet almost instantly. You can typically expect to receive your funds within 1-2 minutes. 
             </BulletText>
 
