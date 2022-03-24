@@ -37,7 +37,7 @@ const About: FC = () => {
     <Wrapper>
       <HeroBg>
         <HeroHeader>
-        Across is a cross-chain bridging solution that allows you to send assets between L1 and L2
+        A cross-chain bridge to send assets between L1 and L2 chains
         </HeroHeader>
       </HeroBg>
       <Body>
@@ -47,7 +47,9 @@ const About: FC = () => {
             <BulletHeader>FAST</BulletHeader>
             <BulletText>
             Using Across means that assets are bridged and available for use on mainnet almost instantly. You can typically expect to receive your funds within 1-2 minutes. 
+            </BulletText>
 
+            <BulletText>
             You can learn more about how Across protocol executes near-instantaneous transfers 
           
             <Link
@@ -67,9 +69,13 @@ const About: FC = () => {
             <BulletHeader>SECURE</BulletHeader>
             <BulletText>
             Secured by UMA’s optimistic oracle. This optimistic oracle has been audited by OpenZeppelin and is trusted by top teams to protect hundreds of millions of dollars in value.
+            </BulletHeader>
 
+            <BulletText>
             Across’ contracts have also been audited by OpenZeppelin. Our bridge’s smart contracts have been extensively tested —  proven by our audits, TVL in Across’ bridge and our contracts standing the test of time.
+            </BulletHeader>
 
+            <BulletText>
             You can read more about our security 
 
             <Link
@@ -87,15 +93,22 @@ const About: FC = () => {
           <Image src={BulletImg} alt="across_logo" />
           <TextWrapper>
             <BulletHeader>COST-EFFICIENT</BulletHeader>
-            <BulletText>
+         
+            <Bullet>
             Across Protocol is highly cost-efficient. 
+            </BulletText>
 
+            <BulletText>
             Especially for large transfers, Across is the cheapest cross-chain bridge in regards to fees. 
-
+            </BulletHeader>
+            
+            <BulletText>
             Across does not use AMMs to transfer funds between chains. This means slippage-free transfers.
+            </BulletHeader>
 
+            <BulletText>
             You can read more about our low fees 
-          
+           
             <Link
               href="https://medium.com/across-protocol/how-does-across-protocol-bridgeforless-2b972d7d9c85"
               target="_blank"
