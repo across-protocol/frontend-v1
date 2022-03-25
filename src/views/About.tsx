@@ -51,9 +51,7 @@ const About: FC = () => {
             <br>
             Across’ contracts have also been audited by OpenZeppelin. Our bridge’s smart contracts have been extensively tested —  proven by our audits, TVL in Across’ bridge and our contracts standing the test of time.
             </br>
-            <br>
-            You can read more about our security <a href="https://medium.com/across-protocol/a-deep-dive-into-across-protocols-security-c9b46a217b3b">here</a>.
-            </br>
+          
           </TextWrapper>
         </Bullet>
         <Bullet>
