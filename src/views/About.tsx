@@ -44,11 +44,16 @@ const About: FC = () => {
         <Bullet>
           <Image src={BulletImg} alt="across_logo" />
           <TextWrapper>
-            <BulletHeader>Instantaneous Liquidity</BulletHeader>
+            <BulletHeader>SECURE</BulletHeader>
             <BulletText>
-              Assets are bridged and available for use on mainnet almost
-              instantly.
+            Secured by UMA’s optimistic oracle. This optimistic oracle has been audited by OpenZeppelin and is trusted by top teams to protect hundreds of millions of dollars in value.
             </BulletText>
+            <br>
+            Across’ contracts have also been audited by OpenZeppelin. Our bridge’s smart contracts have been extensively tested —  proven by our audits, TVL in Across’ bridge and our contracts standing the test of time.
+            </br>
+            <br>
+            You can read more about our security <a href="https://medium.com/across-protocol/a-deep-dive-into-across-protocols-security-c9b46a217b3b">here</a>.
+            </br>
           </TextWrapper>
         </Bullet>
         <Bullet>
