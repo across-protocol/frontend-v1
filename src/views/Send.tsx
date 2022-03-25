@@ -1,5 +1,5 @@
 import React from "react";
-import { useMatomo } from '@datapunt/matomo-tracker-react'
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 import {
   Layout,
   ChainSelection,
@@ -9,17 +9,15 @@ import {
 } from "components";
 
 const Send: React.FC = () => {
-  const { trackPageView } = useMatomo()
+  const { trackPageView } = useMatomo();
 
   // Track page views of the Send tab
   React.useEffect(() => {
-    trackPageView(
-      {
-        documentTitle: "Send",
-        href: "https://across.to"
-      }
-    )
-  }, [])
+    trackPageView({
+      documentTitle: "Send",
+      href: "https://across.to",
+    });
+  }, [trackPageView]);
 
   return (
     <Layout>
