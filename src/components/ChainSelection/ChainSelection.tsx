@@ -21,11 +21,16 @@ import { actions } from "state/send";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 import usePrevious from "hooks/usePrevious";
 
+// Matomo import
+import { useMatomo  } from "@datapunt/matomo-tracker-react";
+
 const ChainSelection: React.FC = () => {
   const { init } = onboard;
   const { isConnected, provider, chainId, error } = useConnection();
   const sendState = useAppSelector((state) => state.send);
   const dispatch = useAppDispatch();
+
+  const { trackEvent } = useMatomo();
 
   /*
     The following block will attempt to change the dropdown when the user connects the app.
@@ -99,6 +104,12 @@ const ChainSelection: React.FC = () => {
     selectedItem: sendState.currentlySelectedFromChain,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
+
+        // Matomo track fromChain
+        trackEvent(
+          {category: "send", action: "setFromChain", name: selectedItem.chainId.toString()}
+        );
+
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
         dispatch(actions.updateSelectedFromChain(selectedItem));
