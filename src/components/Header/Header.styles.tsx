@@ -70,7 +70,7 @@ export const LogoLink = styled(UnstyledLink)`
 `;
 export const Logo = styled(UnstyledDesktopLogo)`
   display: none;
-  @media ${QUERIES.desktopAndUp} {
+  @media ${QUERIES.laptopAndUp} {
     display: revert;
   }
 `;
