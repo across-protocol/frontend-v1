@@ -25,6 +25,10 @@ export const Navigation = styled.nav`
   @media ${QUERIES.laptopAndUp} {
     display: revert;
   }
+  svg,
+  path {
+    line-height: 0 !important;
+  }
 `;
 
 export const List = styled.ul`
@@ -67,6 +71,7 @@ export const LogoLink = styled(UnstyledLink)`
   @media ${QUERIES.desktopAndUp} {
     /* padding-left: 45px; */
   }
+  line-height: 0;
 `;
 export const Logo = styled(UnstyledDesktopLogo)`
   display: none;
