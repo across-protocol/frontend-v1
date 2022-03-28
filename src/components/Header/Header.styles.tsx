@@ -81,7 +81,7 @@ export const Logo = styled(UnstyledDesktopLogo)`
 `;
 
 export const MobileLogo = styled(UnstyledMobileLogo)`
-  @media ${QUERIES.desktopAndUp} {
+  @media ${QUERIES.laptopAndUp} {
     display: none;
   }
 `;
