@@ -68,7 +68,7 @@ const variables = css`
     --central-content: 500px;
     --header-height: 60px;
     @media ${QUERIES.tabletAndUp} {
-      --header-height: 100px;
+      --header-height: 80px;
     }
   }
 `;
