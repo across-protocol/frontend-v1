@@ -52,7 +52,7 @@ const handler = async (request, response) => {
       minDeposit: ethers.BigNumber.from(depositFeeDetails.slow.total)
         .add(depositFeeDetails.instant.total)
         .mul(4).toString(), // Max fee pct is 25%
-      maxDeposit: liquidReserves.sub(pendingReserves).toString(),
+      // maxDeposit: liquidReserves.sub(pendingReserves).toString(),
       liquidReserves,
       pendingReserves,
     };
