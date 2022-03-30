@@ -23,9 +23,9 @@ const handler = async (request, response) => {
     );
 
     const multicallInput = [
-      bridgePool.interface.encodeFunctionData("sync", []),
-      bridgePool.interface.encodeFunctionData("liquidReserves", []),
-      bridgePool.interface.encodeFunctionData("pendingReserves", []),
+      bridgePool.interface.encodeFunctionData("sync"),
+      bridgePool.interface.encodeFunctionData("liquidReserves"),
+      bridgePool.interface.encodeFunctionData("pendingReserves"),
     ];
 
     const [depositFeeDetails, multicallOutput] = await Promise.all([
