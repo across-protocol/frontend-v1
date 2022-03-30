@@ -32,7 +32,7 @@ import InformationDialog from "components/InformationDialog";
 import { useAppSelector } from "state/hooks";
 import { ErrorContext } from "context/ErrorContext";
 import { ReactComponent as ConfettiIcon } from "assets/confetti.svg";
-import { useMatomo  } from "@datapunt/matomo-tracker-react";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 
 const CONFIRMATIONS = 1;
 const SendAction: React.FC = () => {
@@ -48,7 +48,7 @@ const SendAction: React.FC = () => {
     fees,
     spender,
   } = useSend();
-  const { signer, account } = useConnection();
+  const { signer, account, name } = useConnection();
   const sendState = useAppSelector((state) => state.send);
   const [isInfoModalOpen, setOpenInfoModal] = useState(false);
   const toggleInfoModal = () => setOpenInfoModal((oldOpen) => !oldOpen);
@@ -126,18 +126,18 @@ const SendAction: React.FC = () => {
     }
     if (canSend) {
       // Matomo track send transactions
-      trackEvent(
-        {
-          category: "send",
-          action: "bridge",
-          name: tokenInfo && JSON.stringify({
+      trackEvent({
+        category: "send",
+        action: "bridge",
+        name:
+          tokenInfo &&
+          JSON.stringify({
             symbol: tokenInfo.symbol,
             from: sendState.currentlySelectedFromChain.chainId,
-            to: sendState.currentlySelectedToChain.chainId
+            to: sendState.currentlySelectedToChain.chainId,
           }),
-          value: tokenInfo && Number(formatUnits(amount, tokenInfo.decimals))
-        }
-      );
+        value: tokenInfo && Number(formatUnits(amount, tokenInfo.decimals)),
+      });
       setSendPending(true);
       if (error) removeError();
       handleSend()
@@ -236,8 +236,12 @@ const SendAction: React.FC = () => {
         )}
 
         <PrimaryButton onClick={handleClick} disabled={buttonDisabled}>
-          {buttonMsg()}
+          <span>{buttonMsg()}</span>
         </PrimaryButton>
+        {name && name === "WalletConnect" && (
+          <span>Do not change networks when using WalletConnect</span>
+        )}
+
         {sendState.currentlySelectedFromChain.chainId === ChainId.MAINNET && (
           <L1Info>
             <div>L1 to L2 transfers use the destination’s native bridge</div>
