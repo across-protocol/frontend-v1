@@ -2,7 +2,7 @@
 // However, when written in ts, the imports seem to fail, so this is in js for now.
 
 const sdk = require("@uma/sdk");
-const { BridgeAdminEthers__factory, BridgePoolEthers__factory, Multicall2__factory } = require("@uma/contracts-node");
+const { BridgeAdminEthers__factory, BridgePoolEthers__factory } = require("@uma/contracts-node");
 const ethers = require("ethers");
 
 const handler = async (request, response) => {
@@ -35,12 +35,10 @@ const handler = async (request, response) => {
       provider
     );
     
-    const multicall = Multicall2__factory.connect("0xeefba1e63905ef1d7acba5a8513c70307c1ce441", provider);
-    
-    const aggregateInput = [
-      {target: bridgePool, callData: bridgePoolContract.interface.encodeFunctionData("sync", [])},
-      {target: bridgePool, callData: bridgePoolContract.interface.encodeFunctionData("liquidReserves", [])},
-      {target: bridgePool, callData: bridgePoolContract.interface.encodeFunctionData("pendingReserves", [])},
+    const multicallInput = [
+      bridgePoolContract.interface.encodeFunctionData("sync", []),
+      bridgePoolContract.interface.encodeFunctionData("liquidReserves", []),
+      bridgePoolContract.interface.encodeFunctionData("pendingReserves", []),
     ];
     
     const [depositFeeDetails, lpFee, multicallOutput] = await Promise.all([
@@ -52,7 +50,7 @@ const handler = async (request, response) => {
           : l1Token
       ),
       lpFeeCalculator.getLpFeePct(l1Token, bridgePool, amount, parsedTimestamp),
-      multicall.aggregate(aggregateInput)
+      bridgePoolContract.multicall(multicallInput)
     ]);
     if (depositFeeDetails.isAmountTooLow)
       throw new InputError("Sent amount is too low relative to fees");
