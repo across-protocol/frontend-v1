@@ -26,6 +26,7 @@ import {
   InfoHeadlineContainer,
   FeesButton,
   SlippageDisclaimer,
+  WalletConnectWarning,
 } from "./SendAction.styles";
 import api from "state/chainApi";
 import InformationDialog from "components/InformationDialog";
@@ -239,7 +240,9 @@ const SendAction: React.FC = () => {
           <span>{buttonMsg()}</span>
         </PrimaryButton>
         {name && name === "WalletConnect" && (
-          <span>Do not change networks when using WalletConnect</span>
+          <WalletConnectWarning>
+            <span>Do not change networks when using WalletConnect</span>
+          </WalletConnectWarning>
         )}
 
         {sendState.currentlySelectedFromChain.chainId === ChainId.MAINNET && (
