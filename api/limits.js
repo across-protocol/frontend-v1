@@ -15,17 +15,10 @@ const handler = async (request, response) => {
     );
 
     let { l1Token } = request.query;
-    if (!isString(l1Token))
-      throw new InputError(
-        "Must provide l1Token"
-      );
-    
-    
+    if (!isString(l1Token)) throw new InputError("Must provide l1Token");
+
     const bridgePool = BridgePoolEthers__factory.connect(
-        (await getTokenDetails(
-            provider,
-            l1Token
-          )).bridgePool,
+      (await getTokenDetails(provider, l1Token)).bridgePool,
       provider
     );
 
@@ -34,7 +27,7 @@ const handler = async (request, response) => {
       bridgePool.interface.encodeFunctionData("liquidReserves", []),
       bridgePool.interface.encodeFunctionData("pendingReserves", []),
     ];
-    
+
     const [depositFeeDetails, multicallOutput] = await Promise.all([
       sdk.across.gasFeeCalculator.getDepositFeesDetails(
         provider,
@@ -43,16 +36,23 @@ const handler = async (request, response) => {
           ? sdk.across.constants.ADDRESSES.ETH
           : l1Token
       ),
-      bridgePool.callStatic.multicall(multicallInput)
+      bridgePool.callStatic.multicall(multicallInput),
     ]);
-    
-    const liquidReserves = bridgePool.interface.decodeFunctionResult("liquidReserves", multicallOutput[1]);
-    const pendingReserves = bridgePool.interface.decodeFunctionResult("pendingReserves", multicallOutput[2]);
-    
+
+    const liquidReserves = bridgePool.interface.decodeFunctionResult(
+      "liquidReserves",
+      multicallOutput[1]
+    );
+    const pendingReserves = bridgePool.interface.decodeFunctionResult(
+      "pendingReserves",
+      multicallOutput[2]
+    );
 
     const responseJson = {
-      minDeposit: ethers.BigNumber.from(depositFeeDetails.slow.total).add(depositFeeDetails.instant.total).mul(4), // Max fee pct is 25%
-      maxDeposit: liquidReserves.sub(pendingReserves).toString()
+      minDeposit: ethers.BigNumber.from(depositFeeDetails.slow.total)
+        .add(depositFeeDetails.instant.total)
+        .mul(4), // Max fee pct is 25%
+      maxDeposit: liquidReserves.sub(pendingReserves).toString(),
     };
 
     response.status(200).json(responseJson);
