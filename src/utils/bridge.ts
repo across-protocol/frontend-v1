@@ -125,11 +125,10 @@ export async function getLpFee(
     provider
   );
 
-  // Note: the any casts here are because the overload resolution doesn't work correctly on these typechain types.
   const multicallInput = [
-    bridgePool.interface.encodeFunctionData("sync" as any, []),
-    bridgePool.interface.encodeFunctionData("liquidReserves" as any, []),
-    bridgePool.interface.encodeFunctionData("pendingReserves" as any, []),
+    bridgePool.interface.encodeFunctionData("sync"),
+    bridgePool.interface.encodeFunctionData("liquidReserves"),
+    bridgePool.interface.encodeFunctionData("pendingReserves"),
   ];
 
   const multicallOutput = await bridgePool.callStatic.multicall(multicallInput);
