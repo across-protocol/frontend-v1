@@ -50,7 +50,7 @@ const handler = async (request, response) => {
           : l1Token
       ),
       lpFeeCalculator.getLpFeePct(l1Token, bridgePool, amount, parsedTimestamp),
-      bridgePoolContract.multicall(multicallInput)
+      bridgePoolContract.callStatic.multicall(multicallInput)
     ]);
     if (depositFeeDetails.isAmountTooLow)
       throw new InputError("Sent amount is too low relative to fees");
