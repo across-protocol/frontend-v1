@@ -51,8 +51,10 @@ const handler = async (request, response) => {
     const responseJson = {
       minDeposit: ethers.BigNumber.from(depositFeeDetails.slow.total)
         .add(depositFeeDetails.instant.total)
-        .mul(4), // Max fee pct is 25%
+        .mul(4).toString(), // Max fee pct is 25%
       maxDeposit: liquidReserves.sub(pendingReserves).toString(),
+      liquidReserves,
+      pendingReserves,
     };
 
     response.status(200).json(responseJson);
