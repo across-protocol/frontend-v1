@@ -2,7 +2,7 @@
 // However, when written in ts, the imports seem to fail, so this is in js for now.
 
 const sdk = require("@uma/sdk");
-const { BridgeAdminEthers__factory } = require("@uma/contracts-node");
+const { BridgeAdminEthers__factory, BridgePoolEthers__factory, Multicall2__factory } = require("@uma/contracts-node");
 const ethers = require("ethers");
 
 const handler = async (request, response) => {
@@ -29,8 +29,21 @@ const handler = async (request, response) => {
     if (l1Token === sdk.across.constants.ADDRESSES.WETH)
       l1Token = sdk.across.constants.ADDRESSES.WETH;
     const lpFeeCalculator = new sdk.across.LpFeeCalculator(provider);
-
-    const [depositFeeDetails, lpFee] = await Promise.all([
+    
+    const bridgePoolContract = BridgePoolEthers__factory.connect(
+      bridgePool,
+      provider
+    );
+    
+    const multicall = Multicall2__factory.connect("0xeefba1e63905ef1d7acba5a8513c70307c1ce441", provider);
+    
+    const aggregateInput = [
+      {target: bridgePool, callData: bridgePoolContract.interface.encodeFunctionData("sync", [])},
+      {target: bridgePool, callData: bridgePoolContract.interface.encodeFunctionData("liquidReserves", [])},
+      {target: bridgePool, callData: bridgePoolContract.interface.encodeFunctionData("pendingReserves", [])},
+    ];
+    
+    const [depositFeeDetails, lpFee, multicallOutput] = await Promise.all([
       sdk.across.gasFeeCalculator.getDepositFeesDetails(
         provider,
         amount,
@@ -39,15 +52,21 @@ const handler = async (request, response) => {
           : l1Token
       ),
       lpFeeCalculator.getLpFeePct(l1Token, bridgePool, amount, parsedTimestamp),
+      multicall.aggregate(aggregateInput)
     ]);
     if (depositFeeDetails.isAmountTooLow)
       throw new InputError("Sent amount is too low relative to fees");
+    
+    const liquidReserves = bridgePoolContract.interface.decodeFunctionResult("liquidReserves", multicallOutput[1]);
+    const pendingReserves = bridgePoolContract.interface.decodeFunctionResult("pendingReserves", multicallOutput[2]);
+    
 
     const responseJson = {
       slowFeePct: depositFeeDetails.slow.pct,
       instantFeePct: depositFeeDetails.instant.pct,
       lpFeePct: lpFee.toString(),
       timestamp: parsedTimestamp.toString(),
+      freeLiquidity: liquidReserves.sub(pendingReserves).toString()
     };
 
     response.status(200).json(responseJson);
