@@ -124,10 +124,19 @@ export async function getLpFee(
     bridgePoolAddress,
     provider
   );
-  const liquidityReserves = await bridgePool.liquidReserves();
-  const pendingReserves = await bridgePool.pendingReserves();
 
-  const isLiquidityInsufficient = liquidityReserves
+  const multicallInput = [
+    bridgePool.interface.encodeFunctionData("sync", []),
+    bridgePool.interface.encodeFunctionData("liquidReserves", []),
+    bridgePool.interface.encodeFunctionData("pendingReserves", []),
+  ];
+
+  const multicallOutput = await bridgePool.callStatic.multicall(multicallInput);
+
+  const liquidReserves = bridgePool.interface.decodeFunctionResult("liquidReserves", multicallOutput[1]);
+  const pendingReserves = bridgePool.interface.decodeFunctionResult("pendingReserves", multicallOutput[2]);å
+
+  const isLiquidityInsufficient = liquidReserves
     .sub(pendingReserves)
     .lte(amount);
   result.isLiquidityInsufficient = isLiquidityInsufficient;
