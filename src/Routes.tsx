@@ -19,7 +19,7 @@ interface Props {}
 // Need this component for useLocation hook
 const Routes: FC<Props> = () => {
   const { showConfirmationScreen } = useDeposits();
-  const { error, provider, chainId } = useConnection();
+  const { error, provider, chainId, name } = useConnection();
   const location = useLocation();
   const sendState = useAppSelector((state) => state.send);
   const { error: globalError, removeError } = useContext(ErrorContext);
@@ -68,6 +68,15 @@ const Routes: FC<Props> = () => {
             <button onClick={() => switchChain(provider, DEFAULT_TO_CHAIN_ID)}>
               switch to {CHAINS[DEFAULT_TO_CHAIN_ID].name}
             </button>
+          </div>
+        </SuperHeader>
+      )}
+      {name && name === "WalletConnect" && (
+        <SuperHeader>
+          <div>
+            Do not change networks when submitting transfers on Across. Across
+            is not responsible for wallet-based integration issues with
+            WalletConnect
           </div>
         </SuperHeader>
       )}
