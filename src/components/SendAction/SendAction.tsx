@@ -242,7 +242,7 @@ const SendAction: React.FC = () => {
         {name && name === "WalletConnect" && (
           <WalletConnectWarning>
             <span>
-              Do not change networks when submitting a transfer. Across is not
+              Do not change networks after connecting to Across with WalletConnect. Across is not
               responsible for wallet-based integration issues with
               WalletConnect.
             </span>
