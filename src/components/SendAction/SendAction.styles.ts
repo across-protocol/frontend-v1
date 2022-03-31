@@ -93,3 +93,9 @@ export const FeesButton = styled(BaseButton)`
   font: inherit;
   color: var(--color-primary);
 `;
+
+export const WalletConnectWarning = styled.div`
+  text-align: center;
+  font-size: ${12 / 16}rem;
+  margin-top: 0.5rem;
+`;

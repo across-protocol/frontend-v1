@@ -53,9 +53,8 @@ function useQuery() {
 }
 
 export function useConnection() {
-  const { account, signer, provider, error, chainId, notify } = useAppSelector(
-    (state) => state.connection
-  );
+  const { account, signer, provider, error, chainId, notify, name } =
+    useAppSelector((state) => state.connection);
 
   const dispatch = useAppDispatch();
   const actions = useMemo(
@@ -75,6 +74,7 @@ export function useConnection() {
     disconnect: actions.disconnect,
     setError: actions.errorAction,
     notify,
+    name,
   };
 }
 

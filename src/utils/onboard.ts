@@ -44,6 +44,7 @@ export function OnboardEthers(config: Initialization, emit: Emit) {
         if (wallet.provider) {
           emit("update", {
             account: wallet.provider.selectedAddress,
+            name: wallet.name,
           });
         }
       },
