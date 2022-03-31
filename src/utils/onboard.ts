@@ -41,7 +41,6 @@ export function OnboardEthers(config: Initialization, emit: Emit) {
       },
       wallet: (wallet: Wallet) => {
         savedWallet = wallet;
-        console.log("wallet in onboard", wallet);
         if (wallet.provider) {
           emit("update", {
             account: wallet.provider.selectedAddress,
