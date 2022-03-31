@@ -14,43 +14,45 @@ const handler = async (request, response) => {
       `https://mainnet.infura.io/v3/${REACT_APP_PUBLIC_INFURA_ID}`
     );
 
-    let { amount, l2Token, chainId, timestamp } = request.query;
-    if (!isString(amount) || !isString(l2Token) || !isString(chainId))
-      throw new InputError(
-        "Must provide amount, chainId, and l2Token as query params"
-      );
-    const parsedTimestamp = isString(timestamp)
-      ? Number(timestamp)
-      : (await provider.getBlock("latest")).timestamp;
+    let { l1Token } = request.query;
+    if (!isString(l1Token)) throw new InputError("Must provide l1Token");
 
-    let { l1Token, bridgePool } = await getTokenDetails(
-      provider,
-      undefined, // Search by l2Token only.
-      l2Token,
-      chainId
+    const bridgePool = BridgePoolEthers__factory.connect(
+      (await getTokenDetails(provider, l1Token)).bridgePool,
+      provider
     );
-    if (l1Token === sdk.across.constants.ADDRESSES.WETH)
-      l1Token = sdk.across.constants.ADDRESSES.WETH;
-    const lpFeeCalculator = new sdk.across.LpFeeCalculator(provider);
 
-    const [depositFeeDetails, lpFee] = await Promise.all([
+    const multicallInput = [
+      bridgePool.interface.encodeFunctionData("sync"),
+      bridgePool.interface.encodeFunctionData("liquidReserves"),
+      bridgePool.interface.encodeFunctionData("pendingReserves"),
+    ];
+
+    const [depositFeeDetails, multicallOutput] = await Promise.all([
       sdk.across.gasFeeCalculator.getDepositFeesDetails(
         provider,
-        amount,
+        ethers.BigNumber.from("10").pow(18), // Just pass in 1e18
         l1Token === sdk.across.constants.ADDRESSES.WETH
           ? sdk.across.constants.ADDRESSES.ETH
           : l1Token
       ),
-      lpFeeCalculator.getLpFeePct(l1Token, bridgePool, amount, parsedTimestamp),
+      bridgePool.callStatic.multicall(multicallInput),
     ]);
-    if (depositFeeDetails.isAmountTooLow)
-      throw new InputError("Sent amount is too low relative to fees");
+
+    const [liquidReserves] = bridgePool.interface.decodeFunctionResult(
+      "liquidReserves",
+      multicallOutput[1]
+    );
+    const [pendingReserves] = bridgePool.interface.decodeFunctionResult(
+      "pendingReserves",
+      multicallOutput[2]
+    );
 
     const responseJson = {
-      slowFeePct: depositFeeDetails.slow.pct,
-      instantFeePct: depositFeeDetails.instant.pct,
-      lpFeePct: lpFee.toString(),
-      timestamp: parsedTimestamp.toString(),
+      minDeposit: ethers.BigNumber.from(depositFeeDetails.slow.total)
+        .add(depositFeeDetails.instant.total)
+        .mul(4).toString(), // Max fee pct is 25%
+      maxDeposit: liquidReserves.sub(pendingReserves).toString(),
     };
 
     response.status(200).json(responseJson);
