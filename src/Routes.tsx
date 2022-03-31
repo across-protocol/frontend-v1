@@ -74,7 +74,7 @@ const Routes: FC<Props> = () => {
       {name && name === "WalletConnect" && (
         <SuperHeader>
           <div>
-            Do not change networks when submitting transfers on Across. Across
+            Do not change networks after connecting to Across with WalletConnect. Across
             is not responsible for wallet-based integration issues with
             WalletConnect
           </div>
