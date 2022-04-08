@@ -77,3 +77,26 @@ export const ROIItem = styled.div`
     margin-bottom: 15px;
   }
 `;
+
+export const LiquidityBlocked = styled.div`
+  backdrop-filter: blur(6px);
+  height: 254px;
+  width: 440px;
+  position: absolute;
+  margin: -20px;
+  z-index: 1000;
+  display: flex;
+  > div {
+    font-family: "Barlow";
+    text-align: center;
+    border-radius: 5px;
+    background-color: var(--color-error);
+    color: var(--color-gray);
+    width: 90%;
+    height: 70px;
+    margin: 4rem auto 0;
+    padding: 1rem 0.5rem;
+    font-size: ${14 / 16}rem;
+    line-height: ${19 / 16}rem;
+  }
+`;

@@ -252,11 +252,13 @@ const AddLiquidityForm: FC<Props> = ({
           disabled={
             (!provider || !!formError || Number(amount) <= 0) && isConnected
           }
-          onClick={() =>
-            approveOrPoolTransactionHandler().catch((err) =>
+          onClick={() => {
+            // Block adding liqudiity in app if REACT_APP_BLOCK_POOL_LIQUIDITY is true
+            if (process.env.REACT_APP_BLOCK_POOL_LIQUIDITY) return false;
+            return approveOrPoolTransactionHandler().catch((err) =>
               console.error("Error on click to approve or pool tx", err)
-            )
-          }
+            );
+          }}
         >
           {buttonMessage()}
           {txSubmitted ? <BouncingDotsLoader /> : null}

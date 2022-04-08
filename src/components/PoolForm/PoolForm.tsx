@@ -14,6 +14,7 @@ import {
   PositionItem,
   ROI,
   ROIItem,
+  LiquidityBlocked,
 } from "./PoolForm.styles";
 import {
   formatUnits,
@@ -199,6 +200,14 @@ const PoolForm: FC<Props> = ({
         }}
       >
         <TabContentWrapper data-label="Add">
+          {process.env.REACT_APP_BLOCK_POOL_LIQUIDITY ? (
+            <LiquidityBlocked>
+              <div>
+                Pool Migration will happen in less than 96 hours. Please come
+                back when v2 pools are launched
+              </div>
+            </LiquidityBlocked>
+          ) : null}
           <AddLiquidityForm
             wrongNetwork={wrongNetwork}
             error={error}
