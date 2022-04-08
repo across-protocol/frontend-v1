@@ -26,4 +26,19 @@ const SuperHeader = styled.div`
   }
 `;
 
+export const Banner = styled(SuperHeader)`
+  background-color: #324343;
+  color: var(--color-white);
+  font-family: "Barlow";
+  font-weight: 500;
+  font-size: ${16 / 16}rem;
+  & a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+`;
+
 export default SuperHeader;

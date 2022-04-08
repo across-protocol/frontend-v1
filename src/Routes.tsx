@@ -13,6 +13,7 @@ import {
 import { useAppSelector } from "state/hooks";
 import { ErrorContext } from "context/ErrorContext";
 import styled from "@emotion/styled";
+import { Banner } from "components/SuperHeader/SuperHeader";
 
 interface Props {}
 
@@ -36,6 +37,21 @@ const Routes: FC<Props> = () => {
 
   return (
     <>
+      {process.env.REACT_APP_SHOW_V2_MIGRATION_BANNER && (
+        <Banner>
+          <div>
+            Across v2 transition is coming,{" "}
+            <a
+              href="https://docs.umaproject.org"
+              target="_blank"
+              rel="noreferrer"
+            >
+              read here
+            </a>{" "}
+            how to migrate your Pool liquidity
+          </div>
+        </Banner>
+      )}
       {globalError && (
         <SuperHeader>
           <div>{globalError}</div>
