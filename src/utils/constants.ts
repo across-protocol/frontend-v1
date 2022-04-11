@@ -749,3 +749,5 @@ export const CHAINS_SELECTION: ChainsSelection = [
 ];
 
 export const MAX_APPROVAL_AMOUNT = ethers.constants.MaxUint256;
+export const showMigrationBanner =
+  process.env.REACT_APP_SHOW_V2_MIGRATION_BANNER;

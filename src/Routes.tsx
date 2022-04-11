@@ -8,6 +8,7 @@ import {
   CHAINS,
   UnsupportedChainIdError,
   switchChain,
+  showMigrationBanner,
 } from "utils";
 
 import { useAppSelector } from "state/hooks";
@@ -37,7 +38,7 @@ const Routes: FC<Props> = () => {
 
   return (
     <>
-      {process.env.REACT_APP_SHOW_V2_MIGRATION_BANNER && (
+      {showMigrationBanner && (
         <Banner>
           <div>
             Across v2 transition is coming,{" "}

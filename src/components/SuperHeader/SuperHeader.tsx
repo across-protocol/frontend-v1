@@ -29,7 +29,6 @@ const SuperHeader = styled.div`
 export const Banner = styled(SuperHeader)`
   background-color: var(--color-banner);
   color: var(--color-white);
-  font-family: "Barlow";
   font-weight: 500;
   font-size: ${16 / 16}rem;
   & a {
