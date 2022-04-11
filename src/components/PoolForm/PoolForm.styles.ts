@@ -87,7 +87,6 @@ export const LiquidityBlocked = styled.div`
   z-index: 1000;
   display: flex;
   > div {
-    font-family: "Barlow";
     text-align: center;
     border-radius: 5px;
     background-color: var(--color-error);

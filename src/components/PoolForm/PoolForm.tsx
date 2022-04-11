@@ -25,6 +25,7 @@ import {
   DEFAULT_ADD_LIQUIDITY_ETH_GAS_ESTIMATE,
   UPDATE_GAS_INTERVAL_MS,
   toWeiSafe,
+  BLOCK_LIQUIDITY,
 } from "utils";
 import { useConnection } from "state/hooks";
 import type { ShowSuccess } from "views/Pool";
@@ -200,7 +201,7 @@ const PoolForm: FC<Props> = ({
         }}
       >
         <TabContentWrapper data-label="Add">
-          {process.env.REACT_APP_BLOCK_POOL_LIQUIDITY ? (
+          {BLOCK_LIQUIDITY ? (
             <LiquidityBlocked>
               <div>
                 Pool Migration will happen in less than 96 hours. Please come

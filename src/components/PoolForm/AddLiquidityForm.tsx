@@ -17,7 +17,12 @@ import { useERC20 } from "hooks";
 import { ethers } from "ethers";
 import { addEtherscan } from "utils/notify";
 import BouncingDotsLoader from "components/BouncingDotsLoader";
-import { DEFAULT_TO_CHAIN_ID, CHAINS, switchChain } from "utils";
+import {
+  DEFAULT_TO_CHAIN_ID,
+  CHAINS,
+  switchChain,
+  BLOCK_LIQUIDITY,
+} from "utils";
 import api from "state/chainApi";
 import type { ShowSuccess } from "views/Pool";
 import { ErrorContext } from "context/ErrorContext";
@@ -254,7 +259,7 @@ const AddLiquidityForm: FC<Props> = ({
           }
           onClick={() => {
             // Block adding liqudiity in app if REACT_APP_BLOCK_POOL_LIQUIDITY is true
-            if (process.env.REACT_APP_BLOCK_POOL_LIQUIDITY) return false;
+            if (BLOCK_LIQUIDITY) return false;
             return approveOrPoolTransactionHandler().catch((err) =>
               console.error("Error on click to approve or pool tx", err)
             );
