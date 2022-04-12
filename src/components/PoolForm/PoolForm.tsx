@@ -205,7 +205,7 @@ const PoolForm: FC<Props> = ({
             <LiquidityBlocked>
               <div>
                 Pool Migration will happen in less than 96 hours. Please come
-                back when v2 pools are launched
+                back when v2 pools are launched.
               </div>
             </LiquidityBlocked>
           ) : null}
