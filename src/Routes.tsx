@@ -35,21 +35,20 @@ const Routes: FC<Props> = () => {
     provider &&
     (error instanceof UnsupportedChainIdError ||
       chainId !== DEFAULT_TO_CHAIN_ID);
-
   return (
     <>
       {showMigrationBanner && (
         <Banner>
           <div>
-            Across v2 transition is coming,{" "}
+            Across v2 transition is coming!{" "}
             <a
               href="https://docs.umaproject.org"
               target="_blank"
               rel="noreferrer"
             >
-              read here
+              Read here
             </a>{" "}
-            how to migrate your Pool liquidity
+            to learn how to migrate your pool liquidity from Across v1.
           </div>
         </Banner>
       )}
