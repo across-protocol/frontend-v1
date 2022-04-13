@@ -13,6 +13,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - REACT_APP_DEFAULT_GAS_PRICE: default gas price estimate when no online estimate is available, specify in gwei
 - REACT_APP_UPDATE_GAS_INTERVAL_MS: how frequently to update gas prices in MS, used for estimating adding liquidity when maxing eth. Default 30000 (30 sec).
 - REACT_APP_SHOW_V2_MIGRATION_BANNER: Show a migration banner if set to true.
+- REACT_APP_BLOCK_POOL_LIQUIDITY: Prevent pool liquidity from being added and show a warning if set to `true`.
 
 ## Internal Contributions
 

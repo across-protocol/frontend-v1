@@ -14,6 +14,7 @@ import {
   PositionItem,
   ROI,
   ROIItem,
+  LiquidityBlocked,
 } from "./PoolForm.styles";
 import {
   formatUnits,
@@ -24,6 +25,7 @@ import {
   DEFAULT_ADD_LIQUIDITY_ETH_GAS_ESTIMATE,
   UPDATE_GAS_INTERVAL_MS,
   toWeiSafe,
+  blockLiquidity,
 } from "utils";
 import { useConnection } from "state/hooks";
 import type { ShowSuccess } from "views/Pool";
@@ -199,6 +201,14 @@ const PoolForm: FC<Props> = ({
         }}
       >
         <TabContentWrapper data-label="Add">
+          {blockLiquidity ? (
+            <LiquidityBlocked>
+              <div>
+                Pool Migration will happen in less than 96 hours. Please come
+                back when v2 pools are launched.
+              </div>
+            </LiquidityBlocked>
+          ) : null}
           <AddLiquidityForm
             wrongNetwork={wrongNetwork}
             error={error}
