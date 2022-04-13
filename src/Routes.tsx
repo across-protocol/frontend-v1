@@ -8,11 +8,13 @@ import {
   CHAINS,
   UnsupportedChainIdError,
   switchChain,
+  showMigrationBanner,
 } from "utils";
 
 import { useAppSelector } from "state/hooks";
 import { ErrorContext } from "context/ErrorContext";
 import styled from "@emotion/styled";
+import { Banner } from "components/SuperHeader/SuperHeader";
 
 interface Props {}
 
@@ -33,9 +35,23 @@ const Routes: FC<Props> = () => {
     provider &&
     (error instanceof UnsupportedChainIdError ||
       chainId !== DEFAULT_TO_CHAIN_ID);
-
   return (
     <>
+      {showMigrationBanner && (
+        <Banner>
+          <div>
+            Across v2 transition is coming!{" "}
+            <a
+              href="https://docs.umaproject.org"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Read here
+            </a>{" "}
+            to learn how to migrate your pool liquidity from Across v1.
+          </div>
+        </Banner>
+      )}
       {globalError && (
         <SuperHeader>
           <div>{globalError}</div>

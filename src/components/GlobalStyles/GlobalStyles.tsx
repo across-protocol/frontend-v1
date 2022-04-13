@@ -56,7 +56,7 @@ const variables = css`
     --color-black-transparent: hsla(${COLORS.black} / 0.75);
     --color-white-transparent: hsla(${COLORS.white} / 0.75);
     --color-gray-transparent: rgba(45, 46, 51, 0.1);
-
+    --color-banner: hsla(${COLORS.banner});
     /*
     Silence the warning about missing Reach Dialog styles
   */

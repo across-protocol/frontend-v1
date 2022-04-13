@@ -52,6 +52,7 @@ export const COLORS = {
   black: "0deg 0% 0%",
   umaRed: "0deg 100% 65%",
   purple: "267deg 77% 62%",
+  banner: "180deg 14.5% 22.9%",
 };
 
 /* Chains and Tokens section */
@@ -748,3 +749,5 @@ export const CHAINS_SELECTION: ChainsSelection = [
 ];
 
 export const MAX_APPROVAL_AMOUNT = ethers.constants.MaxUint256;
+export const showMigrationBanner =
+  process.env.REACT_APP_SHOW_V2_MIGRATION_BANNER;
