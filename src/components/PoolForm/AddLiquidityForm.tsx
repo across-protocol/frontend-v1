@@ -21,7 +21,7 @@ import {
   DEFAULT_TO_CHAIN_ID,
   CHAINS,
   switchChain,
-  BLOCK_LIQUIDITY,
+  blockLiquidity,
 } from "utils";
 import api from "state/chainApi";
 import type { ShowSuccess } from "views/Pool";
@@ -259,7 +259,7 @@ const AddLiquidityForm: FC<Props> = ({
           }
           onClick={() => {
             // Block adding liqudiity in app if REACT_APP_BLOCK_POOL_LIQUIDITY is true
-            if (BLOCK_LIQUIDITY) return false;
+            if (blockLiquidity) return false;
             return approveOrPoolTransactionHandler().catch((err) =>
               console.error("Error on click to approve or pool tx", err)
             );
