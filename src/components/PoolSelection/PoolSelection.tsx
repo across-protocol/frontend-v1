@@ -15,7 +15,9 @@ import {
   ToggleButton,
   Logo,
   ToggleIcon,
+  MigrationWarning,
 } from "./PoolSelection.styles";
+import { migrationPoolV2Warning } from "utils";
 
 interface Props {
   token: Token;
@@ -51,9 +53,25 @@ const PoolSelection: FC<Props> = ({ token, setToken }) => {
     },
   });
 
+  console.log("balances?", balances);
+
   return (
     <AnimatePresence>
       <Wrapper>
+        {migrationPoolV2Warning ? (
+          <MigrationWarning>
+            <div>
+              You still have liquidity on v1 and some more text plus link to{" "}
+              <a
+                href="https://docs.umaproject.org"
+                target="_blank"
+                rel="noreferrer"
+              >
+                these instructions
+              </a>{" "}
+            </div>
+          </MigrationWarning>
+        ) : null}
         <SectionTitle>Select pool</SectionTitle>
         <InputGroup>
           <RoundBox as="label" {...getLabelProps()}>

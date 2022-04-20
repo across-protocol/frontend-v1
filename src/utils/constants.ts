@@ -752,3 +752,5 @@ export const MAX_APPROVAL_AMOUNT = ethers.constants.MaxUint256;
 export const showMigrationBanner =
   process.env.REACT_APP_SHOW_V2_MIGRATION_BANNER;
 export const blockLiquidity = process.env.REACT_APP_BLOCK_POOL_LIQUIDITY;
+export const migrationPoolV2Warning =
+  process.env.REACT_APP_MIGRATION_POOL_V2_WARNING;
