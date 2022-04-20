@@ -18,14 +18,15 @@ import {
   MigrationWarning,
 } from "./PoolSelection.styles";
 import { migrationPoolV2Warning } from "utils";
-
+import { ethers } from "ethers";
 interface Props {
   token: Token;
   setToken: Dispatch<SetStateAction<Token>>;
   wrongNetwork?: boolean;
+  position: ethers.BigNumber;
 }
 
-const PoolSelection: FC<Props> = ({ token, setToken }) => {
+const PoolSelection: FC<Props> = ({ token, setToken, position }) => {
   const { account } = useConnection();
 
   const { data: balances } = useBalances(
@@ -53,12 +54,10 @@ const PoolSelection: FC<Props> = ({ token, setToken }) => {
     },
   });
 
-  console.log("balances?", balances);
-
   return (
     <AnimatePresence>
       <Wrapper>
-        {migrationPoolV2Warning ? (
+        {migrationPoolV2Warning && position.gt(0) ? (
           <MigrationWarning>
             <div>
               You still have liquidity on v1 and some more text plus link to{" "}

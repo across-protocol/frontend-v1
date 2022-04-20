@@ -88,6 +88,11 @@ const Pool: FC = () => {
             wrongNetwork={wrongNetwork}
             token={token}
             setToken={setToken}
+            position={
+              userPosition
+                ? ethers.BigNumber.from(userPosition.positionValue)
+                : ethers.BigNumber.from("0")
+            }
           />
           {!loadingPoolState ? (
             <PoolForm
