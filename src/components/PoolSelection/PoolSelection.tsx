@@ -60,13 +60,15 @@ const PoolSelection: FC<Props> = ({ token, setToken, position }) => {
         {migrationPoolV2Warning && position.gt(0) ? (
           <MigrationWarning>
             <div>
-              You still have liquidity on v1 and some more text plus link to{" "}
+              If you have not migrated liquidity from Across v1 to Across v2,
+              please follow{" "}
               <a
                 href="https://docs.umaproject.org"
                 target="_blank"
                 rel="noreferrer"
               >
-                these instructions
+                {" "}
+                these instruction
               </a>{" "}
             </div>
           </MigrationWarning>
