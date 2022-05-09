@@ -26,7 +26,7 @@ import {
 import api from "state/chainApi";
 import type { ShowSuccess } from "views/Pool";
 import { ErrorContext } from "context/ErrorContext";
-
+import { migrationPoolV2Warning } from "utils";
 // max uint value is 2^256 - 1
 const MAX_UINT_VAL = ethers.constants.MaxUint256;
 const INFINITE_APPROVAL_AMOUNT = MAX_UINT_VAL;
@@ -152,6 +152,7 @@ const AddLiquidityForm: FC<Props> = ({
       return init();
     }
     if (isConnected && userNeedsToApprove) return handleApprove();
+    if (isConnected && migrationPoolV2Warning) return false;
     if (isConnected && Number(amount) > 0 && signer) {
       const weiAmount = toWeiSafe(amount, decimals);
 
@@ -255,7 +256,11 @@ const AddLiquidityForm: FC<Props> = ({
       ) : (
         <FormButton
           disabled={
-            (!provider || !!formError || Number(amount) <= 0) && isConnected
+            (!provider ||
+              !!formError ||
+              Number(amount) <= 0 ||
+              !!migrationPoolV2Warning) &&
+            isConnected
           }
           onClick={() => {
             // Block adding liqudiity in app if REACT_APP_BLOCK_POOL_LIQUIDITY is true

@@ -15,15 +15,18 @@ import {
   ToggleButton,
   Logo,
   ToggleIcon,
+  MigrationWarning,
 } from "./PoolSelection.styles";
-
+import { migrationPoolV2Warning } from "utils";
+import { ethers } from "ethers";
 interface Props {
   token: Token;
   setToken: Dispatch<SetStateAction<Token>>;
   wrongNetwork?: boolean;
+  position: ethers.BigNumber;
 }
 
-const PoolSelection: FC<Props> = ({ token, setToken }) => {
+const PoolSelection: FC<Props> = ({ token, setToken, position }) => {
   const { account } = useConnection();
 
   const { data: balances } = useBalances(
@@ -54,6 +57,22 @@ const PoolSelection: FC<Props> = ({ token, setToken }) => {
   return (
     <AnimatePresence>
       <Wrapper>
+        {migrationPoolV2Warning && position.gt(0) ? (
+          <MigrationWarning>
+            <div>
+              If you have not migrated liquidity from Across v1 to Across v2,
+              please follow{" "}
+              <a
+                href="https://docs.umaproject.org"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {" "}
+                these instructions
+              </a>{" "}
+            </div>
+          </MigrationWarning>
+        ) : null}
         <SectionTitle>Select pool</SectionTitle>
         <InputGroup>
           <RoundBox as="label" {...getLabelProps()}>
