@@ -68,7 +68,7 @@ const PoolSelection: FC<Props> = ({ token, setToken, position }) => {
                 rel="noreferrer"
               >
                 {" "}
-                these instruction
+                these instructions
               </a>{" "}
             </div>
           </MigrationWarning>
