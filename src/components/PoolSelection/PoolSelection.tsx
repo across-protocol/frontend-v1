@@ -57,13 +57,13 @@ const PoolSelection: FC<Props> = ({ token, setToken, position }) => {
   return (
     <AnimatePresence>
       <Wrapper>
-        {migrationPoolV2Warning && position.gt(0) ? (
+        {migrationPoolV2Warning ? (
           <MigrationWarning>
             <div>
               If you have not migrated liquidity from Across v1 to Across v2,
               please follow{" "}
               <a
-                href="https://docs.umaproject.org"
+                href="https://medium.com/across-protocol/lps-migrate-liquidity-from-v1-to-v2-screenshots-and-faqs-8616150b3396"
                 target="_blank"
                 rel="noreferrer"
               >
