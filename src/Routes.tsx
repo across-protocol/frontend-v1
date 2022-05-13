@@ -1,5 +1,5 @@
-import { FC, useContext } from "react";
-import { Switch, Route, useLocation } from "react-router-dom";
+import { FC, useContext, useEffect } from "react";
+import { Switch, Route, useLocation, useHistory } from "react-router-dom";
 import { Send, Confirmation, Pool, About } from "views";
 import { Header, SuperHeader } from "components";
 import { useConnection, useDeposits } from "state/hooks";
@@ -9,6 +9,7 @@ import {
   UnsupportedChainIdError,
   switchChain,
   showMigrationBanner,
+  showMigrationPage,
 } from "utils";
 
 import { useAppSelector } from "state/hooks";
@@ -23,6 +24,7 @@ const Routes: FC<Props> = () => {
   const { showConfirmationScreen } = useDeposits();
   const { error, provider, chainId } = useConnection();
   const location = useLocation();
+  const history = useHistory();
   const sendState = useAppSelector((state) => state.send);
   const { error: globalError, removeError } = useContext(ErrorContext);
 
@@ -35,14 +37,22 @@ const Routes: FC<Props> = () => {
     provider &&
     (error instanceof UnsupportedChainIdError ||
       chainId !== DEFAULT_TO_CHAIN_ID);
+
+  // force the user on /pool page if showMigrationPage is active.
+  useEffect(() => {
+    if (showMigrationPage && location.pathname !== "/pool") {
+      history.push("/pool");
+    }
+  }, [location.pathname, history]);
+
   return (
     <>
-      {showMigrationBanner && (
+      {(showMigrationBanner || showMigrationPage) && (
         <Banner>
           <div>
             Across v2 transition is coming!{" "}
             <a
-              href="https://docs.umaproject.org"
+              href="https://medium.com/across-protocol/lps-migrate-liquidity-from-v1-to-v2-screenshots-and-faqs-8616150b3396"
               target="_blank"
               rel="noreferrer"
             >
