@@ -19,12 +19,16 @@ import {
 } from "./Header.styles";
 import MenuToggle from "./MenuToggle";
 import MobileMenu from "./MobileMenu";
+import { showMigrationPage } from "utils";
 
-const LINKS = [
-  { href: "/", name: "Bridge" },
-  { href: "/pool", name: "Pool" },
-  { href: "/about", name: "About" },
-];
+const LINKS = !showMigrationPage
+  ? [
+      { href: "/", name: "Bridge" },
+      { href: "/pool", name: "Pool" },
+      { href: "/about", name: "About" },
+    ]
+  : [];
+
 const MOBILE_ONLY_LINKS = [
   { href: "https://docs.across.to/bridge/", name: "Docs" },
   { href: "https://discord.gg/across", name: "Support (Discord)" },
