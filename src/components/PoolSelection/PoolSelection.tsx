@@ -17,7 +17,7 @@ import {
   ToggleIcon,
   MigrationWarning,
 } from "./PoolSelection.styles";
-import { migrationPoolV2Warning } from "utils";
+import { migrationPoolV2Warning, showMigrationPage } from "utils";
 import { ethers } from "ethers";
 interface Props {
   token: Token;
@@ -57,7 +57,7 @@ const PoolSelection: FC<Props> = ({ token, setToken, position }) => {
   return (
     <AnimatePresence>
       <Wrapper>
-        {migrationPoolV2Warning ? (
+        {migrationPoolV2Warning || showMigrationPage ? (
           <MigrationWarning>
             <div>
               If you have not migrated liquidity from Across v1 to Across v2,

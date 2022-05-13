@@ -754,3 +754,5 @@ export const showMigrationBanner =
 export const blockLiquidity = process.env.REACT_APP_BLOCK_POOL_LIQUIDITY;
 export const migrationPoolV2Warning =
   process.env.REACT_APP_MIGRATION_POOL_V2_WARNING;
+
+export const showMigrationPage = process.env.REACT_APP_SHOW_MIGRATION_PAGE;
