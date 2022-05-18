@@ -146,10 +146,10 @@ const ChainSelection: React.FC = () => {
         {disableSendForm && (
           <SendBlockedWarning>
             <div>
-              Sending assets is blocked for v1. Please move to our new{" "}
+              Across V1 sending is disabled, please visit{" "}
               <a href="https://across.to" target="_blank" rel="noreferrer">
                 {" "}
-                v2 of Across.
+                Across V2
               </a>{" "}
             </div>
           </SendBlockedWarning>
