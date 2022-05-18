@@ -149,7 +149,7 @@ const ChainSelection: React.FC = () => {
               Sending assets is blocked for v1. Please move to our new{" "}
               <a href="https://across.to" target="_blank" rel="noreferrer">
                 {" "}
-                v2 of across.
+                v2 of Across.
               </a>{" "}
             </div>
           </SendBlockedWarning>
