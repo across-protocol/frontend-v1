@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
 import { onboard } from "utils";
 import { useConnection } from "state/hooks";
-import { CHAINS, switchChain, ChainId, UnsupportedChainIdError } from "utils";
+import {
+  CHAINS,
+  switchChain,
+  ChainId,
+  UnsupportedChainIdError,
+  disableSendForm,
+} from "utils";
 import { Section, SectionTitle } from "../Section";
 import {
   Wrapper,
@@ -14,6 +20,7 @@ import {
   ToggleButton,
   InputGroup,
   ToggleChainName,
+  SendBlockedWarning,
 } from "./ChainSelection.styles";
 import { useSelect } from "downshift";
 import { CHAINS_SELECTION } from "utils/constants";
@@ -22,8 +29,7 @@ import { useAppDispatch, useAppSelector } from "state/hooks";
 import usePrevious from "hooks/usePrevious";
 
 // Matomo import
-import { useMatomo  } from "@datapunt/matomo-tracker-react";
-
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 const ChainSelection: React.FC = () => {
   const { init } = onboard;
   const { isConnected, provider, chainId, error } = useConnection();
@@ -104,11 +110,12 @@ const ChainSelection: React.FC = () => {
     selectedItem: sendState.currentlySelectedFromChain,
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-
         // Matomo track fromChain
-        trackEvent(
-          {category: "send", action: "setFromChain", name: selectedItem.chainId.toString()}
-        );
+        trackEvent({
+          category: "send",
+          action: "setFromChain",
+          name: selectedItem.chainId.toString(),
+        });
 
         const nextState = { ...sendState, fromChain: selectedItem.chainId };
         dispatch(actions.fromChain(nextState));
@@ -136,6 +143,17 @@ const ChainSelection: React.FC = () => {
   return (
     <Section>
       <Wrapper>
+        {disableSendForm && (
+          <SendBlockedWarning>
+            <div>
+              Sending assets is blocked for v1. Please move to our new{" "}
+              <a href="https://across.to" target="_blank" rel="noreferrer">
+                {" "}
+                v2 of across.
+              </a>{" "}
+            </div>
+          </SendBlockedWarning>
+        )}
         <SectionTitle>From</SectionTitle>
         <InputGroup>
           <RoundBox as="label" {...getLabelProps()}>

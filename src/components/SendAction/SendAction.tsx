@@ -14,6 +14,7 @@ import {
   receiveAmount,
   getEstimatedDepositTime,
   ChainId,
+  disableSendForm,
 } from "utils";
 import { PrimaryButton } from "../Buttons";
 import {
@@ -112,7 +113,7 @@ const SendAction: React.FC = () => {
     }
   };
   const handleClick = () => {
-    if (amount.lte(0) || !signer) {
+    if (amount.lte(0) || !signer || disableSendForm) {
       return;
     }
     if (hasToApprove) {
@@ -236,15 +237,18 @@ const SendAction: React.FC = () => {
           </>
         )}
 
-        <PrimaryButton onClick={handleClick} disabled={buttonDisabled}>
+        <PrimaryButton
+          onClick={handleClick}
+          disabled={buttonDisabled || !!disableSendForm}
+        >
           <span>{buttonMsg()}</span>
         </PrimaryButton>
         {name && name === "WalletConnect" && (
           <WalletConnectWarning>
             <span>
-              Do not change networks after connecting to Across with WalletConnect. Across is not
-              responsible for wallet-based integration issues with
-              WalletConnect.
+              Do not change networks after connecting to Across with
+              WalletConnect. Across is not responsible for wallet-based
+              integration issues with WalletConnect.
             </span>
           </WalletConnectWarning>
         )}
