@@ -15,6 +15,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - REACT_APP_SHOW_V2_MIGRATION_BANNER: Show a migration banner if set to true.
 - REACT_APP_BLOCK_POOL_LIQUIDITY: Prevent pool liquidity from being added and show a warning if set to `true`.
 - REACT_APP_MIGRATION_POOL_V2_WARNING: Prevent pool liquidity and show a warning if a user has a position if set to `true`.
+- REACT_APP_DISABLE_SEND_FORM: Disable Send Form; Show a warning.
 
 ## Internal Contributions
 
