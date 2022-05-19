@@ -136,3 +136,21 @@ export const ToggleChainName = styled.div`
   width: 85px;
   text-align: left;
 `;
+
+export const SendBlockedWarning = styled.div`
+  z-index: 1000;
+  display: flex;
+  padding: 1rem 0;
+  > div {
+    text-align: center;
+    border-radius: 5px;
+    background-color: var(--color-error);
+    color: var(--color-gray);
+    width: 90%;
+    height: 70px;
+    margin: 0 auto;
+    padding: 1rem 0.5rem;
+    font-size: ${14 / 16}rem;
+    line-height: ${19 / 16}rem;
+  }
+`;
