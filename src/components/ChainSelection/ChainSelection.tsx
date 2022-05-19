@@ -147,7 +147,7 @@ const ChainSelection: React.FC = () => {
           <SendBlockedWarning>
             <div>
               Across V1 sending is disabled, please visit{" "}
-              <a href="https://across.to" target="_blank" rel="noreferrer">
+              <a href="https://v2.across.to" target="_blank" rel="noreferrer">
                 {" "}
                 Across V2
               </a>{" "}
