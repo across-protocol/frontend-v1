@@ -204,8 +204,11 @@ const PoolForm: FC<Props> = ({
           {blockLiquidity ? (
             <LiquidityBlocked>
               <div>
-                Pool Migration will happen in less than 96 hours. Please come
-                back when v2 pools are launched.
+                Pool migration is happening now, please withdraw liquidity from
+                here and deposit in{" "}
+                <a href="https://v2.across.to" target="_blank" rel="noreferrer">
+                  Across v2
+                </a>
               </div>
             </LiquidityBlocked>
           ) : null}

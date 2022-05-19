@@ -42,7 +42,7 @@ const Routes: FC<Props> = () => {
           <div>
             Across v2 transition is coming!{" "}
             <a
-              href="https://docs.umaproject.org"
+              href="https://medium.com/across-protocol/lps-migrate-liquidity-from-v1-to-v2-screenshots-and-faqs-8616150b3396"
               target="_blank"
               rel="noreferrer"
             >
