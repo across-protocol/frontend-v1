@@ -30,7 +30,7 @@ import {
 import { AnimatePresence } from "framer-motion";
 
 // Matomo import
-import { useMatomo  } from "@datapunt/matomo-tracker-react";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 
 const FEE_ESTIMATION = ".004";
 const CoinSelection = () => {
@@ -113,9 +113,11 @@ const CoinSelection = () => {
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
         // Matomo track token selection
-        trackEvent(
-          {category: "send", action: "setAsset", name: selectedItem.symbol}
-        );
+        trackEvent({
+          category: "send",
+          action: "setAsset",
+          name: selectedItem.symbol,
+        });
 
         setInputAmount("");
         // since we are resetting input to 0, reset any errors

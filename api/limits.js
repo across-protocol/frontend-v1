@@ -15,9 +15,12 @@ const handler = async (request, response) => {
     );
 
     let { l1Token } = request.query;
+    if (!isString(l1Token)) {
+      throw new InputError("Must provide l1Token");
+    }
+
     const checksumL1Token = ethers.utils.getAddress(l1Token);
 
-    if (!isString(checksumL1Token)) throw new InputError("Must provide l1Token");
 
     const bridgePool = BridgePoolEthers__factory.connect(
       (await getTokenDetails(provider, checksumL1Token)).bridgePool,
@@ -53,7 +56,8 @@ const handler = async (request, response) => {
     const responseJson = {
       minDeposit: ethers.BigNumber.from(depositFeeDetails.slow.total)
         .add(depositFeeDetails.instant.total)
-        .mul(4).toString(), // Max fee pct is 25%
+        .mul(4)
+        .toString(), // Max fee pct is 25%
       maxDeposit: liquidReserves.sub(pendingReserves).toString(),
     };
 
