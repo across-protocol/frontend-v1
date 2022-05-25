@@ -15,10 +15,15 @@ const handler = async (request, response) => {
     );
 
     let { l1Token } = request.query;
-    if (!isString(l1Token)) throw new InputError("Must provide l1Token");
+    if (!isString(l1Token)) {
+      throw new InputError("Must provide l1Token");
+    }
+
+    const checksumL1Token = ethers.utils.getAddress(l1Token);
+
 
     const bridgePool = BridgePoolEthers__factory.connect(
-      (await getTokenDetails(provider, l1Token)).bridgePool,
+      (await getTokenDetails(provider, checksumL1Token)).bridgePool,
       provider
     );
 
@@ -32,9 +37,9 @@ const handler = async (request, response) => {
       sdk.across.gasFeeCalculator.getDepositFeesDetails(
         provider,
         ethers.BigNumber.from("10").pow(18), // Just pass in 1e18
-        l1Token === sdk.across.constants.ADDRESSES.WETH
+        checksumL1Token === sdk.across.constants.ADDRESSES.WETH
           ? sdk.across.constants.ADDRESSES.ETH
-          : l1Token
+          : checksumL1Token
       ),
       bridgePool.callStatic.multicall(multicallInput),
     ]);
@@ -51,7 +56,8 @@ const handler = async (request, response) => {
     const responseJson = {
       minDeposit: ethers.BigNumber.from(depositFeeDetails.slow.total)
         .add(depositFeeDetails.instant.total)
-        .mul(4).toString(), // Max fee pct is 25%
+        .mul(4)
+        .toString(), // Max fee pct is 25%
       maxDeposit: liquidReserves.sub(pendingReserves).toString(),
     };
 

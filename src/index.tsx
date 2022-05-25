@@ -1,4 +1,4 @@
-import { MatomoProvider, createInstance } from '@datapunt/matomo-tracker-react'
+import { MatomoProvider, createInstance } from "@datapunt/matomo-tracker-react";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -13,12 +13,12 @@ const instance = createInstance({
   urlBase: "https://across.matomo.cloud",
   siteId: 1,
   linkTracking: true,
-  trackerUrl: 'https://across.matomo.cloud/matomo.php',
-})
+  trackerUrl: "https://across.matomo.cloud/matomo.php",
+});
 
 ReactDOM.render(
   <React.StrictMode>
-  <GlobalStyles />
+    <GlobalStyles />
     <Provider store={store}>
       <ErrorProvider>
         <MatomoProvider value={instance}>

@@ -1,4 +1,4 @@
-import { useMatomo  } from "@datapunt/matomo-tracker-react";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 import { onboard } from "utils";
 import { FC, useEffect, useState, useRef } from "react";
 import { useConnection, useETHBalance } from "state/hooks";
@@ -47,16 +47,16 @@ const Wallet: FC = () => {
   const initWithMatomo = () => {
     // Matomo track wallet connect
     // TODO: Eventually add address to `name` field
-    trackEvent({category: "wallet", action: "connect", name: "null"});
+    trackEvent({ category: "wallet", action: "connect", name: "null" });
     init();
-  }
+  };
 
   const disconnectWithMatomo = () => {
     // Matomo track wallet disconnect
     // TODO: Eventually add address to `name` field
-    trackEvent({category: "wallet", action: "disconnect", name: "null"});
-    disconnectWallet()
-  }
+    trackEvent({ category: "wallet", action: "disconnect", name: "null" });
+    disconnectWallet();
+  };
 
   const { data: balance } = useETHBalance(
     { account: account ?? "", chainId: chainId ?? DEFAULT_FROM_CHAIN_ID },
@@ -72,7 +72,9 @@ const Wallet: FC = () => {
   }
 
   if (!isConnected) {
-    return <ConnectButton onClick={initWithMatomo}>Connect Wallet</ConnectButton>;
+    return (
+      <ConnectButton onClick={initWithMatomo}>Connect Wallet</ConnectButton>
+    );
   }
 
   return (
