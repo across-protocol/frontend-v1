@@ -40,7 +40,7 @@ const Routes: FC<Props> = () => {
       {showMigrationBanner && (
         <Banner>
           <div>
-            Across v2 transition is coming!{" "}
+            Across v2 is here!{" "}
             <a
               href="https://medium.com/across-protocol/lps-migrate-liquidity-from-v1-to-v2-screenshots-and-faqs-8616150b3396"
               target="_blank"
