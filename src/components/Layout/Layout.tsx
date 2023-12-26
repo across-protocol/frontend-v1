@@ -14,7 +14,7 @@ const NAV_LINKS = [
   },
   {
     name: "Support",
-    url: "https://discord.gg/across",
+    url: "https://discord.across.to",
     icon: SupportLogo,
   },
   {
