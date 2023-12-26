@@ -27,7 +27,7 @@ const LINKS = [
 ];
 const MOBILE_ONLY_LINKS = [
   { href: "https://docs.across.to/bridge/", name: "Docs" },
-  { href: "https://discord.gg/across", name: "Support (Discord)" },
+  { href: "https://discord.across.to", name: "Support (Discord)" },
   { href: "https://twitter.com/AcrossProtocol", name: "Twitter" },
   { href: "https://github.com/across-protocol", name: "Github" },
 ];

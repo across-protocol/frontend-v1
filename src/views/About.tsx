@@ -20,7 +20,7 @@ const NAV_LINKS = [
 ];
 const DISCORD_LINK = {
   name: "Discord",
-  url: "https://discord.gg/across",
+  url: "https://discord.across.to",
   logo: DiscordLogo,
 };
 const TWITTER_LINK = {
